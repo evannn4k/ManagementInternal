@@ -14,37 +14,7 @@ import {
     FieldLabel,
 } from "@/components/ui/field";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-
-export interface OptionItem {
-    label: string;
-    value: string | number;
-}
-
-export interface FormFieldProps {
-    label: string;
-    name: string;
-    type?: string;
-    description?: string;
-    value?: any;
-    onChange?: (
-        e:
-            | React.ChangeEvent<
-                  HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-              >
-            | any,
-    ) => void;
-    error?: string;
-    required?: boolean;
-    placeholder?: string;
-    options?: OptionItem[];
-    col?: number;
-    step?: number | string;
-    hidden?: boolean;
-    disabled?: boolean;
-    setData?: null | any;
-    orientation?: "vertical" | "horizontal";
-    className?: string;
-}
+import { FormFieldProps } from "@/types/form";
 
 export default function FormField({
     label,
@@ -138,7 +108,7 @@ export default function FormField({
                         onValueChange={(value) =>
                             setData((data: any) => ({ ...data, [name]: value }))
                         }
-                        value={value}
+                        value={String(value)}
                         disabled={disabled}
                         className={
                             orientation === "horizontal"
@@ -150,7 +120,10 @@ export default function FormField({
                             const stringVal = String(option.value);
                             return (
                                 <FieldLabel htmlFor={stringVal} key={stringVal}>
-                                    <Field className="!m-0 !p-2" orientation="horizontal">
+                                    <Field
+                                        className="!m-0 !p-2"
+                                        orientation="horizontal"
+                                    >
                                         <FieldContent>
                                             <FieldTitle>
                                                 {option.label}

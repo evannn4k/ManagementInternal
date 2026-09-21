@@ -19,7 +19,7 @@ class UpdateUserController extends Controller
             $user->update($credentials);
             $role = Role::findOrFail($credentials["role_id"]);
 
-            $user->assignRole($role);   
+            $user->syncRoles($role);   
 
             return redirect()
                 ->back()

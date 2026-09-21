@@ -17,7 +17,7 @@ Route::middleware(["auth", "verified"])->group(function () {
                 "index",
             );
             Route::post("/", CreateUserController::class)->name("create");
-            Route::put("/{id}", UpdateUserController::class)->name("update");
+            Route::put("/{user}", UpdateUserController::class)->name("update");
         });
 });
 

@@ -17,9 +17,11 @@ import { Spinner } from "@/components/ui/spinner";
 import { UseModalReturn } from "@/types/modal";
 import FormField from "@/components/form-field";
 import FormSection from "@/components/form-section";
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "@inertiajs/react";
 import { Role } from "@/types/data/role";
+import { FormFieldProps } from "@/types/form";
+import { Button } from "@/components/ui/button";
 
 export default function UserForm({
     roles,
@@ -40,8 +42,24 @@ export default function UserForm({
         is_active: "",
     });
 
+    useEffect(() => {
+        if (isOpenModal) {
+            setData((prevData) => ({
+                ...prevData,
+                name: modal.data.name ?? "",
+                email: modal.data.email ?? "",
+                role_id: modal.data.role_id ?? "",
+                is_active: modal.data.is_active ?? "",
+            }));
+        } else {
+            reset();
+        }
+    }, [isOpenModal]);
+
+    console.log(data);
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        console.log(data);
 
         if (isEdit) {
             put("/user/" + modal.data?.id, {
@@ -83,7 +101,7 @@ export default function UserForm({
         };
     });
 
-    const mainFields = [
+    const mainFields: FormFieldProps[] = [
         {
             label: "Nama",
             name: "name",
@@ -137,7 +155,7 @@ export default function UserForm({
         },
     ];
 
-    const passwordFields = [
+    const passwordFields: FormFieldProps[] = [
         {
             label: "Password",
             name: "password",
@@ -197,14 +215,14 @@ export default function UserForm({
 
                     <AlertDialogFooter className="mt-4">
                         <AlertDialogCancel>Batal</AlertDialogCancel>
-                        <AlertDialogAction
+                        <Button
                             variant="default"
                             type="submit"
                             disabled={processing}
                         >
                             {processing ? <Spinner /> : <Save />}
                             Simpan
-                        </AlertDialogAction>
+                        </Button>
                     </AlertDialogFooter>
                 </form>
             </AlertDialogContent>

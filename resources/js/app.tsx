@@ -1,22 +1,22 @@
-import { createInertiaApp } from '@inertiajs/react';
-import { Toaster } from '@/components/ui/sonner';
-import { TooltipProvider } from '@/components/ui/tooltip';
-import { initializeTheme } from '@/hooks/use-appearance';
-import AppLayout from '@/layouts/app-layout';
-import AuthLayout from '@/layouts/auth-layout';
-import SettingsLayout from '@/layouts/settings/layout';
+import { createInertiaApp } from "@inertiajs/react";
+import { Toaster } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { initializeTheme } from "@/hooks/use-appearance";
+import AppLayout from "@/layouts/app-layout";
+import AuthLayout from "@/layouts/auth-layout";
+import SettingsLayout from "@/layouts/settings/layout";
 
-const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
+const appName = import.meta.env.VITE_APP_NAME || "Laravel";
 
 void createInertiaApp({
     title: (title) => (title ? `${title} - ${appName}` : appName),
     layout: (name) => {
         switch (true) {
-            case name === 'welcome':
+            case name === "welcome":
                 return null;
-            case name.startsWith('auth/'):
+            case name.startsWith("auth/"):
                 return AuthLayout;
-            case name.startsWith('settings/'):
+            case name.startsWith("settings/"):
                 return [AppLayout, SettingsLayout];
             default:
                 return AppLayout;
@@ -32,7 +32,15 @@ void createInertiaApp({
         );
     },
     progress: {
-        color: '#4B5563',
+        // // The delay after which the progress bar will appear, in milliseconds...
+        // delay: 250,
+        // // The color of the progress bar...
+        // color: "#29d",
+        // // Whether to include the default NProgress styles...
+        // includeCSS: true,
+        // // Whether the NProgress spinner will be shown...
+        // showSpinner: false,
+        color: "#4B5563",
     },
 });
 
