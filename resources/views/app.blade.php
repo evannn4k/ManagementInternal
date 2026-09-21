@@ -30,8 +30,10 @@
             }
         </style>
 
-        <link rel="icon" href="/favicon.ico" sizes="any">
-        <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+        <!--<link rel="icon" href="/images/logo-v1.ico" sizes="any">-->
+        <!--<link rel="icon" href="/favicon.svg" type="image/svg+xml">-->
+        
+        <link rel="icon" type="image/x-icon" href="/images/logo-v1.ico">
         <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
         @fonts

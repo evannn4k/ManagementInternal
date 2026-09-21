@@ -6,3 +6,10 @@ export type UserTableType = {
     is_active: boolean;
     last_login_at: string | null;
 };
+
+export type CardData = {
+    total_account: number;
+    total_active: number;
+    total_nonactive: number;
+    total_admin: number;
+};

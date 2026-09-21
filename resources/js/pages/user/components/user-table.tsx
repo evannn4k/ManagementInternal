@@ -1,9 +1,16 @@
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
     Table,
     TableBody,
-    TableCaption,
     TableCell,
     TableHead,
     TableHeader,
@@ -11,14 +18,25 @@ import {
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 import { UserTableType } from "@/types/data/user";
+import { UseModalReturn } from "@/types/modal";
 import { TableHeadType } from "@/types/table";
-import { CircleCheck, CircleX } from "lucide-react";
+import { Link } from "@inertiajs/react";
+import {
+    CircleCheck,
+    CircleX,
+    FileText,
+    MoreVertical,
+    SquarePen,
+    Trash2,
+} from "lucide-react";
 
 export function UserTable({
     data,
+    modal,
     tableHead,
 }: {
     data: UserTableType[];
+    modal: UseModalReturn;
     tableHead: TableHeadType[];
 }) {
     return (
@@ -41,9 +59,9 @@ export function UserTable({
                         {data.length > 0 ? (
                             data.map((user) => (
                                 <TableRow key={user.id}>
-                                    <TableCell>{user.name}</TableCell>
-                                    <TableCell>{user.email}</TableCell>
-                                    <TableCell>{user.role}</TableCell>
+                                    <TableCell>{user.name ?? "-"}</TableCell>
+                                    <TableCell>{user.email ?? "-"}</TableCell>
+                                    <TableCell>{user.role ?? "-"}</TableCell>
                                     <TableCell>
                                         <Badge variant="secondary">
                                             {user.is_active ? (
@@ -58,8 +76,50 @@ export function UserTable({
                                             )}
                                         </Badge>
                                     </TableCell>
-                                    <TableCell>{user.last_login_at}</TableCell>
-                                    <TableCell>test</TableCell>
+                                    <TableCell>
+                                        {user.last_login_at ?? "-"}
+                                    </TableCell>
+                                    <TableCell className="text-right">
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger asChild>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="size-8"
+                                                >
+                                                    <MoreVertical className="size-4" />
+                                                    <span className="sr-only">
+                                                        Open menu
+                                                    </span>
+                                                </Button>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent align="end">
+                                                <DropdownMenuItem
+                                                    onClick={() =>
+                                                        modal.openEdit(user)
+                                                    }
+                                                >
+                                                    <SquarePen />
+                                                    Edit
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem asChild>
+                                                    <Link
+                                                        href={
+                                                            "/user/" + user.id
+                                                        }
+                                                    >
+                                                        <FileText />
+                                                        Detail
+                                                    </Link>
+                                                </DropdownMenuItem>
+                                                <DropdownMenuSeparator />
+                                                <DropdownMenuItem variant="destructive">
+                                                    <Trash2 />
+                                                    Delete
+                                                </DropdownMenuItem>
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
+                                    </TableCell>
                                 </TableRow>
                             ))
                         ) : (

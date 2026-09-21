@@ -14,7 +14,7 @@ class HandleInertiaRequests extends Middleware
      *
      * @var string
      */
-    protected $rootView = 'app';
+    protected $rootView = "app";
 
     /**
      * Determines the current asset version.
@@ -37,11 +37,17 @@ class HandleInertiaRequests extends Middleware
     {
         return [
             ...parent::share($request),
-            'name' => config('app.name'),
-            'auth' => [
-                'user' => $request->user(),
+            "name" => config("app.name"),
+            "auth" => [
+                "user" => $request->user(),
             ],
-            'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
+            "sidebarOpen" =>
+                !$request->hasCookie("sidebar_state") ||
+                $request->cookie("sidebar_state") === "true",
+            "flash" => [
+                "success" => fn() => $request->session()->get("success"),
+                "error" => fn() => $request->session()->get("error"),
+            ],
         ];
     }
 }

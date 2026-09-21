@@ -6,36 +6,37 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
+import { CardData } from "@/types/data/user";
 import { Bell, Lock, UserRoundCheck, UsersRound } from "lucide-react";
 
-export function UserSectionCard() {
+export function UserSectionCard({ cardData }: { cardData: CardData }) {
     const cards = [
         {
             label: "TOTAL AKUN",
-            value: 48,
+            value: cardData.total_account,
             description: "Total seluruh akun",
             icon: <UsersRound />,
         },
         {
             label: "PENGGUNA AKTIF",
-            value: 48,
-            description: "Total seluruh akun",
+            value: cardData.total_active,
+            description: "Total akun aktif",
             icon: <UserRoundCheck />,
         },
         {
-            label: "MENUNGGU AKTIVASI",
-            value: 48,
-            description: "Total seluruh akun",
-            icon: <Bell />,
-        },
-        {
             label: "NONAKTIF",
-            value: 48,
-            description: "Total seluruh akun",
+            value: cardData.total_nonactive,
+            description: "Total akun tidak aktif",
             icon: <Lock />,
         },
+        {
+            label: "ADMIN",
+            value: cardData.total_admin,
+            description: "Total admin",
+            icon: <Bell />,
+        },
     ];
-    
+
     return (
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             {cards.map((card) => (
