@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Role\ViewRoleController;
+use App\Http\Controllers\Role\SyncRolePermissionController;
 use App\Http\Controllers\User\CreateUserController;
 use App\Http\Controllers\User\DeleteUserController;
 use App\Http\Controllers\User\UpdateUserController;
@@ -19,19 +20,26 @@ Route::middleware(["auth", "verified"])->group(function () {
                 "index",
             );
             Route::post("/", CreateUserController::class)->name("create");
-            
+
             Route::put("/{user}", UpdateUserController::class)->name("update");
-            Route::delete("/{user}", DeleteUserController::class)->name("delete");
+            Route::delete("/{user}", DeleteUserController::class)->name(
+                "delete",
+            );
         });
-        
+
     Route::prefix("/role")
         ->name("role.")
         ->group(function () {
             Route::get("/", [ViewRoleController::class, "index"])->name(
                 "index",
             );
+
+            Route::put("/sync/permission/{role}", SyncRolePermissionController::class)->name(
+                "sync",
+            );
+
             // Route::post("/", CreateUserController::class)->name("create");
-            
+
             // Route::put("/{user}", UpdateUserController::class)->name("update");
             // Route::delete("/{user}", DeleteUserController::class)->name("delete");
         });
