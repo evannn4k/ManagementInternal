@@ -101,14 +101,26 @@ export default function FormField({
                     />
                 );
             case "radio-group":
+                const stringValue =
+                    value === true
+                        ? "1"
+                        : value === false
+                          ? "0"
+                          : value !== undefined && value !== null
+                            ? String(value)
+                            : "";
                 return (
                     <RadioGroup
                         aria-invalid={Boolean(error)}
                         id={name}
-                        onValueChange={(value) =>
-                            setData((data: any) => ({ ...data, [name]: value }))
-                        }
-                        value={String(value)}
+                        onValueChange={(value) => {
+                            const parsedValue = value === "1" ? 1 : 0;
+                            setData((data: any) => ({
+                                ...data,
+                                [name]: parsedValue,
+                            }));
+                        }}
+                        value={stringValue}
                         disabled={disabled}
                         className={
                             orientation === "horizontal"
@@ -117,9 +129,12 @@ export default function FormField({
                         }
                     >
                         {options.map((option) => {
-                            const stringVal = String(option.value);
+                            const optionValStr = String(option.value);
                             return (
-                                <FieldLabel htmlFor={stringVal} key={stringVal}>
+                                <FieldLabel
+                                    htmlFor={optionValStr}
+                                    key={optionValStr}
+                                >
                                     <Field
                                         className="!m-0 !p-2"
                                         orientation="horizontal"
@@ -131,8 +146,8 @@ export default function FormField({
                                         </FieldContent>
                                         <RadioGroupItem
                                             className="hidden"
-                                            value={stringVal}
-                                            id={stringVal}
+                                            value={optionValStr}
+                                            id={optionValStr}
                                         />
                                     </Field>
                                 </FieldLabel>

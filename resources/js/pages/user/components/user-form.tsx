@@ -46,20 +46,18 @@ export default function UserForm({
         if (isOpenModal) {
             setData((prevData) => ({
                 ...prevData,
-                name: modal.data.name ?? "",
-                email: modal.data.email ?? "",
-                role_id: modal.data.role_id ?? "",
-                is_active: modal.data.is_active ?? "",
+                name: modal.data?.name ?? "",
+                email: modal.data?.email ?? "",
+                role_id: modal.data?.role_id ?? "",
+                is_active: modal.data?.is_active ?? "",
             }));
         } else {
             reset();
         }
     }, [isOpenModal]);
 
-    console.log(data);
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        console.log(data);
 
         if (isEdit) {
             put("/user/" + modal.data?.id, {
@@ -179,6 +177,8 @@ export default function UserForm({
             hidden: isEdit,
         },
     ];
+
+    console.log(data)
 
     return (
         <AlertDialog open={isOpenModal} onOpenChange={() => modal.closeModal()}>

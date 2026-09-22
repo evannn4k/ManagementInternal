@@ -21,17 +21,46 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
 
         $user = User::create([
-            'name' => 'SUPER ADMIN',
-            'email' => 'yahyaevan8@gmail.com',
-            'password' => Hash::make("123123123"),
-            'email_verified_at' => now(),
-            'is_active' => true,
+            "name" => "SUPER ADMIN",
+            "email" => "yahyaevan8@gmail.com",
+            "password" => Hash::make("123123123"),
+            "email_verified_at" => now(),
+            "is_active" => true,
         ]);
 
-        $role = Role::create(['name' => 'admin']);
-        $permission = Permission::create(['name' => 'role.manage']);
+        $role = Role::create(["name" => "admin", "description" => "Akses menyeluruh terhadap kofigurasi server dan sistem.", "is_system" => true]);
+        
+        $permissions = [
+            [
+                "name" => "role.manage",
+                "description" => "Mengelola role dan perizinan",
+            ],
+            [
+                "name" => "user.view",
+                "description" => "melihat daftar akun pengguna",
+            ],
+            [
+                "name" => "user.create",
+                "description" => "Membuat akun pengguna baru",
+            ],
+            [
+                "name" => "user.edit",
+                "description" => "Mengedit akun yang sudah ada pengguna",
+            ],
+            [
+                "name" => "user.delete",
+                "description" => "Menghapus atau menonaktifkan akun pengguna",
+            ],
+        ];
 
-        $role->givePermissionTo($permission);
-        $user->assignRole('admin');
+        foreach ($permissions as $permission) {
+            Permission::firstOrCreate(
+                ["name" => $permission["name"]],
+                ["description" => $permission["description"]],
+            );
+        }
+
+        $role->givePermissionTo(Permission::all());
+        $user->assignRole("admin");
     }
 }

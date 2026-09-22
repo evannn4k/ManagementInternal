@@ -1,13 +1,12 @@
 import {
     Card,
     CardAction,
-    CardContent,
     CardDescription,
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
 import { CardData } from "@/types/data/user";
-import { Bell, Lock, UserRoundCheck, UsersRound } from "lucide-react";
+import { Lock, ShieldCheck, UserRoundCheck, UsersRound } from "lucide-react";
 
 export function UserSectionCard({ cardData }: { cardData: CardData }) {
     const cards = [
@@ -33,7 +32,7 @@ export function UserSectionCard({ cardData }: { cardData: CardData }) {
             label: "ADMIN",
             value: cardData.total_admin,
             description: "Total admin",
-            icon: <Bell />,
+            icon: <ShieldCheck />,
         },
     ];
 

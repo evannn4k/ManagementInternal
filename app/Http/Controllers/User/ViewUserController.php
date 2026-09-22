@@ -26,6 +26,7 @@ class ViewUserController extends Controller
             ->when($request->is_active, function ($query, $value) {
                 $query->where("is_active", $value == "aktif");
             })
+            ->orderBy("created_at", "desc")
             ->paginate($request->per_page ?? 10)
             ->withQueryString();
 

@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\Role\ViewRoleController;
 use App\Http\Controllers\User\CreateUserController;
+use App\Http\Controllers\User\DeleteUserController;
 use App\Http\Controllers\User\UpdateUserController;
 use App\Http\Controllers\User\ViewUserController;
 use Illuminate\Support\Facades\Route;
@@ -17,7 +19,21 @@ Route::middleware(["auth", "verified"])->group(function () {
                 "index",
             );
             Route::post("/", CreateUserController::class)->name("create");
+            
             Route::put("/{user}", UpdateUserController::class)->name("update");
+            Route::delete("/{user}", DeleteUserController::class)->name("delete");
+        });
+        
+    Route::prefix("/role")
+        ->name("role.")
+        ->group(function () {
+            Route::get("/", [ViewRoleController::class, "index"])->name(
+                "index",
+            );
+            // Route::post("/", CreateUserController::class)->name("create");
+            
+            // Route::put("/{user}", UpdateUserController::class)->name("update");
+            // Route::delete("/{user}", DeleteUserController::class)->name("delete");
         });
 });
 

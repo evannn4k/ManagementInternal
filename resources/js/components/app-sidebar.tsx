@@ -25,6 +25,7 @@ import {
 import { dashboard } from "@/routes";
 import type { NavItem } from "@/types";
 import { index as userIndex } from "@/routes/user";
+import { index as roleIndex } from "@/routes/role";
 
 const navigationNavItems: NavItem[] = [
     {
@@ -52,7 +53,7 @@ const administrationNavItems: NavItem[] = [
     },
     {
         title: "Role & Permission",
-        href: dashboard(),
+        href: roleIndex(),
         icon: ShieldCheck,
     },
     {

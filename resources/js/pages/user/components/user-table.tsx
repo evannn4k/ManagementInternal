@@ -113,7 +113,14 @@ export function UserTable({
                                                     </Link>
                                                 </DropdownMenuItem>
                                                 <DropdownMenuSeparator />
-                                                <DropdownMenuItem variant="destructive">
+                                                <DropdownMenuItem
+                                                    onClick={() =>
+                                                        modal.openDelete(
+                                                            user.id,
+                                                        )
+                                                    }
+                                                    variant="destructive"
+                                                >
                                                     <Trash2 />
                                                     Delete
                                                 </DropdownMenuItem>
