@@ -50,11 +50,13 @@ const administrationNavItems: NavItem[] = [
         title: "User Management",
         href: userIndex(),
         icon: UsersRound,
+        permission: "user.view",
     },
     {
         title: "Role & Permission",
         href: roleIndex(),
         icon: ShieldCheck,
+        permission: "role.manage",
     },
     {
         title: "Setting",

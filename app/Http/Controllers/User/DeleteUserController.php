@@ -9,12 +9,12 @@ use Illuminate\Support\Facades\Log;
 
 class DeleteUserController extends Controller
 {
-    public function __invoke(User $user)
+    public function __invoke(Request $request, User $user)
     {
         try {
             $user->is_active = false;
             $user->save();
-            
+
             $user->delete();
 
             return redirect()

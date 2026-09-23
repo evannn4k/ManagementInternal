@@ -18,17 +18,18 @@ Route::middleware(["auth", "verified"])->group(function () {
         ->group(function () {
             Route::get("/", [ViewUserController::class, "index"])->name(
                 "index",
-            );
-            Route::post("/", CreateUserController::class)->name("create");
+            )->middleware("can:user.view");
+            Route::post("/", CreateUserController::class)->name("create")->middleware("can:user.create");
 
-            Route::put("/{user}", UpdateUserController::class)->name("update");
+            Route::put("/{user}", UpdateUserController::class)->name("update")->middleware("can:user.update");
             Route::delete("/{user}", DeleteUserController::class)->name(
                 "delete",
-            );
+            )->middleware("can:user.delete");
         });
 
     Route::prefix("/role")
         ->name("role.")
+        ->middleware("can:role.manage")
         ->group(function () {
             Route::get("/", [ViewRoleController::class, "index"])->name(
                 "index",
@@ -37,11 +38,20 @@ Route::middleware(["auth", "verified"])->group(function () {
             Route::put("/sync/permission/{role}", SyncRolePermissionController::class)->name(
                 "sync",
             );
+        });
+    
+        Route::prefix("/user")
+        ->name("user.")
+        ->group(function () {
+            Route::get("/", [ViewUserController::class, "index"])->name(
+                "index",
+            )->middleware("can:user.view");
+            Route::post("/", CreateUserController::class)->name("create")->middleware("can:user.create");
 
-            // Route::post("/", CreateUserController::class)->name("create");
-
-            // Route::put("/{user}", UpdateUserController::class)->name("update");
-            // Route::delete("/{user}", DeleteUserController::class)->name("delete");
+            Route::put("/{user}", UpdateUserController::class)->name("update")->middleware("can:user.update");
+            Route::delete("/{user}", DeleteUserController::class)->name(
+                "delete",
+            )->middleware("can:user.delete");
         });
 });
 

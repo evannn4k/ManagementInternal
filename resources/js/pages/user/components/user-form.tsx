@@ -178,8 +178,6 @@ export default function UserForm({
         },
     ];
 
-    console.log(data)
-
     return (
         <AlertDialog open={isOpenModal} onOpenChange={() => modal.closeModal()}>
             <AlertDialogContent className="!max-w-xl max-h-[90vh] overflow-y-auto no-scrollbar">

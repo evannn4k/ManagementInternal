@@ -9,26 +9,19 @@ import {
     UsersRound,
 } from "lucide-react";
 import { index as role } from "@/routes/role";
-import { useModal } from "@/hooks/use-modal";
 import { Permission, Role } from "@/types/data/role";
-import { DeleteAlert } from "@/components/delete-alert";
 import { Head, router } from "@inertiajs/react";
 import {
     Card,
     CardAction,
     CardContent,
-    CardDescription,
-    CardFooter,
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
 import {
     InputGroup,
     InputGroupAddon,
-    InputGroupButton,
     InputGroupInput,
-    InputGroupText,
-    InputGroupTextarea,
 } from "@/components/ui/input-group";
 import {
     Field,
@@ -45,29 +38,40 @@ import {
     CollapsibleContent,
     CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { Switch } from "@/components/ui/switch";
 import { useState } from "react";
 import syncRole from "@/actions/App/Http/Controllers/Role/SyncRolePermissionController";
+import { toast } from "sonner";
+import { Spinner } from "@/components/ui/spinner";
+import { SelectScopePermission } from "./components/select-scope-permission";
+import { SelectPermissionToggle } from "./components/select-scope-permission-toggle";
 
 export default function RolePage({
     roles,
     permissions,
 }: {
     roles: { data: Role[] };
-    permissions: any[];
+    permissions: Record<string, Record<string, Permission[]>>;
 }) {
-    const [selected, setSelected] = useState<number[]>();
+    const [selected, setSelected] = useState<number[] | undefined>();
     const [roleId, setRoleId] = useState<number>();
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
-    const handleSyncPermission = (): void => {
-        // if (!roleId) return;
+    const handleSyncPermission = async (): Promise<void> => {
+        if (!roleId) return;
 
-        console.log(roleId);
-        console.log(selected);
-
-        router.put(syncRole(roleId), {
-            permissions_id: selected,
-        });
+        router.put(
+            syncRole(roleId),
+            {
+                permissions_id: selected,
+            },
+            {
+                onStart: () => setIsLoading(true),
+                onFinish: () => setIsLoading(false),
+                onError: () => {
+                    toast.error("Gagal merubah perizinan");
+                },
+            },
+        );
     };
 
     const handleChangePermission = (checked: boolean, value: number): void => {
@@ -79,6 +83,22 @@ export default function RolePage({
             setSelected(selected.filter((s) => s !== value));
         }
     };
+
+    const handleChangeScopePermission = (
+        scopeIds: number[],
+        value?: number,
+    ): void => {
+        if (!selected) return;
+
+        const withoutGroup = selected.filter((id) => !scopeIds.includes(id));
+
+        if (value !== undefined) {
+            setSelected([...withoutGroup, value]);
+        } else {
+            setSelected(withoutGroup);
+        }
+    };
+
 
     return (
         <>
@@ -98,8 +118,11 @@ export default function RolePage({
                             individu secara deterministik.
                         </p>
                     </div>
-                    <Button onClick={handleSyncPermission}>
-                        <CircleCheck />
+                    <Button
+                        onClick={handleSyncPermission}
+                        disabled={isLoading || !selected}
+                    >
+                        {isLoading ? <Spinner /> : <CircleCheck />}
                         Simpan Perubahan
                     </Button>
                 </header>
@@ -125,18 +148,19 @@ export default function RolePage({
                                         </InputGroupAddon>
                                     </InputGroup>
                                     <RadioGroup
-                                        defaultValue="admin"
                                         onValueChange={(selectedRoleRadio) => {
                                             const selectedRole:
-                                                Role | undefined =
-                                                roles.data.find((r) => {
+                                                | Role
+                                                | undefined = roles.data.find(
+                                                (r) => {
                                                     return (
                                                         r.id ==
                                                         Number(
                                                             selectedRoleRadio,
                                                         )
                                                     );
-                                                });
+                                                },
+                                            );
 
                                             if (selectedRole) {
                                                 setSelected(
@@ -206,18 +230,19 @@ export default function RolePage({
                                             <Collapsible>
                                                 <CollapsibleTrigger asChild>
                                                     <Button
-                                                        variant="ghost"
+                                                        variant="outline"
                                                         className="group w-full text-lg capitalize"
                                                     >
                                                         <Shield /> Perizinan :{" "}
-                                                        {permission[0]}{" "}
+                                                        {permission[0]}
                                                         <Badge
                                                             className="rounded-full"
                                                             variant="outline"
                                                         >
                                                             {
-                                                                permission[1]
-                                                                    .length
+                                                                Object.values(
+                                                                    permission[1],
+                                                                ).flat().length
                                                             }{" "}
                                                             perizinan
                                                         </Badge>
@@ -225,50 +250,62 @@ export default function RolePage({
                                                     </Button>
                                                 </CollapsibleTrigger>
                                                 <CollapsibleContent>
-                                                    <FieldGroup className="flex flex-col gap-2 mt-2">
-                                                        {permission[1].map(
-                                                            (p: Permission) => (
-                                                                <FieldLabel
-                                                                    key={p.id}
-                                                                    htmlFor={
-                                                                        p.name
-                                                                    }
-                                                                    className="p-0 m-0"
-                                                                >
-                                                                    <Field orientation="horizontal">
-                                                                        <FieldContent className="flex flex-col gap-1">
-                                                                            <FieldTitle className="text-xs capitalize">
-                                                                                {p.name.replaceAll(
-                                                                                    ".",
-                                                                                    " ",
-                                                                                )}
-                                                                            </FieldTitle>
-                                                                            <FieldDescription className="text-sm">
-                                                                                {p?.description ??
-                                                                                    "-"}
-                                                                            </FieldDescription>
-                                                                        </FieldContent>
-                                                                        <Switch
-                                                                            checked={selected!.includes(
-                                                                                p!
-                                                                                    .id,
-                                                                            )}
-                                                                            onCheckedChange={(
-                                                                                checked,
-                                                                            ) =>
-                                                                                handleChangePermission(
-                                                                                    checked,
-                                                                                    p.id,
-                                                                                )
-                                                                            }
-                                                                            id={
-                                                                                p.name
-                                                                            }
-                                                                        />
-                                                                    </Field>
-                                                                </FieldLabel>
-                                                            ),
-                                                        )}
+                                                    <FieldGroup className="flex flex-col gap-2 mt-4">
+                                                        {Object.entries(
+                                                            permission[1],
+                                                        ).map((p: any) => {
+                                                            if (
+                                                                Object.entries(
+                                                                    p[1],
+                                                                ).length === 1
+                                                            ) {
+                                                                const singleScope =
+                                                                    p[1][0];
+
+                                                                return (
+                                                                    <SelectPermissionToggle
+                                                                        key={
+                                                                            singleScope.id
+                                                                        }
+                                                                        p={
+                                                                            singleScope
+                                                                        }
+                                                                        handleChangePermission={
+                                                                            handleChangePermission
+                                                                        }
+                                                                        selected={
+                                                                            selected
+                                                                        }
+                                                                    />
+                                                                );
+                                                            } else if (
+                                                                Object.entries(
+                                                                    p[1],
+                                                                ).length > 1
+                                                            ) {
+                                                                const multiScope =
+                                                                    p[1];
+                                                                return (
+                                                                    <SelectScopePermission
+                                                                        key={
+                                                                            p[1][0]
+                                                                                .id
+                                                                        }
+                                                                        scopes={
+                                                                            multiScope
+                                                                        }
+                                                                        handleChangeScopePermission={
+                                                                            handleChangeScopePermission
+                                                                        }
+                                                                        selected={
+                                                                            selected
+                                                                        }
+                                                                    />
+                                                                );
+                                                            } else {
+                                                                return;
+                                                            }
+                                                        })}
                                                     </FieldGroup>
                                                 </CollapsibleContent>
                                             </Collapsible>

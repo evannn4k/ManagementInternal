@@ -15,10 +15,11 @@ class ViewRoleController extends Controller
     {
         $roleData = Role::orderBy("is_system", "desc")->get();
         $roles = RoleResource::collection($roleData);
-        $permissions = Permission::all()->groupBy(function ($p) {
-            $module = explode(".", $p->name);
-            return $module[0];
-        });
+        $permissions = Permission::all()->groupBy('resource')
+            ->map(function ($p) {
+                return $p->groupBy('action');
+            });
+
 
         return Inertia::render("role/page", compact("roles", "permissions"));
     }

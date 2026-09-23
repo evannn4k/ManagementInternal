@@ -36,6 +36,9 @@ return new class extends Migration {
             $table->string("name");
             $table->string("guard_name");
             $table->string("description")->nullable();
+            $table->string("resource")->nullable();
+            $table->string("action")->nullable();
+            $table->string("scope")->nullable();
             $table->timestamps();
 
             $table->unique(["name", "guard_name"]);

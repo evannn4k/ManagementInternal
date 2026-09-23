@@ -16,6 +16,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
+import { can } from "@/lib/middleware";
 import { cn } from "@/lib/utils";
 import { UserTableType } from "@/types/data/user";
 import { UseModalReturn } from "@/types/modal";
@@ -94,14 +95,16 @@ export function UserTable({
                                                 </Button>
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent align="end">
-                                                <DropdownMenuItem
-                                                    onClick={() =>
-                                                        modal.openEdit(user)
-                                                    }
-                                                >
-                                                    <SquarePen />
-                                                    Edit
-                                                </DropdownMenuItem>
+                                                {can("user.edit") && (
+                                                    <DropdownMenuItem
+                                                        onClick={() =>
+                                                            modal.openEdit(user)
+                                                        }
+                                                    >
+                                                        <SquarePen />
+                                                        Edit
+                                                    </DropdownMenuItem>
+                                                )}
                                                 <DropdownMenuItem asChild>
                                                     <Link
                                                         href={
@@ -112,18 +115,22 @@ export function UserTable({
                                                         Detail
                                                     </Link>
                                                 </DropdownMenuItem>
-                                                <DropdownMenuSeparator />
-                                                <DropdownMenuItem
-                                                    onClick={() =>
-                                                        modal.openDelete(
-                                                            user.id,
-                                                        )
-                                                    }
-                                                    variant="destructive"
-                                                >
-                                                    <Trash2 />
-                                                    Delete
-                                                </DropdownMenuItem>
+                                                {can("user.delete") && (
+                                                    <>
+                                                        <DropdownMenuSeparator />
+                                                        <DropdownMenuItem
+                                                            onClick={() =>
+                                                                modal.openDelete(
+                                                                    user.id,
+                                                                )
+                                                            }
+                                                            variant="destructive"
+                                                        >
+                                                            <Trash2 />
+                                                            Delete
+                                                        </DropdownMenuItem>
+                                                    </>
+                                                )}
                                             </DropdownMenuContent>
                                         </DropdownMenu>
                                     </TableCell>

@@ -15,6 +15,7 @@ import { useModal } from "@/hooks/use-modal";
 import UserForm from "./components/user-form";
 import { Role } from "@/types/data/role";
 import { DeleteAlert } from "@/components/delete-alert";
+import { can } from "@/lib/middleware";
 
 export default function UserPage({
     data,
@@ -89,9 +90,11 @@ export default function UserPage({
                             sapiente?
                         </p>
                     </div>
-                    <Button onClick={() => modal.openCreate()}>
-                        <Plus /> Tambah Pengguna
-                    </Button>
+                    {can("user.create") && (
+                        <Button onClick={() => modal.openCreate()}>
+                            <Plus /> Tambah Pengguna
+                        </Button>
+                    )}
                 </header>
                 <UserSectionCard cardData={cardData} />
                 <UserToolbar url={url} updateQuery={updateQuery} />

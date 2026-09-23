@@ -2,6 +2,9 @@ export interface Permission {
     id: number;
     name: string;
     description?: string;
+    resource?: string;
+    action?: string;
+    scope?: string;
     created_at?: number;
     updated_at?: number;
 }
