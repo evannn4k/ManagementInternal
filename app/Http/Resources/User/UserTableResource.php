@@ -20,6 +20,7 @@ class UserTableResource extends JsonResource
             "email" => $this->email,
             "role" => $this->getRoleNames()->first(),
             "role_id" => $this->roles()->first()?->id ?? null,
+            "position" => $this->position,
             "is_active" => $this->is_active,
             "last_login_at" => $this->last_login_at,
         ];

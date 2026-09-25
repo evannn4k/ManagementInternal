@@ -40,7 +40,7 @@ export function PaginationPage({
     // console.log(meta);
 
     return (
-        <Card className="p-2">
+        <Card className="p-2 bg-muted/50">
             <CardContent className="flex justify-between items-center gap-6 p-0">
                 <Field orientation="horizontal" className="w-fit">
                     <Select

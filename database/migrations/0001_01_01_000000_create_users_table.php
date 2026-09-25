@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('password');
             $table->boolean('is_active')->default(false);
             $table->dateTime('last_login_at')->nullable();
+            $table->string('position')->nullable();
             $table->string('avatar')->nullable();
             $table->softDeletes();
             $table->rememberToken();

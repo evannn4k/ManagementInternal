@@ -6,11 +6,10 @@ import { UserTable } from "./components/user-table";
 import { LaravelPagination } from "@/types/paginate";
 import { CardData, UserTableType } from "@/types/data/user";
 import { PaginationPage } from "@/components/pagination-page";
-import { index as userIndex } from "@/actions/App/Http/Controllers/User/ViewUserController";
 import userDelete from "@/actions/App/Http/Controllers/User/DeleteUserController";
 import { useState } from "react";
 import { Head, router } from "@inertiajs/react";
-import { index as user } from "@/routes/user";
+import { index as userIndex } from "@/routes/user";
 import { useModal } from "@/hooks/use-modal";
 import UserForm from "./components/user-form";
 import { Role } from "@/types/data/role";
@@ -60,6 +59,7 @@ export default function UserPage({
         { label: "name" },
         { label: "email" },
         { label: "role" },
+        { label: "posisi" },
         { label: "status" },
         { label: "terakhir login" },
         { label: "aksi", className: "text-end" },
@@ -75,10 +75,10 @@ export default function UserPage({
                 description="Data user yang telah dihapus dapat dikembalikan."
                 handleDelete={handleDelete}
             />
-            <div className="p-4 md:p-6 flex flex-col gap-4 md:gap-6">
+            <div className="p-4 md:p-6 flex flex-col gap-4">
                 <header className="flex justify-between items-start md:items-center flex-col md:flex-row gap-4 md:gap-8">
                     <div className="flex flex-col gap-2">
-                        <div className="flex gap-2 items-center text-sm">
+                        <div className="flex gap-2 items-center text-sm text-primary font-semibold">
                             <ShieldCheck size="24" /> SISTEM AKSES TERPUSAT
                         </div>
                         <h1 className="font-semibold text-2xl md:text-3xl">
@@ -97,7 +97,7 @@ export default function UserPage({
                     )}
                 </header>
                 <UserSectionCard cardData={cardData} />
-                <UserToolbar url={url} updateQuery={updateQuery} />
+                <UserToolbar url={url} roles={roles} updateQuery={updateQuery} />
                 <UserTable
                     modal={modal}
                     data={data.data}
@@ -117,7 +117,7 @@ UserPage.layout = {
     breadcrumbs: [
         {
             title: "User",
-            href: user(),
+            href: userIndex(),
         },
     ],
 };

@@ -8,7 +8,7 @@ import {
     ShieldCheck,
     UsersRound,
 } from "lucide-react";
-import { index as role } from "@/routes/role";
+import { index as roleIndex } from "@/routes/role";
 import { Permission, Role } from "@/types/data/role";
 import { Head, router } from "@inertiajs/react";
 import {
@@ -99,14 +99,13 @@ export default function RolePage({
         }
     };
 
-
     return (
         <>
             <Head title="User" />
-            <div className="p-4 md:p-6 flex flex-col gap-4 md:gap-6">
+            <div className="p-4 md:p-6 flex flex-col gap-4">
                 <header className="flex justify-between items-start md:items-center flex-col md:flex-row gap-4 md:gap-8">
                     <div className="flex flex-col gap-2">
-                        <div className="flex gap-2 items-center text-sm">
+                        <div className="flex gap-2 items-center text-sm text-primary font-semibold">
                             <ShieldCheck size="24" /> SISTEM AKSES TERPUSAT
                         </div>
                         <h1 className="font-semibold text-2xl md:text-3xl">
@@ -172,6 +171,7 @@ export default function RolePage({
                                     >
                                         {roles.data.map((role: Role) => (
                                             <FieldLabel
+                                                className="bg-background/50"
                                                 htmlFor={role.name}
                                                 key={role.id}
                                             >
@@ -218,19 +218,20 @@ export default function RolePage({
                             </CardContent>
                         </Card>
                     </div>
-                    <div className="col-span-2 flex flex-col gap-4 md:gap-6">
+                    <div className="col-span-2 flex flex-col gap-4">
                         {!!selected ? (
                             Object.entries(permissions).map(
                                 (permission: any) => (
                                     <Card
-                                        className="bg-muted/50"
+                                        className="bg-muted/50 p-0"
                                         key={permission[0]}
                                     >
-                                        <CardContent>
+                                        <CardContent className="p-0">
                                             <Collapsible>
                                                 <CollapsibleTrigger asChild>
                                                     <Button
-                                                        variant="outline"
+                                                        size="lg"
+                                                        variant="ghost"
                                                         className="group w-full text-lg capitalize"
                                                     >
                                                         <Shield /> Perizinan :{" "}
@@ -250,7 +251,7 @@ export default function RolePage({
                                                     </Button>
                                                 </CollapsibleTrigger>
                                                 <CollapsibleContent>
-                                                    <FieldGroup className="flex flex-col gap-2 mt-4">
+                                                    <FieldGroup className="flex flex-col gap-2 p-4">
                                                         {Object.entries(
                                                             permission[1],
                                                         ).map((p: any) => {
@@ -331,7 +332,7 @@ RolePage.layout = {
     breadcrumbs: [
         {
             title: "Role",
-            href: role(),
+            href: roleIndex(),
         },
     ],
 };

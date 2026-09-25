@@ -18,6 +18,13 @@ export const colSpan: Record<number, string> = {
     4: "md:col-span-4",
 };
 
+export const gridCols: Record<number, string> = {
+    1: "md:grid-cols-1",
+    2: "md:grid-cols-2",
+    3: "md:grid-cols-3",
+    4: "md:grid-cols-4",
+};
+
 export const colMapping: Record<number, string> = {
     1: "md:grid-cols-1",
     2: "md:grid-cols-2",

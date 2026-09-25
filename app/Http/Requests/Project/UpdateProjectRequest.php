@@ -1,18 +1,18 @@
 <?php
 
-namespace App\Http\Requests\User;
+namespace App\Http\Requests\Project;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateUserRequest extends FormRequest
+class UpdateProjectRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -23,13 +23,7 @@ class UpdateUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "name" => "required|string|max:255",
-            "email" =>
-            "required|email|max:255|unique:users,email," .
-                $this->route("user")?->id,
-            "role_id" => "required|integer",
-            "position" => "nullable|string|max:255",
-            "is_active" => "required|boolean",
+            //
         ];
     }
 }

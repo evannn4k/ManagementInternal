@@ -9,23 +9,20 @@ import { Filter } from "@/components/filter";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Link } from "@inertiajs/react";
-import { Role } from "@/types/data/role";
 
-export function UserToolbar({
+export function ProjectToolbar({
     url,
     updateQuery,
-    roles,
 }: {
     url: string;
     updateQuery: (params: Record<string, any>) => void;
-    roles: Role[];
 }) {
     const [search, setSearch] = useState("");
 
-    const roleFilter = {
-        placeholder: "Semua Role",
-        key: "role",
-        options: roles.map((role) => role.name),
+    const priorityFilter = {
+        placeholder: "Semua Prioritas",
+        key: "priority",
+        options: ["high", "medium", "low"],
     };
 
     const statusFilter = {
@@ -59,11 +56,11 @@ export function UserToolbar({
                         <div className="flex gap-2">
                             <Filter
                                 updateQuery={updateQuery}
-                                data={roleFilter}
+                                data={statusFilter}
                             />
                             <Filter
                                 updateQuery={updateQuery}
-                                data={statusFilter}
+                                data={priorityFilter}
                             />
                         </div>
                     </div>
@@ -72,9 +69,6 @@ export function UserToolbar({
                             <Link href={url}>
                                 <RotateCcw /> Reset
                             </Link>
-                        </Button>
-                        <Button variant="outline">
-                            <Download /> Export CSV
                         </Button>
                     </div>
                 </CardContent>

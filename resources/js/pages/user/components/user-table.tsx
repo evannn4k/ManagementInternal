@@ -63,6 +63,7 @@ export function UserTable({
                                     <TableCell>{user.name ?? "-"}</TableCell>
                                     <TableCell>{user.email ?? "-"}</TableCell>
                                     <TableCell>{user.role ?? "-"}</TableCell>
+                                    <TableCell>{user.position ?? "-"}</TableCell>
                                     <TableCell>
                                         <Badge variant="secondary">
                                             {user.is_active ? (

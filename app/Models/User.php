@@ -37,6 +37,7 @@ use Spatie\Permission\Traits\HasRoles;
         "password",
         "is_active",
         "last_login_at",
+        "position",
         "avatar",
     ]),
 ]
@@ -70,5 +71,15 @@ class User extends Authenticatable implements PasskeyUser
             "password" => "hashed",
             "two_factor_confirmed_at" => "datetime",
         ];
+    }
+
+    public function picProject()
+    {
+        return $this->hasMany(Project::class, "pic_id");
+    }
+
+    public function projects()
+    {
+        return $this->belongsToMany(Project::class, "project_team", "user_id", "project_id")->using(ProjectTeam::class);
     }
 }

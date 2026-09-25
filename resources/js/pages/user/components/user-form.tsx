@@ -39,6 +39,7 @@ export default function UserForm({
         role_id: "",
         password: "",
         password_confirmation: "",
+        position: "",
         is_active: "",
     });
 
@@ -49,6 +50,7 @@ export default function UserForm({
                 name: modal.data?.name ?? "",
                 email: modal.data?.email ?? "",
                 role_id: modal.data?.role_id ?? "",
+                position: modal.data?.position ?? "",
                 is_active: modal.data?.is_active ?? "",
             }));
         } else {
@@ -108,6 +110,9 @@ export default function UserForm({
             value: data.name,
             required: true,
             placeholder: "Masukan nama anda",
+            description:
+                "Gunakan nama resmi untuk kemudahan sinkronisasi kartu tanda pengenal internal.",
+            col: 2,
         },
         {
             label: "Email",
@@ -118,17 +123,6 @@ export default function UserForm({
             type: "email",
             required: true,
             placeholder: "Masukan email yang valid",
-        },
-        {
-            label: "Role",
-            name: "role_id",
-            onChange: handleChange,
-            error: errors.role_id,
-            value: data.role_id,
-            type: "select",
-            options: roleOption,
-            required: true,
-            placeholder: "Pilih role",
         },
         {
             label: "Status",
@@ -150,6 +144,25 @@ export default function UserForm({
                 },
             ],
             required: true,
+        },
+        {
+            label: "Role",
+            name: "role_id",
+            onChange: handleChange,
+            error: errors.role_id,
+            value: data.role_id,
+            type: "select",
+            options: roleOption,
+            required: true,
+            placeholder: "Pilih role",
+        },
+        {
+            label: "Posisi",
+            name: "position",
+            onChange: handleChange,
+            error: errors.position,
+            value: data.position,
+            placeholder: "Developer",
         },
     ];
 

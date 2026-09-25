@@ -5,34 +5,34 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { CardData } from "@/types/data/user";
-import { Lock, ShieldCheck, UserRoundCheck, UsersRound } from "lucide-react";
+import { CardData } from "@/types/data/project";
+import { CircleAlert, FolderCheck, FolderOpen, Zap } from "lucide-react";
 
-export function UserSectionCard({ cardData }: { cardData: CardData }) {
+export function ProjectSectionCard({ cardData }: { cardData: CardData }) {
     const cards = [
         {
-            label: "TOTAL AKUN",
-            value: cardData.total_account ?? 0,
-            description: "Total seluruh akun",
-            icon: <UsersRound />,
+            label: "TOTAL PROYEK",
+            value: cardData.total_project ?? 0,
+            description: "Total seluruh proyek",
+            icon: <FolderOpen />,
         },
         {
-            label: "PENGGUNA AKTIF",
-            value: cardData.total_active ?? 0,
-            description: "Total akun aktif",
-            icon: <UserRoundCheck />,
+            label: "SEDANG BERJALAN",
+            value: cardData.running_project ?? 0,
+            description: "Total proyek yang sedang berjalan",
+            icon: <Zap />,
         },
         {
-            label: "NONAKTIF",
-            value: cardData.total_nonactive ?? 0,
-            description: "Total akun tidak aktif",
-            icon: <Lock />,
+            label: "PERLU PERHATIAN",
+            value: cardData.at_risk_project ?? 0,
+            description: "Total proyek yang perlu perhatian",
+            icon: <CircleAlert />,
         },
         {
-            label: "ADMIN",
-            value: cardData.total_admin ?? 0,
-            description: "Total admin",
-            icon: <ShieldCheck />,
+            label: "PROYEK SELESAI",
+            value: cardData.completed_project ?? 0,
+            description: "Total proyek yang selesai",
+            icon: <FolderCheck />,
         },
     ];
 

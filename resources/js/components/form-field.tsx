@@ -1,4 +1,4 @@
-import { cn, colSpan } from "@/lib/utils";
+import { cn, colSpan, gridCols } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import {
     NativeSelect,
@@ -17,6 +17,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { FormFieldProps } from "@/types/form";
 
 export default function FormField({
+    icon: Icon,
     label,
     name,
     type = "text",
@@ -27,6 +28,8 @@ export default function FormField({
     required = false,
     placeholder = "",
     options = [],
+    min,
+    cols = 2,
     col = 1,
     step = 1,
     hidden = false,
@@ -55,6 +58,7 @@ export default function FormField({
                         value={value}
                         type={type}
                         disabled={disabled}
+                        min={min}
                     />
                 );
             case "number":
@@ -98,23 +102,26 @@ export default function FormField({
                         onChange={onChange}
                         value={value}
                         disabled={disabled}
+                        rows={3}
                     />
                 );
             case "radio-group":
                 const stringValue =
-                    value === true
-                        ? "1"
-                        : value === false
-                          ? "0"
-                          : value !== undefined && value !== null
-                            ? String(value)
-                            : "";
+                    value !== undefined && value !== null ? String(value) : "";
+
                 return (
                     <RadioGroup
                         aria-invalid={Boolean(error)}
                         id={name}
-                        onValueChange={(value) => {
-                            const parsedValue = value === "1" ? 1 : 0;
+                        onValueChange={(selectedVal) => {
+                            const matchedOption = options.find(
+                                (opt) => String(opt.value) === selectedVal,
+                            );
+
+                            const parsedValue = matchedOption
+                                ? matchedOption.value
+                                : selectedVal;
+
                             setData((data: any) => ({
                                 ...data,
                                 [name]: parsedValue,
@@ -124,7 +131,7 @@ export default function FormField({
                         disabled={disabled}
                         className={
                             orientation === "horizontal"
-                                ? "grid grid-cols-2 gap-4"
+                                ? `grid gap-4 ${gridCols[cols]}`
                                 : "flex flex-col gap-2"
                         }
                     >
@@ -134,6 +141,7 @@ export default function FormField({
                                 <FieldLabel
                                     htmlFor={optionValStr}
                                     key={optionValStr}
+                                    className={option.className}
                                 >
                                     <Field
                                         className="!m-0 !p-2"
@@ -169,7 +177,8 @@ export default function FormField({
             )}
             data-invalid={Boolean(error)}
         >
-            <FieldLabel htmlFor="name">
+            <FieldLabel htmlFor="name" className="flex items-center gap-2">
+                {Icon && <Icon className="size-4" />}
                 {label}
                 {required && <span className="text-destructive">*</span>}
             </FieldLabel>
