@@ -21,7 +21,7 @@ class Project extends Model
         return $this->belongsToMany(User::class, "project_team", "project_id", "user_id")->using(ProjectTeam::class);
     }
 
-    public function status()
+    public function statuses()
     {
         return $this->hasMany(Status::class);
     }

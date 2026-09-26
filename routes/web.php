@@ -4,7 +4,10 @@ use App\Http\Controllers\Project\CreateProjectController;
 use App\Http\Controllers\Project\DeleteProjectController;
 use App\Http\Controllers\Project\UpdateProjectController;
 use App\Http\Controllers\Project\ViewProjectController;
+use App\Http\Controllers\Role\CreateRoleController;
+use App\Http\Controllers\Role\DeleteRoleController;
 use App\Http\Controllers\Role\SyncRolePermissionController;
+use App\Http\Controllers\Role\UpdateRoleController;
 use App\Http\Controllers\Role\ViewRoleController;
 use App\Http\Controllers\User\CreateUserController;
 use App\Http\Controllers\User\DeleteUserController;
@@ -25,6 +28,11 @@ Route::middleware(["auth", "verified"])->group(function () {
                 "index",
             );
 
+            Route::post("/", CreateRoleController::class)->name("create");
+            Route::put("/{role}", UpdateRoleController::class)->name("update");
+            Route::delete("/{role}", DeleteRoleController::class)->name(
+                "delete",
+            );
             Route::put("/sync/permission/{role}", SyncRolePermissionController::class)->name(
                 "sync",
             );

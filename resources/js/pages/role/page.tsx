@@ -2,10 +2,13 @@ import { Button } from "@/components/ui/button";
 import {
     ChevronDownIcon,
     CircleCheck,
+    MoreVertical,
     Plus,
     SearchIcon,
     Shield,
     ShieldCheck,
+    SquarePen,
+    Trash2,
     UsersRound,
 } from "lucide-react";
 import { index as roleIndex } from "@/routes/role";
@@ -43,7 +46,18 @@ import syncRole from "@/actions/App/Http/Controllers/Role/SyncRolePermissionCont
 import { toast } from "sonner";
 import { Spinner } from "@/components/ui/spinner";
 import { SelectScopePermission } from "./components/select-scope-permission";
-import { SelectPermissionToggle } from "./components/select-scope-permission-toggle";
+import { SelectPermissionToggle } from "./components/select-permission-toggle";
+import { RoleForm } from "./components/role-form";
+import { useModal } from "@/hooks/use-modal";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { DeleteAlert } from "@/components/delete-alert";
+import deleteRole from "@/actions/App/Http/Controllers/Role/DeleteRoleController";
 
 export default function RolePage({
     roles,
@@ -55,6 +69,10 @@ export default function RolePage({
     const [selected, setSelected] = useState<number[] | undefined>();
     const [roleId, setRoleId] = useState<number>();
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const modal = useModal();
+
+    console.log(roleId);
+    console.log(selected);
 
     const handleSyncPermission = async (): Promise<void> => {
         if (!roleId) return;
@@ -67,7 +85,8 @@ export default function RolePage({
             {
                 onStart: () => setIsLoading(true),
                 onFinish: () => setIsLoading(false),
-                onError: () => {
+                onError: (e) => {
+                    console.log(e);
                     toast.error("Gagal merubah perizinan");
                 },
             },
@@ -92,16 +111,27 @@ export default function RolePage({
 
         const withoutGroup = selected.filter((id) => !scopeIds.includes(id));
 
-        if (value !== undefined) {
+        if (value !== undefined && value > 0) {
             setSelected([...withoutGroup, value]);
         } else {
             setSelected(withoutGroup);
         }
     };
 
+    const handleDelete = (id: number) => {
+        router.delete(deleteRole({ role: id }));
+    };
+
     return (
         <>
             <Head title="User" />
+            <RoleForm modal={modal} />
+            <DeleteAlert
+                modal={modal}
+                title="Hapus role"
+                description="Data role yang telah dihapus dapat dikembalikan."
+                handleDelete={handleDelete}
+            />
             <div className="p-4 md:p-6 flex flex-col gap-4">
                 <header className="flex justify-between items-start md:items-center flex-col md:flex-row gap-4 md:gap-8">
                     <div className="flex flex-col gap-2">
@@ -133,7 +163,10 @@ export default function RolePage({
                                     <Shield /> Daftar Peran
                                 </CardTitle>
                                 <CardAction>
-                                    <Button size="sm">
+                                    <Button
+                                        size="sm"
+                                        onClick={() => modal.openCreate()}
+                                    >
                                         <Plus /> Tambah
                                     </Button>
                                 </CardAction>
@@ -175,7 +208,50 @@ export default function RolePage({
                                                 htmlFor={role.name}
                                                 key={role.id}
                                             >
-                                                <Field orientation="horizontal">
+                                                <Field
+                                                    className="relative"
+                                                    orientation="horizontal"
+                                                >
+                                                    <DropdownMenu>
+                                                        <DropdownMenuTrigger
+                                                            asChild
+                                                        >
+                                                            <Button
+                                                                variant="ghost"
+                                                                size="icon"
+                                                                className="size-8 absolute top-0 right-0 m-2"
+                                                            >
+                                                                <MoreVertical className="size-4" />
+                                                                <span className="sr-only">
+                                                                    Open menu
+                                                                </span>
+                                                            </Button>
+                                                        </DropdownMenuTrigger>
+                                                        <DropdownMenuContent align="end">
+                                                            <DropdownMenuItem
+                                                                onClick={() =>
+                                                                    modal.openEdit(
+                                                                        role,
+                                                                    )
+                                                                }
+                                                            >
+                                                                <SquarePen />
+                                                                Edit
+                                                            </DropdownMenuItem>
+                                                            <DropdownMenuSeparator />
+                                                            <DropdownMenuItem
+                                                                onClick={() =>
+                                                                    modal.openDelete(
+                                                                        role.id,
+                                                                    )
+                                                                }
+                                                                variant="destructive"
+                                                            >
+                                                                <Trash2 />
+                                                                Delete
+                                                            </DropdownMenuItem>
+                                                        </DropdownMenuContent>
+                                                    </DropdownMenu>
                                                     <FieldContent>
                                                         <FieldTitle className="capitalize mb-2">
                                                             {role.name}

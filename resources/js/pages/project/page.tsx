@@ -3,7 +3,7 @@ import { Download, Plus, ShieldCheck } from "lucide-react";
 import { ProjectSectionCard } from "./components/project-section-card";
 import { ProjectToolbar } from "./components/project-toolbar";
 import { LaravelPagination } from "@/types/paginate";
-import { CardData } from "@/types/data/project";
+import { CardData, ProjectGridType } from "@/types/data/project";
 import { PaginationPage } from "@/components/pagination-page";
 import { index as userIndex } from "@/actions/App/Http/Controllers/User/ViewUserController";
 import userDelete from "@/actions/App/Http/Controllers/User/DeleteUserController";
@@ -21,16 +21,14 @@ import ProjectForm from "./components/project-form";
 import { UserWithRole } from "@/types/data/user";
 
 export default function ProjectPage({
-    // data,
+    data,
     cardData,
     users,
 }: {
-    // data: LaravelPagination<UserTableType>;
+    data: LaravelPagination<ProjectGridType>;
     cardData: CardData;
     users: UserWithRole[];
 }) {
-    console.log(users);
-
     const [query, setQuery] = useState<{
         search: string;
         status: string;
@@ -112,7 +110,7 @@ export default function ProjectPage({
                 </header>
                 <ProjectSectionCard cardData={cardData} />
                 <ProjectToolbar url={url} updateQuery={updateQuery} />
-                <ProjectGrid />
+                <ProjectGrid projects={data.data} />
                 {/* <PaginationPage
                     updateQuery={updateQuery}
                     links={data.links}

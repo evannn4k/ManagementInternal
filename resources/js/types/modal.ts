@@ -4,6 +4,6 @@ export interface UseModalReturn {
     openModal: (type: string, data?: any | null) => void;
     closeModal: () => void;
     openCreate: () => void;
-    openEdit: (data: T) => void;
-    openDelete: (data: T) => void;
+    openEdit: (data: any) => void;
+    openDelete: (data: any) => void;
 }

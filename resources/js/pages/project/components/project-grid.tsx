@@ -27,12 +27,15 @@ import {
     AvatarGroupCount,
     AvatarImage,
 } from "@/components/ui/avatar";
+import { ProjectGridType } from "@/types/data/project";
 
-export function ProjectGrid() {
+export function ProjectGrid({ projects }: { projects: ProjectGridType[] }) {
+    console.log(projects);
+
     return (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {Object.values(Array.from({ length: 8 })).map((a, i) => (
-                <Link href={"/dashboard"} key={i}>
+            {projects.map((project, i) => (
+                <Link href={"/dashboard"} key={project.id}>
                     <Card className="bg-muted/50 hover:bg-muted/70 transition-all">
                         <CardHeader>
                             <div className="flex flex-row items-center space-y-0 gap-2">
@@ -40,29 +43,22 @@ export function ProjectGrid() {
                                     <FolderGit2 />
                                 </div>
                                 <div className="flex flex-col gap-0">
-                                    <CardTitle>Project Title</CardTitle>
+                                    <CardTitle>{project.name}</CardTitle>
                                     <CardDescription className="text-xs text-muted-foreground">
-                                        Pemilik : SUPER ADMIN
+                                        Pemilik : {project.pic.name}
                                     </CardDescription>
                                 </div>
                             </div>
                             <div className="flex items-center gap-1 py-1">
                                 <Badge
-                                    className="rounded-full"
+                                    className="rounded-full capitalize"
                                     variant="outline"
                                 >
-                                    Running
-                                </Badge>
-                                <Badge
-                                    className="rounded-full"
-                                    variant="outline"
-                                >
-                                    Mobile App
+                                    {project.priority}
                                 </Badge>
                             </div>
                             <CardDescription>
-                                Lorem ipsum dolor sit amet consectetur
-                                adipisicing elit. Quo nulla ipsam...
+                                {project.description}
                             </CardDescription>
                             <CardAction>
                                 <DropdownMenu>
@@ -130,8 +126,7 @@ export function ProjectGrid() {
                                     <AvatarGroupCount>+3</AvatarGroupCount>
                                 </AvatarGroup>
                                 <div className="flex gap-1 items-center text-xs text-muted-foreground">
-                                    <CalendarDays className="size-4" /> 18 Mei
-                                    2024
+                                    <CalendarDays className="size-4" /> {project.start_date}
                                 </div>
                             </div>
                         </CardContent>
