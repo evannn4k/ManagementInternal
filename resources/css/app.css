@@ -148,3 +148,19 @@
         @apply bg-background text-foreground;
     }
 }
+
+.ProseMirror h1 {
+  font-size: 1.5rem !important;
+  font-weight: 700 !important;
+}
+
+.ProseMirror h2 {
+  font-size: 1.25rem !important;
+  font-weight: 600 !important;
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.ProseMirror p {
+  margin-bottom: 1rem;
+}

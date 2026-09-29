@@ -1,29 +1,18 @@
 import {
     AlertDialog,
-    AlertDialogAction,
     AlertDialogCancel,
     AlertDialogContent,
     AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import {
-    Field,
-    FieldContent,
-    FieldDescription,
-    FieldGroup,
-    FieldLabel,
-    FieldSeparator,
-    FieldSet,
-    FieldTitle,
-} from "@/components/ui/field";
+import { FieldDescription, FieldSet } from "@/components/ui/field";
 import {
     ChartNoAxesCombined,
     CodeXml,
     GitBranch,
     Plus,
     Save,
-    SearchIcon,
     Trash,
     UserRoundPlus,
 } from "lucide-react";
@@ -33,8 +22,6 @@ import FormField from "@/components/form-field";
 import FormSection from "@/components/form-section";
 import React, { useEffect, useState } from "react";
 import { useForm } from "@inertiajs/react";
-import { Role } from "@/types/data/role";
-import { FormFieldProps } from "@/types/form";
 import { Button } from "@/components/ui/button";
 import {
     Card,
@@ -45,25 +32,20 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import { UserWithRole } from "@/types/data/user";
-import {
-    Table,
-    TableBody,
-    TableCaption,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table";
 import { SelectTeam } from "./select-team";
 import { Badge } from "@/components/ui/badge";
 import {
     InputGroup,
     InputGroupAddon,
-    InputGroupButton,
     InputGroupInput,
-    InputGroupText,
-    InputGroupTextarea,
 } from "@/components/ui/input-group";
+import {
+    Item,
+    ItemActions,
+    ItemContent,
+    ItemDescription,
+    ItemTitle,
+} from "@/components/ui/item";
 
 export default function ProjectForm({
     modal,
@@ -80,34 +62,40 @@ export default function ProjectForm({
 
     const defaultStatus = ["draft", "in_progress", "review", "done"];
 
-    const { post, put, errors, data, setData, processing, reset } = useForm({
-        name: "",
-        pic_id: "",
-        start_date: "",
-        end_date: "",
-        description: "",
-        priority: "",
-        repo_url: "",
-        branch: "",
-    });
+    const { post, put, errors, data, setData, processing, reset, clearErrors } =
+        useForm({
+            name: "",
+            pic_id: "",
+            start_date: "",
+            end_date: "",
+            description: "",
+            priority: "",
+            repo_url: "",
+            branch: "",
+        });
 
     useEffect(() => {
         if (isOpenModal) {
             setData((prevData) => ({
                 ...prevData,
-                name: modal.data?.name ?? "",
-                pic_id: modal.data?.name ?? "",
-                start_date: modal.data?.name ?? "",
-                end_date: modal.data?.name ?? "",
-                description: modal.data?.name ?? "",
-                priority: modal.data?.name ?? "",
-                repo_url: modal.data?.name ?? "",
-                branch: modal.data?.name ?? "",
+                name: isEdit ? modal.data.name : "",
+                pic_id: isEdit ? modal.data.pic_id : "",
+                start_date: isEdit ? modal.data.start_date : "",
+                end_date: isEdit ? modal.data.end_date : "",
+                description: isEdit ? modal.data.description : "",
+                priority: isEdit ? modal.data.priority : "",
+                repo_url: isEdit ? modal.data.repo_url : "",
+                branch: isEdit ? modal.data.branch : "",
             }));
+            setStatus(modal.data?.statuses);
+            setTeam(modal.data?.teams);
         } else {
             reset();
+            clearErrors();
+            setStatus([]);
+            setTeam([]);
         }
-    }, [isOpenModal]);
+    }, [isOpenModal, modal.data]);
 
     const handleChange = (
         e: React.ChangeEvent<
@@ -320,13 +308,13 @@ export default function ProjectForm({
                             </FormSection>
                         </FieldSet>
                         <div className="col-span-1 md:col-span-2 flex flex-col gap-4">
-                            <Card>
+                            <Card className="bg-muted/50">
                                 <CardHeader>
                                     <CardAction>
                                         <Button
                                             type="button"
                                             size="xs"
-                                            variant="default"
+                                            variant="outline"
                                             onClick={() =>
                                                 setStatus(defaultStatus)
                                             }
@@ -346,7 +334,7 @@ export default function ProjectForm({
                                     </CardDescription>
                                 </CardHeader>
                                 <CardContent>
-                                    <InputGroup>
+                                    <InputGroup className="bg-background">
                                         <InputGroupInput
                                             value={inputStatus}
                                             onChange={(e) => {
@@ -367,37 +355,43 @@ export default function ProjectForm({
                                             <Plus />
                                         </InputGroupAddon>
                                     </InputGroup>
+
                                     {status && status?.length > 0 ? (
                                         <div className="pt-2">
                                             <CardDescription className="ps-2 py-2">
-                                                Daftar status :{" "}
+                                                Status yang ditetapkan :{" "}
                                             </CardDescription>
-                                            <Table>
-                                                <TableBody>
-                                                    {status.map((s) => (
-                                                        <TableRow key={s}>
-                                                            <TableCell>
+                                            <div className="flex w-full max-w-md flex-col gap-2">
+                                                {status.map((s) => (
+                                                    <Item
+                                                        key={s}
+                                                        variant="outline"
+                                                        size="xs"
+                                                        className="bg-background"
+                                                    >
+                                                        <ItemContent>
+                                                            <ItemTitle>
                                                                 {s}
-                                                            </TableCell>
-                                                            <TableCell className="text-end cursor-pointer">
-                                                                <Button
-                                                                    type="button"
-                                                                    variant="destructive"
-                                                                    size="icon-xs"
-                                                                    className="cursor-pointer"
-                                                                    onClick={() =>
-                                                                        handleDeleteStatus(
-                                                                            s,
-                                                                        )
-                                                                    }
-                                                                >
-                                                                    <Trash />
-                                                                </Button>
-                                                            </TableCell>
-                                                        </TableRow>
-                                                    ))}
-                                                </TableBody>
-                                            </Table>
+                                                            </ItemTitle>
+                                                        </ItemContent>
+                                                        <ItemActions>
+                                                            <Button
+                                                                type="button"
+                                                                variant="destructive"
+                                                                size="icon-xs"
+                                                                className="cursor-pointer"
+                                                                onClick={() =>
+                                                                    handleDeleteStatus(
+                                                                        s,
+                                                                    )
+                                                                }
+                                                            >
+                                                                <Trash />
+                                                            </Button>
+                                                        </ItemActions>
+                                                    </Item>
+                                                ))}
+                                            </div>
                                         </div>
                                     ) : (
                                         <CardDescription className="text-center pt-4">
@@ -406,7 +400,7 @@ export default function ProjectForm({
                                     )}
                                 </CardContent>
                             </Card>
-                            <Card>
+                            <Card className="bg-muted/50">
                                 <CardHeader>
                                     <CardAction>
                                         <Badge
@@ -425,50 +419,49 @@ export default function ProjectForm({
                                 </CardHeader>
                                 <CardContent>
                                     <SelectTeam
-                                        team={team}
                                         setTeam={setTeam}
                                         users={users}
-                                        className="w-full"
+                                        className="w-full bg-background"
                                     />
                                     {team && team?.length > 0 ? (
                                         <div className="pt-2">
                                             <CardDescription className="ps-2 py-2">
-                                                Daftar anggota :{" "}
+                                                Anggota terpilih :{" "}
                                             </CardDescription>
-                                            <Table>
-                                                <TableBody>
-                                                    {team &&
-                                                        team.map(
-                                                            (
-                                                                t: UserWithRole,
-                                                            ) => (
-                                                                <TableRow
-                                                                    key={t.id}
-                                                                >
-                                                                    <TableCell>
-                                                                        {t.name}
-                                                                    </TableCell>
-                                                                    <TableCell
-                                                                        className="text-end cursor-pointer"
-                                                                        onClick={() =>
-                                                                            handleDeleteTeam(
-                                                                                t,
-                                                                            )
-                                                                        }
-                                                                    >
-                                                                        <Button
-                                                                            type="button"
-                                                                            variant="destructive"
-                                                                            size="icon-xs"
-                                                                        >
-                                                                            <Trash />
-                                                                        </Button>
-                                                                    </TableCell>
-                                                                </TableRow>
-                                                            ),
-                                                        )}
-                                                </TableBody>
-                                            </Table>
+                                            <div className="flex w-full max-w-md flex-col gap-2">
+                                                {team.map((t: UserWithRole) => (
+                                                    <Item
+                                                        key={t.id}
+                                                        variant="outline"
+                                                        size="xs"
+                                                        className="bg-background"
+                                                    >
+                                                        <ItemContent>
+                                                            <ItemTitle>
+                                                                {t.name}
+                                                            </ItemTitle>
+                                                            <ItemDescription>
+                                                                {t.position}
+                                                            </ItemDescription>
+                                                        </ItemContent>
+                                                        <ItemActions>
+                                                            <Button
+                                                                type="button"
+                                                                variant="destructive"
+                                                                size="icon-xs"
+                                                                className="cursor-pointer"
+                                                                onClick={() =>
+                                                                    handleDeleteTeam(
+                                                                        t,
+                                                                    )
+                                                                }
+                                                            >
+                                                                <Trash />
+                                                            </Button>
+                                                        </ItemActions>
+                                                    </Item>
+                                                ))}
+                                            </div>
                                         </div>
                                     ) : (
                                         <CardDescription className="text-center pt-4">

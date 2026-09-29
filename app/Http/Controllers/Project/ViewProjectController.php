@@ -13,12 +13,22 @@ class ViewProjectController extends Controller
 {
     function index(Request $request)
     {
-        $data = ProjectTableResource::collection(Project::with("teams:id,name", "pic:id,name")->paginate(10));
+        $data = ProjectTableResource::collection(Project::with("teams:id,name,position", "pic:id,name", "createdBy:id,name")->paginate(10));
         $users =  User::select("id", "name", "position")->with('roles:id,name')->where("is_active", true)->get();
 
         return Inertia::render(
             "project/page",
             compact("data", "users"),
+        );
+    }
+
+    public function detail(Project $project)
+    {
+        $project->load("pic:id,name,position", "pic.roles:id,name", "teams", "statuses", "createdBy");
+
+        return Inertia::render(
+            "project/detail",
+            compact("project"),
         );
     }
 }

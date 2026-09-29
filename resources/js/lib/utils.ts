@@ -11,6 +11,25 @@ export function toUrl(url: NonNullable<InertiaLinkProps["href"]>): string {
     return typeof url === "string" ? url : url.url;
 }
 
+export function formatDate(date?: string) {
+    if (!date) return "-";
+    return new Date(date).toLocaleDateString("id-ID", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+    });
+}
+
+export function getInitials(name?: string) {
+    if (!name) return "?";
+    return name
+        .split(" ")
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((word) => word[0].toUpperCase())
+        .join("");
+}
+
 export const colSpan: Record<number, string> = {
     1: "md:col-span-1",
     2: "md:col-span-2",

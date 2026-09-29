@@ -30,8 +30,8 @@ class CreateProjectController extends Controller
 
                 $project = Project::create($credentials);
 
-                foreach ($statuses as $status) {
-                    Status::create(['project_id' => $project->id, "name" => $status]);
+                foreach ($statuses as $index => $status) {
+                    Status::create(['project_id' => $project->id, "name" => $status, "position" => $index]);
                 }
 
                 $project->teams()->sync($teams);
@@ -39,7 +39,7 @@ class CreateProjectController extends Controller
 
             return redirect()
                 ->back()
-                ->with("success", "Berhasil menambah user baru.");
+                ->with("success", "Berhasil menambah data proyek baru.");
         } catch (\Exception $e) {
             Log::error("Error : " . $e->getMessage());
 

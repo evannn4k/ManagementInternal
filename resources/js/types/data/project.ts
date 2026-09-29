@@ -8,11 +8,36 @@ export type CardData = {
 };
 
 export type ProjectGridType = {
-    id: number;
+    id: string;
     name: string;
     description?: string;
     priority: string;
+    createdBy: UserWithRole;
     pic: UserWithRole;
     teams?: UserWithRole[];
     start_date: string;
+    status: string;
+};
+
+export type ProjectType = {
+    id: string;
+    name: string;
+    description?: string;
+    start_date: string;
+    end_date: string;
+    priority: string;
+    repo_url: string;
+    branch: string;
+    status: string;
+    createdBy: UserWithRole;
+    pic: UserWithRole;
+    teams?: UserWithRole[];
+    statuses: ProjectStatus[];
+};
+
+export type ProjectStatus = {
+    id: string;
+    project_id: string;
+    name: string;
+    position: number;
 };

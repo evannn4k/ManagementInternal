@@ -16,6 +16,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignUuid("project_id")->constrained()->cascadeOnDelete();
             $table->string("name");
+            $table->integer("position");
             $table->timestamps();
         });
     }

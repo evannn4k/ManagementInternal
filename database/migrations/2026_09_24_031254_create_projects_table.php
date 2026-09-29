@@ -21,6 +21,7 @@ return new class extends Migration
             $table->date('start_date');
             $table->date('end_date');
             $table->enum('priority', ["high", "medium", "low"]);
+            $table->enum('status', ["running", "done", "hold", "canceled", "archived"])->default("running");
             $table->string('repo_url')->nullable();
             $table->string('branch')->default("main")->nullable();
             $table->timestamps();

@@ -9,6 +9,7 @@ use App\Http\Controllers\Role\DeleteRoleController;
 use App\Http\Controllers\Role\SyncRolePermissionController;
 use App\Http\Controllers\Role\UpdateRoleController;
 use App\Http\Controllers\Role\ViewRoleController;
+use App\Http\Controllers\Task\CreateTaskController;
 use App\Http\Controllers\User\CreateUserController;
 use App\Http\Controllers\User\DeleteUserController;
 use App\Http\Controllers\User\UpdateUserController;
@@ -60,10 +61,32 @@ Route::middleware(["auth", "verified"])->group(function () {
             )->middleware("permission:project.view.own|project.view.team|project.view.all");
             Route::post("/", CreateProjectController::class)->name("create")->middleware("can:project.create");
 
-            Route::put("/{project}", UpdateProjectController::class)->name("update")->middleware("can:project.update");
+            Route::get("/{project}", [ViewProjectController::class, "detail"])->name(
+                "detail",
+            )->middleware("permission:project.view.own|project.view.team|project.view.all");
+            Route::put("/{project}", UpdateProjectController::class)->name("update")->middleware("can:project.edit");
             Route::delete("/{project}", DeleteProjectController::class)->name(
                 "delete",
             )->middleware("can:project.delete");
+        });
+
+    Route::prefix("/task")
+        ->name("task.")
+        ->group(function () {
+
+            // Route::get("/", [ViewProjectController::class, "index"])->name(
+            //     "index",
+            // )->middleware("permission:project.view.own|project.view.team|project.view.all");
+
+            Route::post("/", CreateTaskController::class)->name("create");
+
+            // Route::get("/{project}", [ViewProjectController::class, "detail"])->name(
+            //     "detail",
+            // )->middleware("permission:project.view.own|project.view.team|project.view.all");
+            // Route::put("/{project}", UpdateProjectController::class)->name("update")->middleware("can:project.edit");
+            // Route::delete("/{project}", DeleteProjectController::class)->name(
+            //     "delete",
+            // )->middleware("can:project.delete");
         });
 });
 

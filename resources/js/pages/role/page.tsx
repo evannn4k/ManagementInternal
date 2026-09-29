@@ -124,7 +124,7 @@ export default function RolePage({
 
     return (
         <>
-            <Head title="User" />
+            <Head title="Role" />
             <RoleForm modal={modal} />
             <DeleteAlert
                 modal={modal}

@@ -1,20 +1,13 @@
 import { Button } from "@/components/ui/button";
-import { Download, Plus, ShieldCheck } from "lucide-react";
+import { Download, Plus, View } from "lucide-react";
 import { ProjectSectionCard } from "./components/project-section-card";
 import { ProjectToolbar } from "./components/project-toolbar";
 import { LaravelPagination } from "@/types/paginate";
 import { CardData, ProjectGridType } from "@/types/data/project";
 import { PaginationPage } from "@/components/pagination-page";
-import { index as userIndex } from "@/actions/App/Http/Controllers/User/ViewUserController";
-import userDelete from "@/actions/App/Http/Controllers/User/DeleteUserController";
 import { useState } from "react";
 import { Head, router } from "@inertiajs/react";
-import { index as user } from "@/routes/user";
 import { useModal } from "@/hooks/use-modal";
-import UserForm from "./components/project-form";
-import { Role } from "@/types/data/role";
-import { DeleteAlert } from "@/components/delete-alert";
-import { can } from "@/lib/middleware";
 import { index as projectIndex } from "@/routes/project";
 import { ProjectGrid } from "./components/project-grid";
 import ProjectForm from "./components/project-form";
@@ -54,25 +47,16 @@ export default function ProjectPage({
         );
     };
 
-    // const handleDelete = (id: number) => {
-    //     router.delete(userDelete({ id: id }));
-    // };
-
-    // const tableHead = [
-    //     { label: "name" },
-    //     { label: "email" },
-    //     { label: "role" },
-    //     { label: "status" },
-    //     { label: "terakhir login" },
-    //     { label: "aksi", className: "text-end" },
-    // ];
-
     cardData = {
         total_project: 100,
         running_project: 80,
         at_risk_project: 20,
         completed_project: 10,
     };
+
+    // const handleDelete = (id: number) => {
+    //     router.delete(userDelete({ id: id }));
+    // };
 
     return (
         <>
@@ -110,12 +94,12 @@ export default function ProjectPage({
                 </header>
                 <ProjectSectionCard cardData={cardData} />
                 <ProjectToolbar url={url} updateQuery={updateQuery} />
-                <ProjectGrid projects={data.data} />
-                {/* <PaginationPage
+                <ProjectGrid modal={modal} projects={data.data} />
+                <PaginationPage
                     updateQuery={updateQuery}
                     links={data.links}
                     meta={data.meta}
-                /> */}
+                />
             </div>
         </>
     );

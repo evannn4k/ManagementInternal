@@ -15,6 +15,12 @@ import {
 } from "@/components/ui/field";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { FormFieldProps } from "@/types/form";
+import { EditorContent, useEditor } from "@tiptap/react";
+import { MenuBar } from "./menu-bar";
+import TextAlign from "@tiptap/extension-text-align";
+import StarterKit from "@tiptap/starter-kit";
+import Highlight from "@tiptap/extension-highlight";
+import Heading from "@tiptap/extension-heading";
 
 export default function FormField({
     icon: Icon,
@@ -163,6 +169,46 @@ export default function FormField({
                         })}
                     </RadioGroup>
                 );
+            case "rich-editor":
+                const editor = useEditor({
+                    extensions: [
+                        StarterKit.configure({
+                            bulletList: {
+                                HTMLAttributes: {
+                                    class: "list-disc ml-4",
+                                },
+                            },
+                            orderedList: {
+                                HTMLAttributes: {
+                                    class: "list-decimal ml-4",
+                                },
+                            },
+                        }),
+                        TextAlign.configure({
+                            types: ["heading", "paragraph"],
+                        }),
+                        Highlight,
+                    ],
+                    content: "",
+                    editorProps: {
+                        attributes: {
+                            class: "min-h-34 w-full rounded-md border border-input bg-transparent px-3 py-2 shadow-xs transition-[color,box-shadow] outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 md:text-sm dark:bg-input/30 dark:aria-invalid:ring-destructive/40",
+                        },
+                    },
+                    onUpdate: ({ editor }) => {
+                        setData((prev: {}) => ({
+                            ...prev,
+                            description: editor.getHTML(),
+                        }));
+                    },
+                });
+
+                return (
+                    <div className="flex flex-col gap-2">
+                        <MenuBar editor={editor} />
+                        <EditorContent editor={editor} />
+                    </div>
+                );
             default:
                 return null;
         }
@@ -182,6 +228,7 @@ export default function FormField({
                 {label}
                 {required && <span className="text-destructive">*</span>}
             </FieldLabel>
+
             {renderInput()}
 
             {error ? (

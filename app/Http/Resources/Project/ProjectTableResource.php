@@ -18,10 +18,18 @@ class ProjectTableResource extends JsonResource
             "id" => $this->id,
             "name" => $this->name,
             "description" => $this->description,
+            "pic_id" => $this->pic_id,
+            "created_by" => $this->created_by,
             "start_date" => $this->start_date,
+            "end_date" => $this->end_date,
             "priority" => $this->priority,
+            "repo_url" => $this->repo_url,
+            "branch" => $this->branch,
             "teams" => $this->teams,
             "pic" => $this->pic,
+            "createdBy" => $this->createdBy,
+            "status" => $this->status,
+            "statuses" => $this->statuses->pluck("name"),
         ];
     }
 }

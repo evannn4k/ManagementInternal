@@ -73,6 +73,11 @@ class User extends Authenticatable implements PasskeyUser
         ];
     }
 
+    public function createProject()
+    {
+        return $this->hasMany(Project::class, "created_by");
+    }
+
     public function picProject()
     {
         return $this->hasMany(Project::class, "pic_id");
@@ -81,5 +86,10 @@ class User extends Authenticatable implements PasskeyUser
     public function projects()
     {
         return $this->belongsToMany(Project::class, "project_team", "user_id", "project_id")->using(ProjectTeam::class);
+    }
+
+    public function tasks()
+    {
+        return $this->belongsToMany(Task::class, "assigned_task", "user_id", "task_id")->using(AssignedTask::class);
     }
 }

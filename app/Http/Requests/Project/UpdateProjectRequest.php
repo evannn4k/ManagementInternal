@@ -12,7 +12,7 @@ class UpdateProjectRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,7 +23,18 @@ class UpdateProjectRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            "name" => "required|max:255|string",
+            "pic_id" => "required|integer|exists:users,id",
+            "start_date" => "required|date",
+            "end_date" => "required|date|after_or_equal:start_date",
+            "description" => "required|string",
+            "priority" => "required|string|in:low,medium,high",
+            "repo_url" => "required|string|max:255",
+            "branch" => "required|string|max:255",
+            "status" => "required|array",
+            "status.*" => "required|string|max:255",
+            "teams" => "nullable|array",
+            "teams.*" => "nullable|integer|exists:users,id"
         ];
     }
 }

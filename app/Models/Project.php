@@ -25,4 +25,9 @@ class Project extends Model
     {
         return $this->hasMany(Status::class);
     }
+
+    public function createdBy()
+    {
+        return $this->belongsTo(User::class, "created_by");
+    }
 }

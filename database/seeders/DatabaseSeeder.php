@@ -59,6 +59,10 @@ class DatabaseSeeder extends Seeder
                 "name" => "project.create",
                 "description" => "Membuat inisiasi proyek baru",
             ],
+            [
+                "name" => "project.edit",
+                "description" => "Mengedit data proyek",
+            ],
         ];
 
         foreach ($permissions as $permission) {
@@ -77,14 +81,14 @@ class DatabaseSeeder extends Seeder
 
         $role->givePermissionTo(Permission::all());
 
-        // $admin = User::firstOrCreate([
-        //     "name" => "SUPER ADMIN",
-        //     "email" => "yahyaevan8@gmail.com",
-        //     "password" => Hash::make("123123123"),
-        //     "email_verified_at" => now(),
-        //     "is_active" => true,
-        // ]);
+        $admin = User::firstOrCreate([
+            "name" => "SUPER ADMIN",
+            "email" => "yahyaevan8@gmail.com",
+            "password" => Hash::make("123123123"),
+            "email_verified_at" => now(),
+            "is_active" => true,
+        ]);
         
-        // $admin->assignRole("admin");
+        $admin->assignRole("admin");
     }
 }
