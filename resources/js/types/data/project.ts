@@ -1,3 +1,4 @@
+import { TaskType } from "./task";
 import { UserWithRole } from "./user";
 
 export type CardData = {
@@ -32,12 +33,13 @@ export type ProjectType = {
     createdBy: UserWithRole;
     pic: UserWithRole;
     teams?: UserWithRole[];
-    statuses: ProjectStatus[];
+    statuses: ProjectStatusType[];
 };
 
-export type ProjectStatus = {
+export type ProjectStatusType = {
     id: string;
     project_id: string;
     name: string;
     position: number;
+    tasks: TaskType[]
 };

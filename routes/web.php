@@ -9,6 +9,7 @@ use App\Http\Controllers\Role\DeleteRoleController;
 use App\Http\Controllers\Role\SyncRolePermissionController;
 use App\Http\Controllers\Role\UpdateRoleController;
 use App\Http\Controllers\Role\ViewRoleController;
+use App\Http\Controllers\Task\ChangeStatusTaskController;
 use App\Http\Controllers\Task\CreateTaskController;
 use App\Http\Controllers\User\CreateUserController;
 use App\Http\Controllers\User\DeleteUserController;
@@ -79,6 +80,7 @@ Route::middleware(["auth", "verified"])->group(function () {
             // )->middleware("permission:project.view.own|project.view.team|project.view.all");
 
             Route::post("/", CreateTaskController::class)->name("create");
+            Route::put("/change-status", ChangeStatusTaskController::class)->name("change.status");
 
             // Route::get("/{project}", [ViewProjectController::class, "detail"])->name(
             //     "detail",

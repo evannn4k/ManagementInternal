@@ -71,9 +71,6 @@ export default function RolePage({
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const modal = useModal();
 
-    console.log(roleId);
-    console.log(selected);
-
     const handleSyncPermission = async (): Promise<void> => {
         if (!roleId) return;
 

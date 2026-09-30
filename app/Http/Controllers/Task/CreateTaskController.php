@@ -21,11 +21,14 @@ class CreateTaskController extends Controller
 
                 unset($credentials['assigned']);
 
-                $filename = FileService::save("task/", $request->file("file"));
+                if ($credentials['file']) {
 
-                $credentials['file'] = $filename;
+                    $filename = FileService::save("task/", $request->file("file"));
 
-                $credentials['label'] = json_encode($credentials['label']);
+                    $credentials['file'] = $filename;
+                } else {
+                    unset($credentials['file']);
+                }
 
                 $task = Task::create($credentials);
 

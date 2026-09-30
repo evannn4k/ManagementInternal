@@ -26,7 +26,7 @@ import { dashboard } from "@/routes";
 import type { NavItem } from "@/types";
 import { index as userIndex } from "@/routes/user";
 import { index as roleIndex } from "@/routes/role";
-import {index as projectIndex} from "@/routes/project";
+import { index as projectIndex } from "@/routes/project";
 
 const navigationNavItems: NavItem[] = [
     {

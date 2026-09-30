@@ -1,179 +1,149 @@
 import {
     Card,
+    CardAction,
     CardContent,
-    CardDescription,
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import {
-    Item,
-    ItemContent,
-    ItemDescription,
-    ItemHeader,
-    ItemTitle,
-} from "@/components/ui/item";
-import { ProjectStatus } from "@/types/data/project";
+import { ProjectStatusType } from "@/types/data/project";
+import { useState } from "react";
+import { DragDropProvider, DragEndEvent } from "@dnd-kit/react";
+import { ProjectStatus } from "./project-status";
+import { Save } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { TaskType } from "@/types/data/task";
+import { router } from "@inertiajs/react";
+import { Spinner } from "@/components/ui/spinner";
 
-const tasks = [
-    {
-        id: "01a0e800-1111-718a-acea-d3a239cfe701",
-        status_id: "01a0e717-8d83-718a-acea-d3a239cfe735", // draft[cite: 1]
-        title: "Perancangan UI/UX Halaman Utama",
-        description:
-            "Membuat wireframe dan mockup high-fidelity untuk halaman dashboard utama menggunakan Figma.",
-        priority: "high",
-        due_date: "2026-10-10",
-        label: JSON.stringify(["design", "frontend"]),
-        file: "documents/wireframe_v1.pdf",
-    },
-    {
-        id: "01a0e800-2222-718a-acea-d3a239cfe702",
-        status_id: "01a0e717-8d83-718a-acea-d3a239cfe735", // draft[cite: 1]
-        title: "Riset Kompetitor Aplikasi POS",
-        description:
-            "Menganalisis fitur dan kelemahan dari 3 aplikasi point of sales yang ada di pasaran.",
-        priority: "medium",
-        due_date: "2026-10-12",
-        label: JSON.stringify(["research", "planning"]),
-        file: "documents/riset_kompetitor.docx",
-    },
-    {
-        id: "01a0e800-3333-718a-acea-d3a239cfe703",
-        status_id: "01a0e717-8d86-72c0-8890-3b971f5f7c1c", // in_progress[cite: 1]
-        title: "Setup Database & Migrasi Laravel",
-        description:
-            "Membuat struktur tabel database PostgreSQL sesuai dengan ERD yang telah disetujui.",
-        priority: "urgent",
-        due_date: "2026-10-05",
-        label: JSON.stringify(["backend", "database"]),
-        file: "documents/erd_schema.png",
-    },
-    {
-        id: "01a0e800-4444-718a-acea-d3a239cfe704",
-        status_id: "01a0e717-8d86-72c0-8890-3b971f5f7c1c", // in_progress[cite: 1]
-        title: "Implementasi Autentikasi Sanctum",
-        description:
-            "Membuat sistem login, register, dan token-based authentication untuk API backend.",
-        priority: "high",
-        due_date: "2026-10-07",
-        label: JSON.stringify(["backend", "security"]),
-        file: "documents/api_auth_spec.pdf",
-    },
-    {
-        id: "01a0e800-5555-718a-acea-d3a239cfe705",
-        status_id: "01a0e717-8d86-72c0-8890-3b971f5f7c1c", // in_progress[cite: 1]
-        title: "Integrasi Midtrans Payment Gateway",
-        description:
-            "Menghubungkan sistem pembayaran online untuk transaksi pesanan kasir cafe.",
-        priority: "high",
-        due_date: "2026-10-15",
-        label: JSON.stringify(["backend", "payment"]),
-        file: "documents/midtrans_config.pdf",
-    },
-    {
-        id: "01a0e800-6666-718a-acea-d3a239cfe706",
-        status_id: "01a0e716-ffb2-70f4-aa9c-e37e4f1c102", // review[cite: 1]
-        title: "Pembuatan Komponen Tabel Produk",
-        description:
-            "Membuat reusable component untuk daftar produk menggunakan Tailwind CSS dan Shadcn UI.",
-        priority: "medium",
-        due_date: "2026-10-08",
-        label: JSON.stringify(["frontend", "ui"]),
-        file: "documents/component_docs.md",
-    },
-    {
-        id: "01a0e800-7777-718a-acea-d3a239cfe707",
-        status_id: "01a0e716-ffb2-70f4-aa9c-e37e4f1c102", // review[cite: 1]
-        title: "Optimasi Query Laporan Penjualan",
-        description:
-            "Melakukan indexing pada tabel transaksi agar proses generate laporan bulanan menjadi lebih cepat.",
-        priority: "low",
-        due_date: "2026-10-09",
-        label: JSON.stringify(["database", "performance"]),
-        file: "documents/query_analysis.sql",
-    },
-    {
-        id: "01a0e800-8888-718a-acea-d3a239cfe708",
-        status_id: "01a0e716-ffb2-70f4-aa9c-e37e4f1c102", // review[cite: 1]
-        title: "Penyusunan Dokumentasi API",
-        description:
-            "Menulis dokumentasi endpoint menggunakan Swagger/Postman untuk tim frontend.",
-        priority: "medium",
-        due_date: "2026-10-11",
-        label: JSON.stringify(["documentation"]),
-        file: "documents/api_documentation.json",
-    },
-    {
-        id: "01a0e800-9999-718a-acea-d3a239cfe709",
-        status_id: "01a0e716-ffb5-723f-a129-e0eb8e53e986", // done[cite: 1]
-        title: "Inisialisasi Repositori Git",
-        description:
-            "Membuat repository GitHub utama dan mengatur branch protection rules.",
-        priority: "urgent",
-        due_date: "2026-09-29",
-        label: JSON.stringify(["setup", "git"]),
-        file: "documents/git_guidelines.pdf",
-    },
-    {
-        id: "01a0e800-aaaa-718a-acea-d3a239cfe710",
-        status_id: "01a0e716-ffb5-723f-a129-e0eb8e53e986", // done[cite: 1]
-        title: "Meeting Kickoff Project",
-        description:
-            "Diskusi awal bersama klien (Michael Caffe) untuk membahas kebutuhan fungsional sistem POS.",
-        priority: "high",
-        due_date: "2026-09-28",
-        label: JSON.stringify(["meeting", "management"]),
-        file: "documents/notulen_meeting.pdf",
-    },
-    {
-        id: "01a0e800-bbbb-718a-acea-d3a239cfe711",
-        status_id: "01a0e716-ffb5-723f-a129-e0eb8e53e986", // done[cite: 1]
-        title: "Setup Lingkungan Pengembangan (Docker)",
-        description:
-            "Menyiapkan docker-compose untuk PHP, Nginx, PostgreSQL, dan Redis agar seragam di semua developer.",
-        priority: "medium",
-        due_date: "2026-09-30",
-        label: JSON.stringify(["devops", "docker"]),
-        file: "documents/docker_setup.md",
-    },
-    {
-        id: "01a0e800-cccc-718a-acea-d3a239cfe712",
-        status_id: "01a0e716-ffb5-723f-a129-e0eb8e53e986", // done[cite: 1]
-        title: "Desain Logo dan Color Palette",
-        description:
-            "Menentukan identitas visual dan palet warna yang akan digunakan pada antarmuka aplikasi kasir.",
-        priority: "low",
-        due_date: "2026-10-01",
-        label: JSON.stringify(["design", "branding"]),
-        file: "documents/brand_guideline.pdf",
-    },
-];
-export function TaskKanban({ statuses }: { statuses: ProjectStatus[] }) {
+type SelectedTaskType = {
+    task_id: string;
+    status_id: string;
+};
+
+export function TaskKanban({
+    statuses: initialStatus,
+}: {
+    statuses: ProjectStatusType[];
+}) {
+    const [selectedTask, setSelectedTask] = useState<
+        SelectedTaskType[] | undefined
+    >();
+    const [statuses, setStatuses] = useState(initialStatus);
+    const [processing, setProcessing] = useState<boolean>(false);
+
+    const handleDragEnd = ({ operation, canceled }: DragEndEvent) => {
+        if (canceled || !operation.target) {
+            return;
+        }
+
+        const taskId = operation.source ? operation.source.id : null;
+        const statusId = operation.target.id;
+
+        let oldStatus: ProjectStatusType | undefined;
+        let draggedTask: TaskType | undefined;
+
+        for (const status of statuses) {
+            const foundTask = status.tasks.find((t) => t.id == taskId);
+
+            if (foundTask) {
+                oldStatus = status;
+                draggedTask = foundTask;
+                break;
+            }
+        }
+
+        const targetStatus = statuses.find((s) => s.id == statusId);
+
+        if (!targetStatus || !oldStatus || !draggedTask) return;
+        if (targetStatus.id == oldStatus.id) return;
+
+        setStatuses((prev) => {
+            return prev.map((status) => {
+                if (status.id === oldStatus.id) {
+                    return {
+                        ...status,
+                        tasks: status.tasks.filter(
+                            (t) => t.id != draggedTask.id,
+                        ),
+                    };
+                }
+
+                if (targetStatus && status.id === targetStatus.id) {
+                    return {
+                        ...status,
+                        tasks: [...status.tasks, draggedTask],
+                    };
+                }
+
+                return status;
+            });
+        });
+
+        if (draggedTask.status_id != targetStatus.id) {
+            setSelectedTask((prev: SelectedTaskType[] | undefined) => {
+                prev = prev ?? [];
+
+                const prevTask = prev.filter(
+                    (t) => t.task_id != draggedTask.id,
+                );
+
+                return [
+                    ...prevTask,
+                    { task_id: draggedTask.id, status_id: targetStatus.id },
+                ];
+            });
+        } else {
+            setSelectedTask((prev: SelectedTaskType[] | undefined) => {
+                prev = prev ?? [];
+
+                return prev.filter((t) => t.task_id != draggedTask.id);
+            });
+        }
+    };
+
+    const handleSaveChangeStatus = () => {
+        router.put(
+            "/task/change-status",
+            { task: selectedTask },
+            {
+                onBefore: () => {
+                    setProcessing(true);
+                },
+                onSuccess: ({ props }) => {
+                    setStatuses(props.statuses as ProjectStatusType[]);
+                    setSelectedTask([]);
+                },
+                onFinish: () => {
+                    setProcessing(false);
+                },
+            },
+        );
+    };
+
     return (
-        <Card className="p-0">
-            <CardContent className="flex items-start gap-4 w-full flex-nowrap no-scrollbar overflow-x-auto py-4">
-                {statuses.map((status) => (
-                    <Item key={status.id} className="w-58 flex-shrink-0 p-0">
-                        <ItemHeader className="p-2">
-                            <ItemTitle className="capitalize">
-                                <span className="text-primary text-lg">•</span>{" "}
-                                {status.name}
-                            </ItemTitle>
-                        </ItemHeader>
-                        <ItemContent className="p-0">
-                            {tasks
-                                .filter((t) => t.status_id == status.id)
-                                .map((task) => (
-                                    <Item className="bg-muted/50" key={task.id}>
-                                        <ItemTitle>{task.title}</ItemTitle>
-                                        <ItemDescription className="text-xs">
-                                            {task.description}
-                                        </ItemDescription>
-                                    </Item>
-                                ))}
-                        </ItemContent>
-                    </Item>
-                ))}
+        <Card className="p-0 bg-muted/50 gap-0">
+            <CardHeader className="pt-4">
+                <CardTitle>Kanban Tugas</CardTitle>
+                <CardAction>
+                    <Button
+                        onClick={handleSaveChangeStatus}
+                        size="sm"
+                        disabled={
+                            (selectedTask && selectedTask?.length <= 0) ||
+                            processing
+                        }
+                    >
+                        {processing ? <Spinner /> : <Save />}
+                        Save
+                    </Button>
+                </CardAction>
+            </CardHeader>
+            <CardContent className="flex items-start gap-4 w-full flex-nowrap no-scrollbar overflow-x-auto pb-4">
+                <DragDropProvider onDragEnd={handleDragEnd}>
+                    {statuses.map((status) => (
+                        <ProjectStatus key={status.id} status={status} />
+                    ))}
+                </DragDropProvider>
             </CardContent>
         </Card>
     );

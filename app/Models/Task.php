@@ -16,7 +16,15 @@ class Task extends Model
         return $this->belongsToMany(Task::class, "assigned_task", "task_id", "user_id")->using(AssignedTask::class);
     }
 
-    // protected $cats = [
-    //     "label" => "array"
-    // ];
+    public function status()
+    {
+        return $this->belongsTo(Status::class);
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'label' => 'array',
+        ];
+    }
 }

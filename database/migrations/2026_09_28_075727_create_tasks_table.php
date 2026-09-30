@@ -19,8 +19,8 @@ return new class extends Migration
             $table->text("description");
             $table->enum('priority', ["urgent", "high", "medium", "low"])->default("medium");
             $table->date("due_date");
-            $table->json("label");
-            $table->string("file");
+            $table->json("label")->nullable();
+            $table->string("file")->nullable();
             $table->timestamps();
         });
     }

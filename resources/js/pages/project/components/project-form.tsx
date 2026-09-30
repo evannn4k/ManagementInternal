@@ -195,7 +195,7 @@ export default function ProjectForm({
             onChange: handleChange,
             error: errors.description,
             value: data.description,
-            type: "textarea",
+            type: "rich-editor",
             col: 2,
             placeholder:
                 "Tuliskan objektif teknis, dependensi utama, target throughput (RPS), dan kriteria penerimaan...",

@@ -162,7 +162,7 @@ export default function TaskForm({
             onChange: handleChange,
             error: errors.file,
             type: "file",
-            required: true,
+            col: 2,
             description: "Maksimal 10MB",
         },
         {
@@ -353,7 +353,7 @@ export default function TaskForm({
                                         </Badge>
                                     </CardAction>
                                     <CardTitle className="flex items-center gap-2">
-                                        <UserRoundPlus /> Anggota Team
+                                        <UserRoundPlus /> Tetapkan team
                                     </CardTitle>
                                     <CardDescription className="text-xs">
                                         Tetapkan sekarang (opsional)
