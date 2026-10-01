@@ -18,8 +18,10 @@ class FileService
         return "file/" . $path . $filename;
     }
 
-    public static function destroy($path, $oldName)
+    public static function destroy($path)
     {
-        Storage::delete("file/" . $path . $oldName);
+        if ($path) {
+            Storage::disk('public')->delete($path);
+        }
     }
 }

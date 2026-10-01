@@ -11,6 +11,7 @@ use App\Http\Controllers\Role\UpdateRoleController;
 use App\Http\Controllers\Role\ViewRoleController;
 use App\Http\Controllers\Task\ChangeStatusTaskController;
 use App\Http\Controllers\Task\CreateTaskController;
+use App\Http\Controllers\Task\DeleteTaskController;
 use App\Http\Controllers\User\CreateUserController;
 use App\Http\Controllers\User\DeleteUserController;
 use App\Http\Controllers\User\UpdateUserController;
@@ -82,13 +83,13 @@ Route::middleware(["auth", "verified"])->group(function () {
             Route::post("/", CreateTaskController::class)->name("create");
             Route::put("/change-status", ChangeStatusTaskController::class)->name("change.status");
 
-            // Route::get("/{project}", [ViewProjectController::class, "detail"])->name(
+            // Route::get("/{task}", [ViewTaskController::class, "detail"])->name(
             //     "detail",
-            // )->middleware("permission:project.view.own|project.view.team|project.view.all");
+            // );
             // Route::put("/{project}", UpdateProjectController::class)->name("update")->middleware("can:project.edit");
-            // Route::delete("/{project}", DeleteProjectController::class)->name(
-            //     "delete",
-            // )->middleware("can:project.delete");
+            Route::delete("/{task}", DeleteTaskController::class)->name(
+                "delete",
+            );
         });
 });
 

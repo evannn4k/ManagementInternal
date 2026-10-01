@@ -5,15 +5,16 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { ProjectStatusType } from "@/types/data/project";
+import { ProjectStatusType, ProjectType } from "@/types/data/project";
 import { useState } from "react";
 import { DragDropProvider, DragEndEvent } from "@dnd-kit/react";
 import { ProjectStatus } from "./project-status";
-import { Save } from "lucide-react";
+import { Save, SquarePen, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { TaskType } from "@/types/data/task";
 import { router } from "@inertiajs/react";
 import { Spinner } from "@/components/ui/spinner";
+import taskDelete from "@/actions/App/Http/Controllers/Task/DeleteTaskController";
 
 type SelectedTaskType = {
     task_id: string;
@@ -30,6 +31,7 @@ export function TaskKanban({
     >();
     const [statuses, setStatuses] = useState(initialStatus);
     const [processing, setProcessing] = useState<boolean>(false);
+    const [isEdit, setIsEdit] = useState<boolean>(false);
 
     const handleDragEnd = ({ operation, canceled }: DragEndEvent) => {
         if (canceled || !operation.target) {
@@ -109,9 +111,11 @@ export function TaskKanban({
                 onBefore: () => {
                     setProcessing(true);
                 },
-                onSuccess: ({ props }) => {
-                    setStatuses(props.statuses as ProjectStatusType[]);
+                onSuccess: ({ props }: any) => {
+                    const project = props.project as ProjectType;
+                    setStatuses(project.statuses);
                     setSelectedTask([]);
+                    setIsEdit(false);
                 },
                 onFinish: () => {
                     setProcessing(false);
@@ -120,28 +124,53 @@ export function TaskKanban({
         );
     };
 
+    const handleDelete = (id: string) => {
+        console.log(taskDelete({ id: id }).url);
+        router.delete(taskDelete({ id: id }).url);
+    };
+
     return (
         <Card className="p-0 bg-muted/50 gap-0">
             <CardHeader className="pt-4">
                 <CardTitle>Kanban Tugas</CardTitle>
                 <CardAction>
-                    <Button
-                        onClick={handleSaveChangeStatus}
-                        size="sm"
-                        disabled={
-                            (selectedTask && selectedTask?.length <= 0) ||
-                            processing
-                        }
-                    >
-                        {processing ? <Spinner /> : <Save />}
-                        Save
-                    </Button>
+                    <div className="flex items-center gap-2">
+                        {isEdit && (
+                            <Button
+                                onClick={handleSaveChangeStatus}
+                                size="sm"
+                                disabled={
+                                    (selectedTask &&
+                                        selectedTask?.length <= 0) ||
+                                    processing
+                                }
+                            >
+                                {processing ? <Spinner /> : <Save />}
+                                Save
+                            </Button>
+                        )}
+                        <Button
+                            onClick={() => {
+                                setIsEdit((prev) => !prev);
+                            }}
+                            size="sm"
+                            variant={isEdit ? "destructive" : "default"}
+                        >
+                            {isEdit ? <X /> : <SquarePen />}
+                            {isEdit ? "Batal" : "Edit"}
+                        </Button>
+                    </div>
                 </CardAction>
             </CardHeader>
             <CardContent className="flex items-start gap-4 w-full flex-nowrap no-scrollbar overflow-x-auto pb-4">
                 <DragDropProvider onDragEnd={handleDragEnd}>
                     {statuses.map((status) => (
-                        <ProjectStatus key={status.id} status={status} />
+                        <ProjectStatus
+                            key={status.id}
+                            status={status}
+                            isEdit={isEdit}
+                            handleDelete={handleDelete}
+                        />
                     ))}
                 </DragDropProvider>
             </CardContent>
