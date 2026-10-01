@@ -22,14 +22,29 @@ import { UserWithRole } from "@/types/data/user";
 import { ProjectDetailData } from "./components/project-detail-data";
 import { TaskKanban } from "./components/task-kanban";
 import TaskForm from "./components/task-form";
+import taskDelete from "@/actions/App/Http/Controllers/Task/DeleteTaskController";
 
 export default function ProjectPage({ project }: { project: ProjectType }) {
-    const modal = useModal();
+    const taskModal = useModal();
+
+    const handleDeleteTask = (id: any) => {
+        router.delete(taskDelete({ id: id }).url, {
+            onSuccess: () => {
+                router.reload({ only: ["project"] });
+            },
+        });
+    };
 
     return (
         <>
             <Head title="Project" />
-            <TaskForm modal={modal} project={project} />
+            <TaskForm modal={taskModal} project={project} />
+            <DeleteAlert
+                modal={taskModal}
+                title="Hapus data tugas"
+                description="Data tugas yang telah dihapus dapat dikembalikan."
+                handleDelete={handleDeleteTask}
+            />
             <div className="p-4 md:p-6 flex flex-col gap-4">
                 <header className="flex justify-between items-start md:items-center flex-col md:flex-row gap-4 md:gap-8">
                     <div className="flex flex-col gap-2">
@@ -38,13 +53,13 @@ export default function ProjectPage({ project }: { project: ProjectType }) {
                         </h1>
                     </div>
                     <div className="flex items-center gap-2">
-                        <Button onClick={() => modal.openCreate()}>
+                        <Button onClick={() => taskModal.openCreate()}>
                             <Plus /> Tambah Tugas
                         </Button>
                     </div>
                 </header>
                 <ProjectDetailData project={project} />
-                <TaskKanban statuses={project.statuses} />
+                <TaskKanban statuses={project.statuses} taskModal={taskModal} />
             </div>
         </>
     );

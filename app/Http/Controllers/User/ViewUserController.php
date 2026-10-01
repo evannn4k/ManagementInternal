@@ -31,6 +31,7 @@ class ViewUserController extends Controller
             ->withQueryString();
 
         $data = UserTableResource::collection($users);
+        
         $cardData = [
             "total_account" => User::count(),
             "total_active" => User::where("is_active", 1)->count(),

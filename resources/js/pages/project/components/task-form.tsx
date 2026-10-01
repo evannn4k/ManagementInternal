@@ -23,7 +23,7 @@ import { UseModalReturn } from "@/types/modal";
 import FormField from "@/components/form-field";
 import FormSection from "@/components/form-section";
 import React, { useEffect, useState } from "react";
-import { useForm } from "@inertiajs/react";
+import { router, useForm } from "@inertiajs/react";
 import { Button } from "@/components/ui/button";
 import {
     Card,
@@ -77,7 +77,7 @@ export default function TaskForm({
             file: "",
         });
 
-    useEffect(() => {
+    useEffect(() => {        
         if (isOpenModal) {
             setData((prevData) => ({
                 ...prevData,
@@ -86,12 +86,13 @@ export default function TaskForm({
                 status_id: isEdit ? modal.data.status_id : "",
                 priority: isEdit ? modal.data.priority : "",
                 due_date: isEdit ? modal.data.due_date : "",
-                file: isEdit ? modal.data.file : "",
             }));
+            setAssigned(isEdit ? modal.data.assigned : []);
+            setLabel(isEdit ? modal.data.label : []);
         } else {
             reset();
-            setLabel([])
-            setAssigned([])
+            setLabel([]);
+            setAssigned([]);
             clearErrors();
         }
     }, [isOpenModal, modal.data]);
@@ -249,6 +250,7 @@ export default function TaskForm({
                 onSuccess: () => {
                     modal.closeModal();
                     reset();
+                    router.reload({ only: ["project"] });
                 },
             });
         } else {
@@ -256,6 +258,7 @@ export default function TaskForm({
                 onSuccess: () => {
                     modal.closeModal();
                     reset();
+                    router.reload({ only: ["project"] });
                 },
             });
         }
@@ -293,8 +296,7 @@ export default function TaskForm({
                             <Card className="bg-muted/50">
                                 <CardHeader>
                                     <CardTitle className="flex items-center gap-2">
-                                        <Tag className="text-default" />{" "}
-                                        Label
+                                        <Tag className="text-default" /> Label
                                     </CardTitle>
                                     <CardDescription className="text-xs">
                                         Daftar tag tugas ini
@@ -325,7 +327,7 @@ export default function TaskForm({
                                     {label && label.length > 0 && (
                                         <div className="flex flex-wrap gap-2 pt-4">
                                             {label?.map((l) => (
-                                                <Badge className="rounded-full">
+                                                <Badge className="rounded-full" key={l}>
                                                     {l}{" "}
                                                     <button
                                                         type="button"

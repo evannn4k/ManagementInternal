@@ -37,7 +37,7 @@ class CreateTaskController extends Controller
 
             return redirect()
                 ->back()
-                ->with("success", "Berhasil menambah data proyek baru.");
+                ->with("success", "Berhasil menambah data tugas baru.");
         } catch (\Exception $e) {
             Log::error("Error : " . $e->getMessage());
 

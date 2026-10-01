@@ -24,7 +24,7 @@ class ViewProjectController extends Controller
 
     public function detail(Project $project)
     {
-        $project->load("pic:id,name,position", "pic.roles:id,name", "teams", "statuses", "statuses.tasks", "createdBy");
+        $project->load("pic:id,name,position", "pic.roles:id,name", "teams", "statuses", "statuses.tasks.assigned:id,name,position", "createdBy");
 
         return Inertia::render(
             "project/detail",

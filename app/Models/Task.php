@@ -13,7 +13,7 @@ class Task extends Model
 
     public function assigned()
     {
-        return $this->belongsToMany(Task::class, "assigned_task", "task_id", "user_id")->using(AssignedTask::class);
+        return $this->belongsToMany(User::class, "assigned_task", "task_id", "user_id")->using(AssignedTask::class);
     }
 
     public function status()

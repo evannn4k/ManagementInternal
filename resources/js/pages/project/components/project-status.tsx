@@ -1,17 +1,36 @@
-import { Item, ItemContent, ItemHeader, ItemTitle } from "@/components/ui/item";
+import {
+    Item,
+    ItemActions,
+    ItemContent,
+    ItemHeader,
+    ItemTitle,
+} from "@/components/ui/item";
 import { ProjectStatusType } from "@/types/data/project";
 import { useDroppable } from "@dnd-kit/react";
 import { TaskCard } from "./task-card";
 import { Link } from "@inertiajs/react";
+import { UseModalReturn } from "@/types/modal";
+import { cn } from "@/lib/utils";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Badge } from "@/components/ui/badge";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { MoreVertical, SquarePen, Trash2 } from "lucide-react";
 
 export function ProjectStatus({
     status,
     isEdit,
-    handleDelete,
+    taskModal,
 }: {
     status: ProjectStatusType;
     isEdit: boolean;
-    handleDelete: (id: string) => void;
+    taskModal: UseModalReturn;
 }) {
     const { ref } = useDroppable({
         id: status.id,
@@ -22,13 +41,45 @@ export function ProjectStatus({
         <Item
             key={status.id}
             ref={ref}
-            className="w-58 flex-shrink-0 p-0 h-full flex-col items-start justify-start"
+            className={cn(
+                "w-58 flex-shrink-0 h-full flex-col gap-0 items-center justify-center transition-all ease-in-out duration-200",
+                isEdit ? "relative p-2" : "p-0",
+            )}
         >
-            <ItemHeader className="px-1">
-                <ItemTitle className="capitalize">
+            {isEdit && <Skeleton className="absolute h-full w-full" />}
+            <ItemHeader className="p-2 w-full flex justify-between">
+                <ItemTitle className="capitalize text-base">
                     <span className="text-primary text-lg">•</span>{" "}
                     {status.name}
+                    <Badge className="rounded-full text-xs" variant="outline">
+                        {status.tasks.length ?? 0}
+                    </Badge>
                 </ItemTitle>
+                <ItemActions>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                className="size-8"
+                            >
+                                <MoreVertical className="size-4" />
+                                <span className="sr-only">Open menu</span>
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            <DropdownMenuItem>
+                                <SquarePen />
+                                Edit
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem variant="destructive">
+                                <Trash2 />
+                                Delete
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </ItemActions>
             </ItemHeader>
             <ItemContent className="p-0 flex flex-col gap-3 w-full">
                 {status.tasks.map((task) => {
@@ -38,7 +89,7 @@ export function ProjectStatus({
                                 key={task.id}
                                 task={task}
                                 isEdit={isEdit}
-                                handleDelete={handleDelete}
+                                modal={taskModal}
                             />
                         );
                     } else {
@@ -47,7 +98,7 @@ export function ProjectStatus({
                                 <TaskCard
                                     task={task}
                                     isEdit={isEdit}
-                                    handleDelete={handleDelete}
+                                    modal={taskModal}
                                 />
                             </Link>
                         );

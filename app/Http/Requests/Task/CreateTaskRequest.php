@@ -27,7 +27,7 @@ class CreateTaskRequest extends FormRequest
             "description" => "nullable|string",
             "status_id" => "required|uuid|exists:statuses,id",
             "priority" => "required|in:urgent,high,medium,low",
-            "due_date" => "required|date",
+            "due_date" => "nullable|date",
             "label" => "nullable|array",
             "label.*" => "nullable|string",
             "file" => "nullable|file|max:10240",

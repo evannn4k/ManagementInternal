@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { TaskType } from "@/types/data/task";
+import { UseModalReturn } from "@/types/modal";
 import { useDraggable } from "@dnd-kit/react";
 import { Link } from "@inertiajs/react";
 import { FileText, MoreVertical, SquarePen, Trash2 } from "lucide-react";
@@ -23,11 +24,11 @@ import { FileText, MoreVertical, SquarePen, Trash2 } from "lucide-react";
 export function TaskCard({
     task,
     isEdit,
-    handleDelete,
+    modal,
 }: {
     task: TaskType;
     isEdit: boolean;
-    handleDelete: (id: string) => void;
+    modal: UseModalReturn;
 }) {
     const { ref } = useDraggable({
         id: task.id,
@@ -38,8 +39,8 @@ export function TaskCard({
         <Card
             ref={ref}
             className={cn(
-                "bg-background/50 w-full",
-                isEdit ? "cursor-grab" : "cursor-pointer",
+                "w-full z-10",
+                isEdit ? "cursor-grab" : "cursor-pointer bg-background/50",
             )}
             key={task.id}
         >
@@ -73,7 +74,13 @@ export function TaskCard({
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                            <DropdownMenuItem>
+                            <DropdownMenuItem
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    modal.openEdit(task);
+                                }}
+                            >
                                 <SquarePen />
                                 Edit
                             </DropdownMenuItem>
@@ -83,20 +90,18 @@ export function TaskCard({
                                     Detail
                                 </Link>
                             </DropdownMenuItem>
-                            <>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem
-                                    variant="destructive"
-                                    onClick={(e) => {
-                                        e.preventDefault();
-                                        e.stopPropagation();
-                                        handleDelete(task.id);
-                                    }}
-                                >
-                                    <Trash2 />
-                                    Delete
-                                </DropdownMenuItem>
-                            </>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                                variant="destructive"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    modal.openDelete(task.id);
+                                }}
+                            >
+                                <Trash2 />
+                                Delete
+                            </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </CardAction>

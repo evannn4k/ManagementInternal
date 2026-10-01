@@ -9,7 +9,7 @@ class FileService
     public static function save($path, $file, $oldName = null)
     {
         if ($oldName) {
-            Storage::delete("file/" . $path . $oldName);
+            Storage::delete($oldName);
         }
 
         $filename = time() . "-" . rand(000000, 999999) . "-" . $file->getClientOriginalName();

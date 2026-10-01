@@ -22,7 +22,7 @@ export function DeleteAlert({
     modal: UseModalReturn;
     title: string;
     description: string;
-    handleDelete: (id: number) => void;
+    handleDelete: (id: any) => void;
 }) {
     return (
         <AlertDialog

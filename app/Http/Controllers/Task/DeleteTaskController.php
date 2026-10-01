@@ -13,7 +13,7 @@ class DeleteTaskController extends Controller
     /**
      * Handle the incoming request.
      */
-    public function __invoke(Request $request, Task $task)
+    public function __invoke(Task $task)
     {
         try {            
             if ($task->file) {
