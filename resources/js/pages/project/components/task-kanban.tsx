@@ -24,9 +24,11 @@ type SelectedTaskType = {
 export function TaskKanban({
     statuses: initialStatus,
     taskModal,
+    projectStatusModal,
 }: {
     statuses: ProjectStatusType[];
     taskModal: UseModalReturn;
+    projectStatusModal: UseModalReturn;
 }) {
     const [selectedTask, setSelectedTask] = useState<
         SelectedTaskType[] | undefined
@@ -164,14 +166,17 @@ export function TaskKanban({
                 </CardHeader>
                 <CardContent className="flex items-start gap-4 w-full flex-nowrap no-scrollbar overflow-x-auto pb-4">
                     <DragDropProvider onDragEnd={handleDragEnd}>
-                        {statuses.map((status) => (
-                            <ProjectStatus
-                                key={status.id}
-                                status={status}
-                                isEdit={isEdit}
-                                taskModal={taskModal}
-                            />
-                        ))}
+                        {statuses
+                            .sort((a, b) => a.position - b.position)
+                            .map((status) => (
+                                <ProjectStatus
+                                    key={status.id}
+                                    status={status}
+                                    isEdit={isEdit}
+                                    taskModal={taskModal}
+                                    projectStatusModal={projectStatusModal}
+                                />
+                            ))}
                     </DragDropProvider>
                 </CardContent>
             </Card>

@@ -22,13 +22,24 @@ import { UserWithRole } from "@/types/data/user";
 import { ProjectDetailData } from "./components/project-detail-data";
 import { TaskKanban } from "./components/task-kanban";
 import TaskForm from "./components/task-form";
-import taskDelete from "@/actions/App/Http/Controllers/Task/DeleteTaskController";
+import ProjectStatusForm from "./components/project-status-form";
+import deleteTask from "@/actions/App/Http/Controllers/Task/DeleteTaskController";
+import deleteStatusProject  from "@/actions/App/Http/Controllers/Project/DeleteStatusProjectController";
 
 export default function ProjectPage({ project }: { project: ProjectType }) {
     const taskModal = useModal();
+    const projectStatusModal = useModal();
 
     const handleDeleteTask = (id: any) => {
-        router.delete(taskDelete({ id: id }).url, {
+        router.delete(deleteTask({ id: id }).url, {
+            onSuccess: () => {
+                router.reload({ only: ["project"] });
+            },
+        });
+    };
+
+    const handleDeleteProjectStatus = (id: any) => {
+        router.delete(deleteStatusProject({ id: id }).url, {
             onSuccess: () => {
                 router.reload({ only: ["project"] });
             },
@@ -39,11 +50,18 @@ export default function ProjectPage({ project }: { project: ProjectType }) {
         <>
             <Head title="Project" />
             <TaskForm modal={taskModal} project={project} />
+            <ProjectStatusForm modal={projectStatusModal} />
             <DeleteAlert
                 modal={taskModal}
                 title="Hapus data tugas"
                 description="Data tugas yang telah dihapus dapat dikembalikan."
                 handleDelete={handleDeleteTask}
+            />
+            <DeleteAlert
+                modal={projectStatusModal}
+                title="Hapus data status"
+                description="Data status yang telah dihapus dapat dikembalikan."
+                handleDelete={handleDeleteProjectStatus}
             />
             <div className="p-4 md:p-6 flex flex-col gap-4">
                 <header className="flex justify-between items-start md:items-center flex-col md:flex-row gap-4 md:gap-8">
@@ -59,7 +77,11 @@ export default function ProjectPage({ project }: { project: ProjectType }) {
                     </div>
                 </header>
                 <ProjectDetailData project={project} />
-                <TaskKanban statuses={project.statuses} taskModal={taskModal} />
+                <TaskKanban
+                    statuses={project.statuses}
+                    taskModal={taskModal}
+                    projectStatusModal={projectStatusModal}
+                />
             </div>
         </>
     );

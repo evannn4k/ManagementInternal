@@ -27,10 +27,12 @@ export function ProjectStatus({
     status,
     isEdit,
     taskModal,
+    projectStatusModal,
 }: {
     status: ProjectStatusType;
     isEdit: boolean;
     taskModal: UseModalReturn;
+    projectStatusModal: UseModalReturn;
 }) {
     const { ref } = useDroppable({
         id: status.id,
@@ -68,12 +70,21 @@ export function ProjectStatus({
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                            <DropdownMenuItem>
+                            <DropdownMenuItem
+                                onClick={() => {
+                                    projectStatusModal.openEdit(status);
+                                }}
+                            >
                                 <SquarePen />
                                 Edit
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem variant="destructive">
+                            <DropdownMenuItem
+                                variant="destructive"
+                                onClick={() => {
+                                    projectStatusModal.openDelete(status.id);
+                                }}
+                            >
                                 <Trash2 />
                                 Delete
                             </DropdownMenuItem>

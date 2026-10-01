@@ -60,7 +60,7 @@ export default function ProjectForm({
     const [status, setStatus] = useState<string[] | undefined>([]);
     const [inputStatus, setInputStatus] = useState<string>();
 
-    const defaultStatus = ["draft", "in_progress", "review", "done"];
+    const defaultStatus = ["draft", "in progress", "review", "done"];
 
     const { post, put, errors, data, setData, processing, reset, clearErrors } =
         useForm({
