@@ -1,34 +1,47 @@
 import { Button } from "@/components/ui/button";
-import { Download, Plus, ShieldCheck } from "lucide-react";
-import { ProjectSectionCard } from "./components/project-section-card";
-import { ProjectToolbar } from "./components/project-toolbar";
-import { LaravelPagination } from "@/types/paginate";
-import { CardData, ProjectGridType, ProjectType } from "@/types/data/project";
-import { PaginationPage } from "@/components/pagination-page";
-import { index as userIndex } from "@/actions/App/Http/Controllers/User/ViewUserController";
-import userDelete from "@/actions/App/Http/Controllers/User/DeleteUserController";
-import { useState } from "react";
+import { Activity, Plus, SquareKanban, Users } from "lucide-react";
+import { ProjectType } from "@/types/data/project";
 import { Head, router } from "@inertiajs/react";
-import { index as user } from "@/routes/user";
 import { useModal } from "@/hooks/use-modal";
-import UserForm from "./components/project-form";
-import { Role } from "@/types/data/role";
 import { DeleteAlert } from "@/components/delete-alert";
-import { can } from "@/lib/middleware";
 import { index as projectIndex } from "@/routes/project";
-import { ProjectGrid } from "./components/project-grid";
-import ProjectForm from "./components/project-form";
-import { UserWithRole } from "@/types/data/user";
 import { ProjectDetailData } from "./components/project-detail-data";
 import { TaskKanban } from "./components/task-kanban";
 import TaskForm from "./components/task-form";
 import ProjectStatusForm from "./components/project-status-form";
 import deleteTask from "@/actions/App/Http/Controllers/Task/DeleteTaskController";
-import deleteStatusProject  from "@/actions/App/Http/Controllers/Project/DeleteStatusProjectController";
+import deleteStatusProject from "@/actions/App/Http/Controllers/Project/DeleteStatusProjectController";
+import { ProjectDetailToolbar } from "./components/project-detail-toolbar";
+import { detail as projectDetail } from "@/actions/App/Http/Controllers/Project/ViewProjectController";
+import { useState } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function ProjectPage({ project }: { project: ProjectType }) {
     const taskModal = useModal();
     const projectStatusModal = useModal();
+    const [query, setQuery] = useState<{
+        search: string;
+        status: string;
+        per_page: number;
+    }>();
+
+    const { url } = projectDetail({ id: project.id });
+
+    const updateQuery = (params: Record<string, any>) => {
+        const updated = { ...query, ...params };
+
+        setQuery(updated as any);
+
+        router.get(
+            url,
+            { query: updated },
+            {
+                preserveState: true,
+                preserveScroll: true,
+                replace: true,
+            },
+        );
+    };
 
     const handleDeleteTask = (id: any) => {
         router.delete(deleteTask({ id: id }).url, {
@@ -77,11 +90,43 @@ export default function ProjectPage({ project }: { project: ProjectType }) {
                     </div>
                 </header>
                 <ProjectDetailData project={project} />
-                <TaskKanban
-                    statuses={project.statuses}
-                    taskModal={taskModal}
-                    projectStatusModal={projectStatusModal}
-                />
+                <Tabs defaultValue="kanban" className="gap-4">
+                    <TabsList className="bg-muted/50 p-2">
+                        <TabsTrigger value="kanban">
+                            <SquareKanban /> Kanban Board
+                        </TabsTrigger>
+                        <TabsTrigger value="team">
+                            <Users /> Anggota & Team
+                        </TabsTrigger>
+                        <TabsTrigger value="activity">
+                            <Activity /> Aktivitas
+                        </TabsTrigger>
+                    </TabsList>
+                    <TabsContent className="flex flex-col gap-4" value="kanban">
+                        <ProjectDetailToolbar
+                            url={url}
+                            updateQuery={updateQuery}
+                        />
+                        <TaskKanban
+                            statuses={project.statuses}
+                            taskModal={taskModal}
+                            projectStatusModal={projectStatusModal}
+                        />
+                    </TabsContent>
+                    <TabsContent value="team">
+                        Lorem ipsum dolor sit amet, consectetur adipisicing
+                        elit. Harum temporibus laborum fugit, ea perspiciatis
+                        labore culpa? Itaque omnis tempora quod, ipsum expedita
+                        eos at nobis, architecto adipisci, voluptatum quis non?
+                    </TabsContent>
+                    <TabsContent value="activity">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                        Non corporis perspiciatis et architecto mollitia ut
+                        eveniet aut dolorum. Possimus, beatae dolore.
+                        Voluptatibus omnis dolor aliquid incidunt molestiae ab!
+                        Ipsa, porro.
+                    </TabsContent>
+                </Tabs>
             </div>
         </>
     );

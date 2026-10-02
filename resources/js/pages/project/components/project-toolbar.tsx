@@ -27,8 +27,8 @@ export function ProjectToolbar({
 
     const statusFilter = {
         placeholder: "Semua Status",
-        key: "is_active",
-        options: ["aktif", "nonaktif"],
+        key: "status",
+        options: ["running", "done", "hold", "canceled", "archived"],
     };
 
     return (

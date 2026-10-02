@@ -15,7 +15,7 @@ class DeleteTaskController extends Controller
      */
     public function __invoke(Task $task)
     {
-        try {            
+        try {
             if ($task->file) {
                 FileService::destroy($task->file);
             }
@@ -23,7 +23,7 @@ class DeleteTaskController extends Controller
             $task->delete();
 
             return redirect()
-                ->back()
+                ->route('project.detail', $task->status->project->id)
                 ->with("success", "Berhasil menghapus tugas.");
         } catch (\Exception $e) {
             Log::error("Error : " . $e->getMessage());

@@ -14,27 +14,31 @@ import {
 } from "@/components/ui/command";
 import { UserWithRole } from "@/types/data/user";
 import { useState } from "react";
+import { Plus } from "lucide-react";
 
 export function SelectTeam({
     users,
     className,
     setTeam,
+    error
 }: {
     users: UserWithRole[];
     className?: string;
     setTeam: any;
+    error: boolean;
 }) {
     const [open, setOpen] = useState<boolean>(false);
 
     return (
         <>
             <Button
+                aria-invalid={error}
                 className={className}
                 type="button"
                 variant="outline"
                 onClick={() => setOpen(true)}
             >
-                Pilih Team
+                <Plus /> Tambah
             </Button>
             <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger />

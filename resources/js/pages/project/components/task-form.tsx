@@ -11,6 +11,7 @@ import {
     ChartNoAxesCombined,
     CodeXml,
     GitBranch,
+    PenSquare,
     Plus,
     Save,
     Tag,
@@ -34,7 +35,6 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import { UserWithRole } from "@/types/data/user";
-import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { SelectTeam } from "./select-team";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -42,17 +42,25 @@ import {
     InputGroupAddon,
     InputGroupInput,
 } from "@/components/ui/input-group";
-import { BadgeCheckIcon, ChevronRightIcon } from "lucide-react";
 import {
     Item,
     ItemActions,
     ItemContent,
-    ItemDescription,
-    ItemMedia,
     ItemTitle,
 } from "@/components/ui/item";
 import { IconBox } from "@/components/icon";
 import { ProjectType } from "@/types/data/project";
+
+interface TaskFormData {
+    title: string;
+    description: string;
+    status_id: string;
+    priority: string;
+    due_date: string;
+    file: string;
+    label: string[];
+    assigned: number[];
+}
 
 export default function TaskForm({
     modal,
@@ -68,16 +76,18 @@ export default function TaskForm({
     const [inputLabel, setInputLabel] = useState<string | undefined>();
 
     const { post, put, errors, data, setData, processing, reset, clearErrors } =
-        useForm({
+        useForm<TaskFormData>({
             title: "",
             description: "",
             status_id: "",
             priority: "",
             due_date: "",
             file: "",
+            label: [],
+            assigned: [],
         });
 
-    useEffect(() => {        
+    useEffect(() => {
         if (isOpenModal) {
             setData((prevData) => ({
                 ...prevData,
@@ -124,24 +134,14 @@ export default function TaskForm({
             placeholder: "Authentication",
             col: 2,
         },
+
         {
-            label: "Deskripsi",
-            name: "description",
-            error: errors.description,
-            value: data.description,
-            type: "rich-editor",
-            required: true,
-            setData: setData,
-            col: 2,
-        },
-        {
-            label: "Tanggal Pengumpulan",
+            label: "Tenggat Waktu",
             name: "due_date",
             onChange: handleChange,
             error: errors.due_date,
             value: data.due_date,
             type: "date",
-            required: true,
         },
         {
             label: "Status",
@@ -158,7 +158,7 @@ export default function TaskForm({
             placeholder: "Pilih status tugas",
         },
         {
-            label: "File",
+            label: isEdit ? "File" : "Ganti File",
             name: "file",
             onChange: handleChange,
             error: errors.file,
@@ -181,24 +181,34 @@ export default function TaskForm({
                 {
                     label: "Low",
                     value: "low",
-                    className: "text-green-700",
+                    className: "text-blue-700 dark:text-blue-500",
                 },
                 {
                     label: "Medium",
                     value: "medium",
-                    className: "text-yellow-700",
+                    className: "text-yellow-700 dark:text-yellow-500",
                 },
                 {
                     label: "High",
                     value: "high",
-                    className: "text-red-700",
+                    className: "text-red-700 dark:text-red-500",
                 },
                 {
                     label: "Urgent",
                     value: "urgent",
-                    className: "text-black",
+                    className: "text-foreground",
                 },
             ],
+            col: 2,
+        },
+        {
+            label: "Deskripsi",
+            name: "description",
+            error: errors.description,
+            value: data.description,
+            type: "rich-editor",
+            required: true,
+            setData: setData,
             col: 2,
         },
     ];
@@ -240,8 +250,8 @@ export default function TaskForm({
         setData((prev) => {
             return {
                 ...prev,
-                label: label,
-                assigned: assigned?.map((user) => user.id),
+                label: label ?? [],
+                assigned: assigned?.map((user) => user.id) ?? [],
             };
         });
 
@@ -250,7 +260,7 @@ export default function TaskForm({
                 onSuccess: () => {
                     modal.closeModal();
                     reset();
-                    router.reload({ only: ["project"] });
+                    router.reload();
                 },
             });
         } else {
@@ -258,7 +268,7 @@ export default function TaskForm({
                 onSuccess: () => {
                     modal.closeModal();
                     reset();
-                    router.reload({ only: ["project"] });
+                    router.reload();
                 },
             });
         }
@@ -270,16 +280,17 @@ export default function TaskForm({
                 <form onSubmit={handleSubmit}>
                     <div className="flex items-center gap-4">
                         <IconBox>
-                            <Plus />
+                            {isEdit ? <PenSquare/> : <Plus/>}
                         </IconBox>
                         <AlertDialogHeader>
                             <AlertDialogTitle>
-                                {isEdit ? "Edit Proyek" : "Buat Proyek Baru"}
+                                {isEdit ? "Edit Tugas" : "Buat Tugas Baru"}
                             </AlertDialogTitle>
                             <FieldDescription>
-                                Inisialisasi inisiatif repositori, tetapkan PIC
-                                & anggota tim, alokasi target kuartal, serta
-                                workflow tim.
+                                Digunakan untuk membuat atau memperbarui detail
+                                tugas—termasuk judul, status, prioritas, tenggat
+                                waktu, deskripsi, lampiran file, label, serta
+                                penetapan anggota tim (PIC).
                             </FieldDescription>
                         </AlertDialogHeader>
                     </div>
@@ -327,7 +338,10 @@ export default function TaskForm({
                                     {label && label.length > 0 && (
                                         <div className="flex flex-wrap gap-2 pt-4">
                                             {label?.map((l) => (
-                                                <Badge className="rounded-full" key={l}>
+                                                <Badge
+                                                    className="rounded-full"
+                                                    key={l}
+                                                >
                                                     {l}{" "}
                                                     <button
                                                         type="button"
@@ -363,6 +377,7 @@ export default function TaskForm({
                                 </CardHeader>
                                 <CardContent>
                                     <SelectTeam
+                                        error={Boolean(errors.assigned)}
                                         setTeam={setAssigned}
                                         users={
                                             project.teams
@@ -385,22 +400,24 @@ export default function TaskForm({
                                             </CardDescription>
                                             <div className="flex w-full max-w-md flex-col gap-2">
                                                 {assigned.map(
-                                                    (user: UserWithRole) => (
+                                                    (
+                                                        user: UserWithRole,
+                                                        i: number,
+                                                    ) => (
                                                         <Item
+                                                            variant="muted"
+                                                            className="p-2"
                                                             key={user.id}
-                                                            variant="outline"
-                                                            size="xs"
-                                                            className="bg-background"
                                                         >
-                                                            <ItemContent>
+                                                            <ItemContent className="p-0">
                                                                 <ItemTitle>
-                                                                    {user.name}
-                                                                </ItemTitle>
-                                                                <ItemDescription>
+                                                                    {i + 1}.{" "}
+                                                                    {user.name}{" "}
+                                                                    |{" "}
                                                                     {
                                                                         user.position
                                                                     }
-                                                                </ItemDescription>
+                                                                </ItemTitle>
                                                             </ItemContent>
                                                             <ItemActions>
                                                                 <Button

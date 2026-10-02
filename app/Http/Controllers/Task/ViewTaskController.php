@@ -13,6 +13,10 @@ class ViewTaskController extends Controller
 
     public function detail(Task $task)
     {
+        $task->load([
+            "status.project.statuses",
+            "assigned:id,name,position",
+        ]);
 
         return Inertia::render(
             "task/detail",

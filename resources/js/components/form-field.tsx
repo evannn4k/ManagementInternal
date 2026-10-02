@@ -154,7 +154,7 @@ export default function FormField({
                                         orientation="horizontal"
                                     >
                                         <FieldContent>
-                                            <FieldTitle>
+                                            <FieldTitle className="capitalize">
                                                 {option.label}
                                             </FieldTitle>
                                         </FieldContent>
@@ -223,7 +223,7 @@ export default function FormField({
             )}
             data-invalid={Boolean(error)}
         >
-            <FieldLabel htmlFor="name" className="flex items-center gap-2">
+            <FieldLabel htmlFor="name" className="flex items-center gap-2 capitalize">
                 {Icon && <Icon className="size-4" />}
                 {label}
                 {required && <span className="text-destructive">*</span>}

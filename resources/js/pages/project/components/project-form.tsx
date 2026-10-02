@@ -6,11 +6,12 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { FieldDescription, FieldSet } from "@/components/ui/field";
+import { FieldDescription, FieldError, FieldSet } from "@/components/ui/field";
 import {
     ChartNoAxesCombined,
     CodeXml,
     GitBranch,
+    PenSquare,
     Plus,
     Save,
     Trash,
@@ -46,6 +47,20 @@ import {
     ItemDescription,
     ItemTitle,
 } from "@/components/ui/item";
+import { IconBox } from "@/components/icon";
+
+interface ProjectFormType {
+    name: string;
+    pic_id: string;
+    start_date: string;
+    end_date: string;
+    description: string;
+    priority: string;
+    repo_url: string;
+    branch: string;
+    status: string[];
+    teams: number[];
+}
 
 export default function ProjectForm({
     modal,
@@ -63,7 +78,7 @@ export default function ProjectForm({
     const defaultStatus = ["draft", "in progress", "review", "done"];
 
     const { post, put, errors, data, setData, processing, reset, clearErrors } =
-        useForm({
+        useForm<ProjectFormType>({
             name: "",
             pic_id: "",
             start_date: "",
@@ -72,6 +87,8 @@ export default function ProjectForm({
             priority: "",
             repo_url: "",
             branch: "",
+            status: [],
+            teams: [],
         });
 
     useEffect(() => {
@@ -96,6 +113,10 @@ export default function ProjectForm({
             setTeam([]);
         }
     }, [isOpenModal, modal.data]);
+
+    useEffect(() => {
+        setStatus(modal.data?.statuses);
+    }, [errors.status]);
 
     const handleChange = (
         e: React.ChangeEvent<
@@ -238,8 +259,8 @@ export default function ProjectForm({
         setData((prev) => {
             return {
                 ...prev,
-                status: status,
-                teams: team?.map((t) => t.id),
+                status: status ?? [],
+                teams: team?.map((t) => t.id) ?? [],
             };
         });
 
@@ -264,16 +285,19 @@ export default function ProjectForm({
         <AlertDialog open={isOpenModal} onOpenChange={() => modal.closeModal()}>
             <AlertDialogContent className="!max-w-4xl max-h-[90vh] overflow-y-auto no-scrollbar">
                 <form onSubmit={handleSubmit}>
-                    <AlertDialogHeader>
-                        <AlertDialogTitle>
-                            {isEdit ? "Edit Proyek" : "Buat Proyek Baru"}
-                        </AlertDialogTitle>
-                        <FieldDescription>
-                            Inisialisasi inisiatif repositori, tetapkan PIC &
-                            anggota tim, alokasi target kuartal, serta workflow
-                            tim.
-                        </FieldDescription>
-                    </AlertDialogHeader>
+                    <div className="flex items-center gap-4">
+                        <IconBox>{isEdit ? <PenSquare /> : <Plus />}</IconBox>
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>
+                                {isEdit ? "Edit Proyek" : "Buat Proyek Baru"}
+                            </AlertDialogTitle>
+                            <FieldDescription>
+                                Inisialisasi inisiatif repositori, tetapkan PIC
+                                & anggota tim, alokasi target kuartal, serta
+                                workflow tim.
+                            </FieldDescription>
+                        </AlertDialogHeader>
+                    </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-5 gap-4 pt-6 pb-2 items-start">
                         <FieldSet className="col-span-1 md:col-span-3">
@@ -336,6 +360,9 @@ export default function ProjectForm({
                                 <CardContent>
                                     <InputGroup className="bg-background">
                                         <InputGroupInput
+                                            aria-invalid={Boolean(
+                                                errors.status,
+                                            )}
                                             value={inputStatus}
                                             onChange={(e) => {
                                                 setInputStatus(e.target.value);
@@ -355,6 +382,11 @@ export default function ProjectForm({
                                             <Plus />
                                         </InputGroupAddon>
                                     </InputGroup>
+                                    {Boolean(errors.status) && (
+                                        <FieldError className="pt-2">
+                                            {errors.status}
+                                        </FieldError>
+                                    )}
 
                                     {status && status?.length > 0 ? (
                                         <div className="pt-2">
@@ -366,8 +398,8 @@ export default function ProjectForm({
                                                     <Item
                                                         key={s}
                                                         variant="outline"
-                                                        size="xs"
-                                                        className="bg-background"
+                                                        size="sm"
+                                                        className="bg-background p-2"
                                                     >
                                                         <ItemContent>
                                                             <ItemTitle>
@@ -419,10 +451,16 @@ export default function ProjectForm({
                                 </CardHeader>
                                 <CardContent>
                                     <SelectTeam
+                                        error={Boolean(errors.teams)}
                                         setTeam={setTeam}
                                         users={users}
                                         className="w-full bg-background"
                                     />
+                                    {Boolean(errors.teams) && (
+                                        <FieldError className="pt-2">
+                                            {errors.teams}
+                                        </FieldError>
+                                    )}
                                     {team && team?.length > 0 ? (
                                         <div className="pt-2">
                                             <CardDescription className="ps-2 py-2">
@@ -433,8 +471,8 @@ export default function ProjectForm({
                                                     <Item
                                                         key={t.id}
                                                         variant="outline"
-                                                        size="xs"
-                                                        className="bg-background"
+                                                        size="sm"
+                                                        className="bg-background p-2"
                                                     >
                                                         <ItemContent>
                                                             <ItemTitle>

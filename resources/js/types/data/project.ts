@@ -41,5 +41,6 @@ export type ProjectStatusType = {
     project_id: string;
     name: string;
     position: number;
+    project: ProjectType;
     tasks: TaskType[]
 };

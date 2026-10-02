@@ -9,6 +9,7 @@ use App\Models\Status;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
 
 class UpdateProjectController extends Controller
 {
@@ -31,8 +32,17 @@ class UpdateProjectController extends Controller
                 $existingStatuses = Status::where('project_id', $project->id)->get()->pluck("name")->toArray();
 
                 $diffStatus = array_diff($existingStatuses, $statuses);
+
                 if (!empty($diffStatus)) {
-                    Status::where("project_id", $project->id)->whereIn("name", $diffStatus)->delete();
+                    $deletedStatuses = Status::where("project_id", $project->id)->whereIn("name", $diffStatus);
+
+                    if ((clone $deletedStatuses)->whereHas('tasks')->exists()) {
+                        throw ValidationException::withMessages([
+                            'status' => 'Status memiliki tugas terkait.'
+                        ]);
+                    }
+
+                    $deletedStatuses->delete();
                 }
 
                 foreach ($statuses as $index => $status) {
@@ -48,6 +58,8 @@ class UpdateProjectController extends Controller
             return redirect()
                 ->back()
                 ->with("success", "Berhasil mengubah data proyek.");
+        } catch (ValidationException $e) {
+            throw $e;
         } catch (\Exception $e) {
             Log::error("Error : " . $e->getMessage());
 
@@ -55,7 +67,7 @@ class UpdateProjectController extends Controller
                 ->back()
                 ->with(
                     "error",
-                    "terjadi kesalahan sistem. Silahkan coba lagi.",
+                    "Terjadi kesalahan sistem. Silahkan coba lagi.",
                 );
         }
     }

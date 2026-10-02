@@ -153,6 +153,9 @@ export function TaskKanban({
                             )}
                             <Button
                                 onClick={() => {
+                                    if (isEdit) {
+                                        setStatuses(initialStatus);
+                                    }
                                     setIsEdit((prev) => !prev);
                                 }}
                                 size="sm"
@@ -164,10 +167,9 @@ export function TaskKanban({
                         </div>
                     </CardAction>
                 </CardHeader>
-                <CardContent className="flex items-start gap-4 w-full flex-nowrap no-scrollbar overflow-x-auto pb-4">
+                <CardContent className="flex items-start gap-4 w-full flex-nowrap no-scrollbar overflow-x-auto pb-6">
                     <DragDropProvider onDragEnd={handleDragEnd}>
                         {statuses
-                            .sort((a, b) => a.position - b.position)
                             .map((status) => (
                                 <ProjectStatus
                                     key={status.id}

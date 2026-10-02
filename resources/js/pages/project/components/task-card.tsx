@@ -20,6 +20,7 @@ import { UseModalReturn } from "@/types/modal";
 import { useDraggable } from "@dnd-kit/react";
 import { Link } from "@inertiajs/react";
 import { FileText, MoreVertical, SquarePen, Trash2 } from "lucide-react";
+import { detail as taskDetail } from "@/actions/App/Http/Controllers/Task/ViewTaskController";
 
 export function TaskCard({
     task,
@@ -85,7 +86,7 @@ export function TaskCard({
                                 Edit
                             </DropdownMenuItem>
                             <DropdownMenuItem asChild>
-                                <Link href="#">
+                                <Link href={taskDetail({ id: task.id }).url}>
                                     <FileText />
                                     Detail
                                 </Link>
@@ -110,10 +111,10 @@ export function TaskCard({
                 <div className="flex justify-between items-center gap-2 w-full">
                     <Badge
                         className={cn("capitalize text-xs rounded-sm", {
-                            "text-blue-800": task.priority === "low",
-                            "text-yellow-800": task.priority === "medium",
-                            "text-red-800": task.priority === "high",
-                            "text-black/80": task.priority === "urgent",
+                            "text-blue-800 dark:text-blue-500": task.priority === "low",
+                            "text-yellow-800 dark:text-yellow-500": task.priority === "medium",
+                            "text-red-800 dark:text-red-500": task.priority === "high",
+                            "text-foreground": task.priority === "urgent",
                         })}
                         variant="outline"
                     >

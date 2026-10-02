@@ -34,11 +34,10 @@ export default function ProjectPage({
         const updated = { ...query, ...params };
 
         setQuery(updated as any);
-        const urlQuery = projectIndex({ query: updated });
 
         router.get(
-            urlQuery.url,
-            {},
+            url,
+            {   updated },
             {
                 preserveState: true,
                 preserveScroll: true,

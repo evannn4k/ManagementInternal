@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { MoreVertical, SquarePen, Trash2 } from "lucide-react";
+import { detail as taskDetail } from "@/actions/App/Http/Controllers/Task/ViewTaskController";
 
 export function ProjectStatus({
     status,
@@ -44,7 +45,7 @@ export function ProjectStatus({
             key={status.id}
             ref={ref}
             className={cn(
-                "w-58 flex-shrink-0 h-full flex-col gap-0 items-center justify-center transition-all ease-in-out duration-200",
+                "w-58 h-full gap-0 flex flex-col items-center justify-start transition-all ease-in-out duration-200",
                 isEdit ? "relative p-2" : "p-0",
             )}
         >
@@ -92,7 +93,7 @@ export function ProjectStatus({
                     </DropdownMenu>
                 </ItemActions>
             </ItemHeader>
-            <ItemContent className="p-0 flex flex-col gap-3 w-full">
+            <ItemContent className="p-0 flex-1 flex flex-col gap-3 w-full">
                 {status.tasks.map((task) => {
                     if (isEdit) {
                         return (
@@ -105,7 +106,10 @@ export function ProjectStatus({
                         );
                     } else {
                         return (
-                            <Link href={"/tasks/" + task.id} key={task.id}>
+                            <Link
+                                href={taskDetail({ id: task.id }).url}
+                                key={task.id}
+                            >
                                 <TaskCard
                                     task={task}
                                     isEdit={isEdit}

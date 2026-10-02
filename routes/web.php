@@ -15,6 +15,7 @@ use App\Http\Controllers\Task\ChangeStatusTaskController;
 use App\Http\Controllers\Task\CreateTaskController;
 use App\Http\Controllers\Task\DeleteTaskController;
 use App\Http\Controllers\Task\UpdateTaskController;
+use App\Http\Controllers\Task\ViewTaskController;
 use App\Http\Controllers\User\CreateUserController;
 use App\Http\Controllers\User\DeleteUserController;
 use App\Http\Controllers\User\UpdateUserController;
@@ -89,9 +90,9 @@ Route::middleware(["auth", "verified"])->group(function () {
             Route::post("/", CreateTaskController::class)->name("create");
             Route::put("/change-status", ChangeStatusTaskController::class)->name("change.status");
 
-            // Route::get("/{task}", [ViewTaskController::class, "detail"])->name(
-            //     "detail",
-            // );
+            Route::get("/{task}", [ViewTaskController::class, "detail"])->name(
+                "detail",
+            );
             Route::put("/{task}", UpdateTaskController::class)->name("update");
             Route::delete("/{task}", DeleteTaskController::class)->name(
                 "delete",
