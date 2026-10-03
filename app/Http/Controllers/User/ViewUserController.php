@@ -15,8 +15,8 @@ class ViewUserController extends Controller
     {
         $users = User::when($request->search, function ($query, $value) {
             $query
-                ->where("name", "like", "%$value%")
-                ->orWhere("email", "like", "%$value%");
+                ->where("name", "ilike", "%$value%")
+                ->orWhere("email", "ilike", "%$value%");
         })
             ->when($request->role, function ($query, $value) {
                 $query->whereHas("roles", function ($q) use ($value) {

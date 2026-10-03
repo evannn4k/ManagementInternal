@@ -35,15 +35,11 @@ export default function ProjectPage({
 
         setQuery(updated as any);
 
-        router.get(
-            url,
-            {   updated },
-            {
-                preserveState: true,
-                preserveScroll: true,
-                replace: true,
-            },
-        );
+        router.get(url, updated, {
+            preserveState: true,
+            preserveScroll: true,
+            replace: true,
+        });
     };
 
     cardData = {
@@ -94,11 +90,13 @@ export default function ProjectPage({
                 <ProjectSectionCard cardData={cardData} />
                 <ProjectToolbar url={url} updateQuery={updateQuery} />
                 <ProjectGrid modal={modal} projects={data.data} />
-                <PaginationPage
-                    updateQuery={updateQuery}
-                    links={data.links}
-                    meta={data.meta}
-                />
+                {data.data.length > 0 && (
+                    <PaginationPage
+                        updateQuery={updateQuery}
+                        links={data.links}
+                        meta={data.meta}
+                    />
+                )}
             </div>
         </>
     );

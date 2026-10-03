@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Activity, Plus, SquareKanban, Users } from "lucide-react";
+import { Activity, PackageOpen, Plus, SquareKanban, Users } from "lucide-react";
 import { ProjectType } from "@/types/data/project";
 import { Head, router } from "@inertiajs/react";
 import { useModal } from "@/hooks/use-modal";
@@ -15,13 +15,16 @@ import { ProjectDetailToolbar } from "./components/project-detail-toolbar";
 import { detail as projectDetail } from "@/actions/App/Http/Controllers/Project/ViewProjectController";
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Item, ItemContent, ItemDescription } from "@/components/ui/item";
 
 export default function ProjectPage({ project }: { project: ProjectType }) {
     const taskModal = useModal();
     const projectStatusModal = useModal();
     const [query, setQuery] = useState<{
         search: string;
-        status: string;
+        team: string;
+        task_view: string;
+        priority: string;
         per_page: number;
     }>();
 
@@ -32,15 +35,11 @@ export default function ProjectPage({ project }: { project: ProjectType }) {
 
         setQuery(updated as any);
 
-        router.get(
-            url,
-            { query: updated },
-            {
-                preserveState: true,
-                preserveScroll: true,
-                replace: true,
-            },
-        );
+        router.get(url, updated, {
+            preserveState: true,
+            preserveScroll: true,
+            replace: true,
+        });
     };
 
     const handleDeleteTask = (id: any) => {
@@ -105,13 +104,31 @@ export default function ProjectPage({ project }: { project: ProjectType }) {
                     <TabsContent className="flex flex-col gap-4" value="kanban">
                         <ProjectDetailToolbar
                             url={url}
+                            project={project}
                             updateQuery={updateQuery}
                         />
-                        <TaskKanban
-                            statuses={project.statuses}
-                            taskModal={taskModal}
-                            projectStatusModal={projectStatusModal}
-                        />
+                        {project.statuses
+                            .flatMap((status) => {
+                                return status.tasks.length;
+                            })
+                            .reduce((total, task) => total + task) > 0 ? (
+                            <TaskKanban
+                                statuses={project.statuses}
+                                taskModal={taskModal}
+                                projectStatusModal={projectStatusModal}
+                            />
+                        ) : (
+                            <Item>
+                                <ItemContent>
+                                    <div className="text-center flex flex-col items-center justify-center gap-2 py-4">
+                                        <PackageOpen />
+                                        <ItemDescription>
+                                            Tidak ada data proyek.
+                                        </ItemDescription>
+                                    </div>
+                                </ItemContent>
+                            </Item>
+                        )}
                     </TabsContent>
                     <TabsContent value="team">
                         Lorem ipsum dolor sit amet, consectetur adipisicing

@@ -9,12 +9,17 @@ import { Filter } from "@/components/filter";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Link } from "@inertiajs/react";
+import { ProjectType } from "@/types/data/project";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 
 export function ProjectDetailToolbar({
     url,
+    project,
     updateQuery,
 }: {
     url: string;
+    project: ProjectType;
     updateQuery: (params: Record<string, any>) => void;
 }) {
     const [search, setSearch] = useState("");
@@ -26,9 +31,9 @@ export function ProjectDetailToolbar({
     };
 
     const statusFilter = {
-        placeholder: "Semua Status",
-        key: "is_active",
-        options: ["aktif", "nonaktif"],
+        placeholder: "Anggota Team",
+        key: "team",
+        options: project.teams ? project.teams.map((t) => t.name) : [],
     };
 
     return (
@@ -65,6 +70,18 @@ export function ProjectDetailToolbar({
                         </div>
                     </div>
                     <div className="flex gap-2">
+                        <div className="flex items-center space-x-2">
+                            <Label htmlFor="my-task">Tugas Saya Saja</Label>
+                            <Switch
+                                id="my-task"
+                                onCheckedChange={(val: boolean) =>
+                                    updateQuery({
+                                        task_view: val ? "own" : "all",
+                                    })
+                                }
+                            />
+                        </div>
+
                         <Button variant="outline" asChild>
                             <Link href={url}>
                                 <RotateCcw /> Reset

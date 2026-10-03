@@ -38,17 +38,12 @@ export default function UserPage({
         const updated = { ...query, ...params };
 
         setQuery(updated as any);
-        const urlQuery = userIndex({ query: updated });
 
-        router.get(
-            urlQuery.url,
-            {},
-            {
-                preserveState: true,
-                preserveScroll: true,
-                replace: true,
-            },
-        );
+        router.get(url, updated, {
+            preserveState: true,
+            preserveScroll: true,
+            replace: true,
+        });
     };
 
     const handleDelete = (id: number) => {
@@ -97,7 +92,11 @@ export default function UserPage({
                     )}
                 </header>
                 <UserSectionCard cardData={cardData} />
-                <UserToolbar url={url} roles={roles} updateQuery={updateQuery} />
+                <UserToolbar
+                    url={url}
+                    roles={roles}
+                    updateQuery={updateQuery}
+                />
                 <UserTable
                     modal={modal}
                     data={data.data}

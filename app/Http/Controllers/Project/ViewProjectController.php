@@ -7,6 +7,7 @@ use App\Http\Resources\Project\ProjectTableResource;
 use App\Models\Project;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class ViewProjectController extends Controller
@@ -20,7 +21,10 @@ class ViewProjectController extends Controller
             "createdBy:id,name"
         ])->when($request->search, function ($query, $value) {
             $query
-                ->where("name", "like", "%$value%");
+                ->where("name", "ilike", "%$value%");
+        })->when($request->status, function ($query, $value) {
+            $query
+                ->where("status", $value);
         })->orderBy("created_at", "desc")->paginate($request->per_page ?? 10)
             ->withQueryString();
 
@@ -33,14 +37,34 @@ class ViewProjectController extends Controller
         );
     }
 
-    public function detail(Project $project)
+    public function detail(Request $request, Project $project)
     {
         $project->load(
             [
                 "pic:id,name,position",
                 "pic.roles:id,name",
                 "teams",
-                "statuses" => fn($q) => $q->orderBy('position', 'asc'),
+                "statuses" => function ($query) {
+                    return $query->orderBy('position', 'asc');
+                },
+                "statuses.tasks" => function ($query) use ($request) {
+                    return $query->when($request->search, function ($q, $value) {
+                        return $q->where("title", "ilike", "%$value%");
+                    })->when($request->priority, function ($q, $value) {
+                        return $q->where("priority", $value);
+                    })->when($request->team, function ($q, $value) {
+                        return $q->whereHas("assigned", function ($gitt) use ($value) {
+                            return $t->where("name", "ilike", "%$value%");
+                        });
+                    })->when($request->task_view, function ($q, $value) {
+                        if ($value != "own") return $q;
+
+                        return $q->whereHas("assigned", function ($t) {
+                            $id = Auth::user()->id;
+                            return $t->where("id", $id);
+                        });
+                    });
+                },
                 "statuses.tasks.assigned:id,name,position",
                 "createdBy"
             ]
