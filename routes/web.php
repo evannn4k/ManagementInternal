@@ -5,6 +5,7 @@ use App\Http\Controllers\Project\DeleteProjectController;
 use App\Http\Controllers\Project\DeleteStatusProjectController;
 use App\Http\Controllers\Project\UpdateProjectController;
 use App\Http\Controllers\Project\UpdateStatusProjectController;
+use App\Http\Controllers\Project\UpdateTeamProjectController;
 use App\Http\Controllers\Project\ViewProjectController;
 use App\Http\Controllers\Role\CreateRoleController;
 use App\Http\Controllers\Role\DeleteRoleController;
@@ -75,6 +76,7 @@ Route::middleware(["auth", "verified"])->group(function () {
                 "delete",
             )->middleware("can:project.delete");
 
+            Route::put("/team/{project}", UpdateTeamProjectController::class)->name("team.update")->middleware("can:project.edit");
             Route::put("/status/{status}", UpdateStatusProjectController::class)->name("status.update")->middleware("can:project.edit");
             Route::delete("/status/{status}", DeleteStatusProjectController::class)->name("status.delete")->middleware("can:project.edit");
         });

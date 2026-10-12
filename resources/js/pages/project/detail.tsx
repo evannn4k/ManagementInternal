@@ -16,8 +16,11 @@ import { detail as projectDetail } from "@/actions/App/Http/Controllers/Project/
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Item, ItemContent, ItemDescription } from "@/components/ui/item";
+import { Card } from "@/components/ui/card";
+import ProjectTeam from "./components/project-team";
+import { UserWithRole } from "@/types/data/user";
 
-export default function ProjectPage({ project }: { project: ProjectType }) {
+export default function ProjectPage({ project, users }: { project: ProjectType, users: UserWithRole[] }) {
     const taskModal = useModal();
     const projectStatusModal = useModal();
     const [query, setQuery] = useState<{
@@ -89,7 +92,7 @@ export default function ProjectPage({ project }: { project: ProjectType }) {
                     </div>
                 </header>
                 <ProjectDetailData project={project} />
-                <Tabs defaultValue="kanban" className="gap-4">
+                <Tabs defaultValue="team" className="gap-4">
                     <TabsList className="bg-muted/50 p-2">
                         <TabsTrigger value="kanban">
                             <SquareKanban /> Kanban Board
@@ -102,39 +105,38 @@ export default function ProjectPage({ project }: { project: ProjectType }) {
                         </TabsTrigger>
                     </TabsList>
                     <TabsContent className="flex flex-col gap-4" value="kanban">
-                        <ProjectDetailToolbar
-                            url={url}
-                            project={project}
-                            updateQuery={updateQuery}
-                        />
-                        {project.statuses
-                            .flatMap((status) => {
-                                return status.tasks.length;
-                            })
-                            .reduce((total, task) => total + task) > 0 ? (
-                            <TaskKanban
-                                statuses={project.statuses}
-                                taskModal={taskModal}
-                                projectStatusModal={projectStatusModal}
+                        <Card className="bg-muted/50 gap-4">
+                            <ProjectDetailToolbar
+                                url={url}
+                                project={project}
+                                updateQuery={updateQuery}
                             />
-                        ) : (
-                            <Item>
-                                <ItemContent>
-                                    <div className="text-center flex flex-col items-center justify-center gap-2 py-4">
-                                        <PackageOpen />
-                                        <ItemDescription>
-                                            Tidak ada data proyek.
-                                        </ItemDescription>
-                                    </div>
-                                </ItemContent>
-                            </Item>
-                        )}
+                            {project.statuses
+                                .flatMap((status) => {
+                                    return status.tasks.length;
+                                })
+                                .reduce((total, task) => total + task) > 0 ? (
+                                <TaskKanban
+                                    statuses={project.statuses}
+                                    taskModal={taskModal}
+                                    projectStatusModal={projectStatusModal}
+                                />
+                            ) : (
+                                <Item>
+                                    <ItemContent>
+                                        <div className="text-center flex flex-col items-center justify-center gap-2 py-4">
+                                            <PackageOpen />
+                                            <ItemDescription>
+                                                Tidak ada data proyek.
+                                            </ItemDescription>
+                                        </div>
+                                    </ItemContent>
+                                </Item>
+                            )}
+                        </Card>
                     </TabsContent>
                     <TabsContent value="team">
-                        Lorem ipsum dolor sit amet, consectetur adipisicing
-                        elit. Harum temporibus laborum fugit, ea perspiciatis
-                        labore culpa? Itaque omnis tempora quod, ipsum expedita
-                        eos at nobis, architecto adipisci, voluptatum quis non?
+                        <ProjectTeam teams={project.teams} users={users} projectId={project.id}/>
                     </TabsContent>
                     <TabsContent value="activity">
                         Lorem ipsum dolor sit amet consectetur adipisicing elit.

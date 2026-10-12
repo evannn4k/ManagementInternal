@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Project\UpdateProjectRequest;
 use App\Models\Project;
 use App\Models\Status;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -50,6 +51,22 @@ class UpdateProjectController extends Controller
                         ['project_id' => $project->id, "name" => $status],
                         ["position" => $index]
                     );
+                }
+
+                $statusIds = $project->statuses->pluck("id")->toArray();
+                $oldTeams = $project->teams()->get()->pluck('id')->toArray();
+                $deletedTeamIds = array_diff($oldTeams, $teams);
+
+                if (!empty($deletedTeamIds)) {
+                    $hasTask = User::whereIn("id", $deletedTeamIds)->whereHas("tasks", function ($query) use ($statusIds) {
+                        return $query->whereIn("status_id", $statusIds);
+                    })->exists();
+
+                    if ($hasTask) {
+                        throw ValidationException::withMessages([
+                            'teams' => 'Anggota tim memiliki tugas terkait.'
+                        ]);
+                    }
                 }
 
                 $project->teams()->sync($teams);

@@ -270,6 +270,13 @@ export default function ProjectForm({
                     modal.closeModal();
                     reset();
                 },
+                onError: (e) => {
+                    if (e.status) {
+                        setStatus(modal.data?.statuses);
+                    } else if (e.teams) {
+                        setTeam(modal.data?.teams);
+                    }
+                },
             });
         } else {
             post("/project", {
@@ -443,7 +450,7 @@ export default function ProjectForm({
                                         </Badge>
                                     </CardAction>
                                     <CardTitle className="flex items-center gap-2">
-                                        <UserRoundPlus /> Anggota Team
+                                        <UserRoundPlus /> Anggota Tim
                                     </CardTitle>
                                     <CardDescription className="text-xs">
                                         Tetapkan sekarang (opsional)

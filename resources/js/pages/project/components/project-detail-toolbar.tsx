@@ -38,58 +38,53 @@ export function ProjectDetailToolbar({
 
     return (
         <>
-            <Card className="bg-muted/50 p-2">
-                <CardContent className="p-0 flex justify-between flex-col md:flex-row gap-2">
-                    <div className="flex flex-col md:flex-row gap-2">
-                        <form
-                            onSubmit={(e) => {
-                                e.preventDefault();
-                                updateQuery({ search: search });
-                            }}
-                        >
-                            <InputGroup className="max-w-xs bg-card">
-                                <InputGroupInput
-                                    value={search}
-                                    onChange={(e) => setSearch(e.target.value)}
-                                    placeholder="Search..."
-                                />
-                                <InputGroupAddon className="cursor-pointer">
-                                    <Search />
-                                </InputGroupAddon>
-                            </InputGroup>
-                        </form>
-                        <div className="flex gap-2">
-                            <Filter
-                                updateQuery={updateQuery}
-                                data={statusFilter}
+            <CardContent className="flex justify-between flex-col md:flex-row gap-2">
+                <div className="flex flex-col md:flex-row gap-2">
+                    <form
+                        onSubmit={(e) => {
+                            e.preventDefault();
+                            updateQuery({ search: search });
+                        }}
+                    >
+                        <InputGroup className="max-w-xs bg-card">
+                            <InputGroupInput
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
+                                placeholder="Search..."
                             />
-                            <Filter
-                                updateQuery={updateQuery}
-                                data={priorityFilter}
-                            />
-                        </div>
-                    </div>
+                            <InputGroupAddon className="cursor-pointer">
+                                <Search />
+                            </InputGroupAddon>
+                        </InputGroup>
+                    </form>
                     <div className="flex gap-2">
-                        <div className="flex items-center space-x-2">
-                            <Label htmlFor="my-task">Tugas Saya Saja</Label>
-                            <Switch
-                                id="my-task"
-                                onCheckedChange={(val: boolean) =>
-                                    updateQuery({
-                                        task_view: val ? "own" : "all",
-                                    })
-                                }
-                            />
-                        </div>
-
-                        <Button variant="outline" asChild>
-                            <Link href={url}>
-                                <RotateCcw /> Reset
-                            </Link>
-                        </Button>
+                        <Filter updateQuery={updateQuery} data={statusFilter} />
+                        <Filter
+                            updateQuery={updateQuery}
+                            data={priorityFilter}
+                        />
                     </div>
-                </CardContent>
-            </Card>
+                </div>
+                <div className="flex gap-2">
+                    <div className="flex items-center space-x-2">
+                        <Label htmlFor="my-task">Tugas Saya Saja</Label>
+                        <Switch
+                            id="my-task"
+                            onCheckedChange={(val: boolean) =>
+                                updateQuery({
+                                    task_view: val ? "own" : "all",
+                                })
+                            }
+                        />
+                    </div>
+
+                    <Button variant="outline" asChild>
+                        <Link href={url}>
+                            <RotateCcw /> Reset
+                        </Link>
+                    </Button>
+                </div>
+            </CardContent>
         </>
     );
 }

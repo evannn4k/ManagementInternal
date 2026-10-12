@@ -53,7 +53,7 @@ export function ProjectGrid({
 }) {
     return (
         <>
-            {projects.length > 0 ? (
+            {projects && projects.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {projects.map((project, i) => (
                         <Link

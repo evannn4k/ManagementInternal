@@ -132,56 +132,53 @@ export function TaskKanban({
 
     return (
         <>
-            <Card className="p-0 bg-muted/50 gap-2">
-                <CardHeader className="pt-4">
-                    <CardTitle>Kanban Tugas</CardTitle>
-                    <CardAction>
-                        <div className="flex items-center gap-2">
-                            {isEdit && (
-                                <Button
-                                    onClick={handleSaveChangeStatus}
-                                    size="sm"
-                                    disabled={
-                                        (selectedTask &&
-                                            selectedTask?.length <= 0) ||
-                                        processing
-                                    }
-                                >
-                                    {processing ? <Spinner /> : <Save />}
-                                    Simpan
-                                </Button>
-                            )}
+            <CardHeader>
+                <CardTitle className="">Kanban Tugas</CardTitle>
+                <CardAction>
+                    <div className="flex items-center gap-2">
+                        {isEdit && (
                             <Button
-                                onClick={() => {
-                                    if (isEdit) {
-                                        setStatuses(initialStatus);
-                                    }
-                                    setIsEdit((prev) => !prev);
-                                }}
+                                onClick={handleSaveChangeStatus}
                                 size="sm"
-                                variant={isEdit ? "destructive" : "default"}
+                                disabled={
+                                    (selectedTask &&
+                                        selectedTask?.length <= 0) ||
+                                    processing
+                                }
                             >
-                                {isEdit ? <X /> : <GripVertical />}
-                                {isEdit ? "Batal" : "Edit"}
+                                {processing ? <Spinner /> : <Save />}
+                                Simpan
                             </Button>
-                        </div>
-                    </CardAction>
-                </CardHeader>
-                <CardContent className="flex items-start gap-4 w-full flex-nowrap no-scrollbar overflow-x-auto pb-6">
-                    <DragDropProvider onDragEnd={handleDragEnd}>
-                        {statuses
-                            .map((status) => (
-                                <ProjectStatus
-                                    key={status.id}
-                                    status={status}
-                                    isEdit={isEdit}
-                                    taskModal={taskModal}
-                                    projectStatusModal={projectStatusModal}
-                                />
-                            ))}
-                    </DragDropProvider>
-                </CardContent>
-            </Card>
+                        )}
+                        <Button
+                            onClick={() => {
+                                if (isEdit) {
+                                    setStatuses(initialStatus);
+                                }
+                                setIsEdit((prev) => !prev);
+                            }}
+                            size="sm"
+                            variant={isEdit ? "destructive" : "default"}
+                        >
+                            {isEdit ? <X /> : <GripVertical />}
+                            {isEdit ? "Batal" : "Edit"}
+                        </Button>
+                    </div>
+                </CardAction>
+            </CardHeader>
+            <CardContent className="flex items-start gap-4 w-full flex-nowrap no-scrollbar overflow-x-auto">
+                <DragDropProvider onDragEnd={handleDragEnd}>
+                    {statuses.map((status) => (
+                        <ProjectStatus
+                            key={status.id}
+                            status={status}
+                            isEdit={isEdit}
+                            taskModal={taskModal}
+                            projectStatusModal={projectStatusModal}
+                        />
+                    ))}
+                </DragDropProvider>
+            </CardContent>
         </>
     );
 }

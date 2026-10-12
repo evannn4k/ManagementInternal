@@ -43,7 +43,8 @@ class ViewProjectController extends Controller
             [
                 "pic:id,name,position",
                 "pic.roles:id,name",
-                "teams",
+                "teams:id,name,position",
+                "teams.roles:id,name",
                 "statuses" => function ($query) {
                     return $query->orderBy('position', 'asc');
                 },
@@ -53,7 +54,7 @@ class ViewProjectController extends Controller
                     })->when($request->priority, function ($q, $value) {
                         return $q->where("priority", $value);
                     })->when($request->team, function ($q, $value) {
-                        return $q->whereHas("assigned", function ($gitt) use ($value) {
+                        return $q->whereHas("assigned", function ($t) use ($value) {
                             return $t->where("name", "ilike", "%$value%");
                         });
                     })->when($request->task_view, function ($q, $value) {
@@ -70,9 +71,11 @@ class ViewProjectController extends Controller
             ]
         );
 
+        $users = User::select("id", "name", "position")->get();
+
         return Inertia::render(
             "project/detail",
-            compact("project"),
+            compact("project", "users"),
         );
     }
 }

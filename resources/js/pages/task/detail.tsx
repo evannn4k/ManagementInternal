@@ -138,7 +138,7 @@ export default function ProjectPage({ task }: { task: TaskType }) {
                             <CardHeader className="border-b">
                                 <CardTitle className="flex items-center gap-2">
                                     <FileText />
-                                    Meta Tata Tugas
+                                    Data Tugas
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="flex flex-col gap-4">

@@ -49,7 +49,7 @@ export function ProjectStatus({
                 isEdit ? "relative p-2" : "p-0",
             )}
         >
-            {isEdit && <Skeleton className="absolute h-full w-full" />}
+            {isEdit && <Skeleton className="absolute h-full w-full rounded-xl" />}
             <ItemHeader className="p-2 w-full flex justify-between">
                 <ItemTitle className="capitalize text-base">
                     <span className="text-primary text-lg">•</span>{" "}

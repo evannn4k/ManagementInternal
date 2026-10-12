@@ -50,7 +50,7 @@ export function SelectTeam({
                         <CommandInput placeholder="Pilih nama atau posisi" />
                         <CommandList>
                             <CommandEmpty>Tidak ada data.</CommandEmpty>
-                            {users.length > 0 && (
+                            {users && users.length > 0 && (
                                 <CommandGroup heading="User">
                                     {users.map((user: UserWithRole) => (
                                         <CommandItem

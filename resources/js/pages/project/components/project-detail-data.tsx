@@ -63,9 +63,7 @@ export function ProjectDetailData({ project }: { project: ProjectType }) {
     return (
         <Card className="bg-muted/50">
             <CardContent className="space-y-4">
-                {/* Baris atas: PIC | Git | Prioritas | Deadline */}
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-0 lg:divide-x">
-                    {/* PIC */}
                     <div className="flex items-center gap-3 lg:pr-6">
                         <Avatar className="size-11 border">
                             <AvatarFallback className="bg-primary/10 font-semibold text-primary">
@@ -97,7 +95,6 @@ export function ProjectDetailData({ project }: { project: ProjectType }) {
                         </div>
                     </div>
 
-                    {/* Git */}
                     <div className="flex items-center gap-3 lg:px-6">
                         <IconBox>
                             <GitBranch className="size-5" />
@@ -116,7 +113,6 @@ export function ProjectDetailData({ project }: { project: ProjectType }) {
                         </div>
                     </div>
 
-                    {/* Prioritas */}
                     <div className="flex items-center gap-3 lg:px-6">
                         <IconBox>
                             <Target className="size-5" />
@@ -132,7 +128,6 @@ export function ProjectDetailData({ project }: { project: ProjectType }) {
                         </div>
                     </div>
 
-                    {/* Deadline */}
                     <div className="flex items-center gap-3 lg:pl-6">
                         <IconBox>
                             <CalendarClock className="size-5" />
@@ -148,7 +143,6 @@ export function ProjectDetailData({ project }: { project: ProjectType }) {
 
                 <Separator />
 
-                {/* Objektif */}
                 <p className="text-sm">
                     <span className="mr-2 font-medium text-muted-foreground">
                         Deskripsi :
@@ -158,7 +152,6 @@ export function ProjectDetailData({ project }: { project: ProjectType }) {
                     </span>
                 </p>
 
-                {/* Footer: Tim + Repo */}
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <div className="flex items-center gap-3">
                         <SectionLabel>Tim ({teams.length})</SectionLabel>
