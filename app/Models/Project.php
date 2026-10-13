@@ -35,4 +35,14 @@ class Project extends Model
     {
         return $this->hasMany(ActivityProject::class);
     }
+
+    public function defaultStatus()
+    {
+        return $this->hasOne(Status::class)->oldest("position");
+    }
+
+    public function completedStatus()
+    {
+        return $this->hasOne(Status::class)->latest("position");
+    }
 }

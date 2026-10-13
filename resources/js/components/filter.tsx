@@ -16,7 +16,7 @@ export function Filter({
 }) {
     return (
         <Select onValueChange={(value) => updateQuery({ [data.key]: value })}>
-            <SelectTrigger className="">
+            <SelectTrigger>
                 <SelectValue placeholder={data.placeholder} />
             </SelectTrigger>
             <SelectContent>

@@ -361,7 +361,9 @@ export default function ProjectForm({
                                         </span>
                                     </CardTitle>
                                     <CardDescription className="text-xs">
-                                        Tetapkan urutan status untuk tugas
+                                        Status pertama akan menjadi status
+                                        bawaan dan status terakhir akan menjadi
+                                        status selesai.
                                     </CardDescription>
                                 </CardHeader>
                                 <CardContent>
@@ -401,7 +403,7 @@ export default function ProjectForm({
                                                 Status yang ditetapkan :{" "}
                                             </CardDescription>
                                             <div className="flex w-full max-w-md flex-col gap-2">
-                                                {status.map((s) => (
+                                                {status.map((s, i) => (
                                                     <Item
                                                         key={s}
                                                         variant="outline"
@@ -411,6 +413,18 @@ export default function ProjectForm({
                                                         <ItemContent>
                                                             <ItemTitle>
                                                                 {s}
+                                                                {i === 0 && (
+                                                                    <Badge variant="outline">
+                                                                        Bawaan
+                                                                    </Badge>
+                                                                )}
+                                                                {i !== 0 && i ===
+                                                                    status.length -
+                                                                        1 && (
+                                                                    <Badge variant="green">
+                                                                        Selesai
+                                                                    </Badge>
+                                                                )}
                                                             </ItemTitle>
                                                         </ItemContent>
                                                         <ItemActions>

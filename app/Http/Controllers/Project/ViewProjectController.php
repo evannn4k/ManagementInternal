@@ -25,6 +25,9 @@ class ViewProjectController extends Controller
         })->when($request->status, function ($query, $value) {
             $query
                 ->where("status", $value);
+        })->when($request->priority, function ($query, $value) {
+            $query
+                ->where("priority", $value);
         })->orderBy("created_at", "desc")->paginate($request->per_page ?? 10)
             ->withQueryString();
 

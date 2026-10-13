@@ -21,10 +21,8 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { cn, formatDate } from "@/lib/utils";
 import { Item, ItemContent } from "@/components/ui/item";
-import TaskForm from "../project/components/task-form";
+import TaskForm from "./components/task-form";
 import { useModal } from "@/hooks/use-modal";
-import { DeleteAlert } from "@/components/delete-alert";
-import deleteTask from "@/actions/App/Http/Controllers/Task/DeleteTaskController";
 
 export default function ProjectPage({ task }: { task: TaskType }) {
     const modal = useModal();
@@ -78,24 +76,10 @@ export default function ProjectPage({ task }: { task: TaskType }) {
         },
     ];
 
-    const handleDelete = (id: any) => {
-        router.delete(deleteTask({ id: id }).url, {
-            onSuccess: () => {
-                router.reload();
-            },
-        });
-    };
-
     return (
         <>
             <Head title="Project" />
             <TaskForm modal={modal} project={task.status.project} />
-            <DeleteAlert
-                modal={modal}
-                title="Hapus data status"
-                description="Data status yang telah dihapus dapat dikembalikan."
-                handleDelete={handleDelete}
-            />
             <div className="p-4 md:p-6 flex flex-col gap-4">
                 <header className="flex justify-between items-start md:items-center flex-col md:flex-row gap-4 md:gap-8">
                     <div className="flex flex-col gap-2">
@@ -104,12 +88,6 @@ export default function ProjectPage({ task }: { task: TaskType }) {
                         </h1>
                     </div>
                     <div className="flex items-center gap-2">
-                        <Button
-                            variant="destructive"
-                            onClick={() => modal.openDelete(task.id)}
-                        >
-                            <Trash /> Hapus
-                        </Button>
                         <Button onClick={() => modal.openEdit(task)}>
                             <PenSquare /> Edit
                         </Button>

@@ -13,7 +13,7 @@ class DeleteTaskController extends Controller
     /**
      * Handle the incoming request.
      */
-    public function __invoke(Task $task)
+    public function __invoke(Task $task, Request $request)
     {
         try {
             if ($task->file) {
@@ -23,7 +23,7 @@ class DeleteTaskController extends Controller
             $task->delete();
 
             return redirect()
-                ->route('project.detail', $task->status->project->id)
+                ->back()
                 ->with("success", "Berhasil menghapus tugas.");
         } catch (\Exception $e) {
             Log::error("Error : " . $e->getMessage());

@@ -20,7 +20,18 @@ import { MenuBar } from "./menu-bar";
 import TextAlign from "@tiptap/extension-text-align";
 import StarterKit from "@tiptap/starter-kit";
 import Highlight from "@tiptap/extension-highlight";
-import Heading from "@tiptap/extension-heading";
+import { Button } from "./ui/button";
+import { useState } from "react";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import {
+    Command,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
+    CommandList,
+} from "./ui/command";
+import { Plus } from "lucide-react";
 
 export default function FormField({
     icon: Icon,
@@ -45,6 +56,7 @@ export default function FormField({
     className,
 }: FormFieldProps) {
     if (hidden) return null;
+    const [open, setOpen] = useState(false);
 
     const renderInput = () => {
         switch (type) {
@@ -111,6 +123,54 @@ export default function FormField({
                         rows={3}
                     />
                 );
+            case "search":
+                return (
+                    <>
+                        <Button
+                            aria-invalid={Boolean(error)}
+                            className={cn(className, "!justify-start")}
+                            type="button"
+                            variant="input"
+                            onClick={() => setOpen(true)}
+                        >
+                            <Plus /> {value?.label ? value?.label : placeholder}
+                        </Button>
+                        <Popover open={open} onOpenChange={setOpen}>
+                            <PopoverTrigger />
+                            <PopoverContent
+                                align="end"
+                                className="p-0 bg-transparent border-none"
+                            >
+                                <Command className="rounded-lg border">
+                                    <CommandInput placeholder="Pilih nama atau posisi" />
+                                    <CommandList>
+                                        <CommandEmpty>
+                                            Tidak ada data.
+                                        </CommandEmpty>
+                                        {options.length > 1 && (
+                                            <CommandGroup heading={name}>
+                                                {options.map((option) => (
+                                                    <CommandItem
+                                                        key={option.value}
+                                                        value={
+                                                            option.label as string
+                                                        }
+                                                        onSelect={(val) => {
+                                                            setOpen(false);
+                                                            setData(option);
+                                                        }}
+                                                    >
+                                                        {option.label}
+                                                    </CommandItem>
+                                                ))}
+                                            </CommandGroup>
+                                        )}
+                                    </CommandList>
+                                </Command>
+                            </PopoverContent>
+                        </Popover>
+                    </>
+                );
             case "radio-group":
                 const stringValue =
                     value !== undefined && value !== null ? String(value) : "";
@@ -147,7 +207,10 @@ export default function FormField({
                                 <FieldLabel
                                     htmlFor={optionValStr}
                                     key={optionValStr}
-                                    className={option.className}
+                                    className={cn(
+                                        option.className,
+                                        "bg-muted/50 bg-background dark:bg-input/30",
+                                    )}
                                 >
                                     <Field
                                         className="!m-0 !p-2"
@@ -223,7 +286,10 @@ export default function FormField({
             )}
             data-invalid={Boolean(error)}
         >
-            <FieldLabel htmlFor="name" className="flex items-center gap-2 capitalize">
+            <FieldLabel
+                htmlFor="name"
+                className="flex items-center gap-2 capitalize"
+            >
                 {Icon && <Icon className="size-4" />}
                 {label}
                 {required && <span className="text-destructive">*</span>}

@@ -20,7 +20,7 @@ export function SelectTeam({
     users,
     className,
     setTeam,
-    error
+    error,
 }: {
     users: UserWithRole[];
     className?: string;
@@ -32,7 +32,7 @@ export function SelectTeam({
     return (
         <>
             <Button
-                aria-invalid={error}
+                aria-invalid="true"
                 className={className}
                 type="button"
                 variant="outline"

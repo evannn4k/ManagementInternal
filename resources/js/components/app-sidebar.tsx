@@ -27,6 +27,7 @@ import type { NavItem } from "@/types";
 import { index as userIndex } from "@/routes/user";
 import { index as roleIndex } from "@/routes/role";
 import { index as projectIndex } from "@/routes/project";
+import { index as taskIndex } from "@/routes/task";
 
 const navigationNavItems: NavItem[] = [
     {
@@ -35,33 +36,33 @@ const navigationNavItems: NavItem[] = [
         icon: LayoutGrid,
     },
     {
-        title: "Project",
+        title: "Proyek",
         href: projectIndex(),
         icon: FolderOpen,
     },
     {
-        title: "Task",
-        href: dashboard(),
+        title: "Tugas",
+        href: taskIndex(),
         icon: ClipboardCheck,
     },
 ];
 
 const administrationNavItems: NavItem[] = [
     {
-        title: "User Management",
+        title: "User Manajemen",
         href: userIndex(),
         icon: UsersRound,
         permission: "user.view",
     },
     {
-        title: "Role & Permission",
+        title: "Peran & Perizinan",
         href: roleIndex(),
         icon: ShieldCheck,
         permission: "role.manage",
     },
     {
-        title: "Setting",
-        href: dashboard(),
+        title: "Setelan",
+        href: "/settings/profile",
         icon: Settings,
     },
 ];

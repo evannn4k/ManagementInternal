@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Task;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Task\CreateTaskRequest;
+use App\Models\Project;
 use App\Models\Task;
 use App\Services\FileService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
 
 class CreateTaskController extends Controller
 {
@@ -30,6 +32,18 @@ class CreateTaskController extends Controller
                     unset($credentials['file']);
                 }
 
+                $teamIds = Project::whereHas("statuses", function ($query) use ($credentials) {
+                    return $query->where("id", $credentials['status_id']);
+                })->first()->teams()->pluck("id")->toArray();
+
+                $diffTeam = array_diff($assigned, $teamIds);
+
+                if ($diffTeam) {
+                    throw ValidationException::withMessages([
+                        'assigned' => 'Anggota tim tidak valid.'
+                    ]);
+                }
+
                 $task = Task::create($credentials);
 
                 $task->assigned()->sync($assigned);
@@ -38,6 +52,8 @@ class CreateTaskController extends Controller
             return redirect()
                 ->back()
                 ->with("success", "Berhasil menambah data tugas baru.");
+        } catch (ValidationException $e) {
+            throw $e;
         } catch (\Exception $e) {
             Log::error("Error : " . $e->getMessage());
 

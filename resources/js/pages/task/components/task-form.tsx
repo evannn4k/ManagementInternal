@@ -6,7 +6,7 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { FieldDescription, FieldSet } from "@/components/ui/field";
+import { FieldDescription, FieldError, FieldSet } from "@/components/ui/field";
 import {
     ChartNoAxesCombined,
     CodeXml,
@@ -35,7 +35,7 @@ import {
     CardTitle,
 } from "@/components/ui/card";
 import { UserWithRole } from "@/types/data/user";
-import { SelectTeam } from "./select-team";
+import { SelectTeam } from "../../project/components/select-team";
 import { Badge } from "@/components/ui/badge";
 import {
     InputGroup,
@@ -50,6 +50,7 @@ import {
 } from "@/components/ui/item";
 import { IconBox } from "@/components/icon";
 import { ProjectType } from "@/types/data/project";
+import { cn } from "@/lib/utils";
 
 interface TaskFormData {
     title: string;
@@ -65,30 +66,54 @@ interface TaskFormData {
 export default function TaskForm({
     modal,
     project,
+    projects,
 }: {
     modal: UseModalReturn;
-    project: ProjectType;
+    project?: ProjectType;
+    projects?: any[];
 }) {
     const isEdit = modal.isOpen("edit");
     const isOpenModal = modal.isOpen("create") || isEdit;
     const [assigned, setAssigned] = useState<UserWithRole[] | undefined>();
     const [label, setLabel] = useState<string[] | undefined>();
-    const [inputLabel, setInputLabel] = useState<string | undefined>();
+    const [inputLabel, setInputLabel] = useState<string | undefined>("");
+    const [selectedProject, setSelectedProject] = useState<
+        { label: string; value: string } | undefined
+    >();
 
-    const { post, put, errors, data, setData, processing, reset, clearErrors } =
-        useForm<TaskFormData>({
-            title: "",
-            description: "",
-            status_id: "",
-            priority: "",
-            due_date: "",
-            file: "",
-            label: [],
-            assigned: [],
-        });
+    const {
+        post,
+        put,
+        errors,
+        data,
+        setData,
+        processing,
+        reset,
+        clearErrors,
+        transform,
+    } = useForm<TaskFormData>({
+        title: "",
+        description: "",
+        status_id: "",
+        priority: "",
+        due_date: "",
+        file: "",
+        label: [],
+        assigned: [],
+    });
+
+    useEffect(() => {
+        if (errors.assigned) {
+            setAssigned([]);
+        } else if (errors.label) {
+            setLabel([]);
+        }
+    }, [errors.assigned, errors.label]);
 
     useEffect(() => {
         if (isOpenModal) {
+            setAssigned(isEdit ? modal.data.assigned : []);
+            setLabel(isEdit ? modal.data.label : []);
             setData((prevData) => ({
                 ...prevData,
                 title: isEdit ? modal.data.title : "",
@@ -97,8 +122,6 @@ export default function TaskForm({
                 priority: isEdit ? modal.data.priority : "",
                 due_date: isEdit ? modal.data.due_date : "",
             }));
-            setAssigned(isEdit ? modal.data.assigned : []);
-            setLabel(isEdit ? modal.data.label : []);
         } else {
             reset();
             setLabel([]);
@@ -150,12 +173,32 @@ export default function TaskForm({
             error: errors.status_id,
             value: data.status_id,
             type: "select",
-            options: project.statuses.map((status) => ({
-                label: status.name,
-                value: status.id,
-            })),
+            options: project
+                ? project.statuses.map((status) => ({
+                      label: status.name,
+                      value: status.id,
+                  }))
+                : [],
             required: true,
             placeholder: "Pilih status tugas",
+            hidden: Boolean(!project && projects) || isEdit,
+        },
+        {
+            label: "Project",
+            name: "status_id",
+            error: errors.status_id,
+            value: selectedProject,
+            type: "search",
+            options: projects
+                ? projects.map((project) => ({
+                      label: project.name,
+                      value: project.default_status.id,
+                  }))
+                : [],
+            setData: setSelectedProject,
+            required: true,
+            placeholder: "Pilih status tugas",
+            hidden: Boolean(project && !projects) || isEdit,
         },
         {
             label: isEdit ? "File" : "Ganti File",
@@ -163,7 +206,7 @@ export default function TaskForm({
             onChange: handleChange,
             error: errors.file,
             type: "file",
-            col: 2,
+            col: isEdit ? 1 : 2,
             description: "Maksimal 10MB",
         },
         {
@@ -207,7 +250,6 @@ export default function TaskForm({
             error: errors.description,
             value: data.description,
             type: "rich-editor",
-            required: true,
             setData: setData,
             col: 2,
         },
@@ -247,9 +289,12 @@ export default function TaskForm({
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
-        setData((prev) => {
+        transform((prev) => {
             return {
                 ...prev,
+                status_id: selectedProject
+                    ? selectedProject?.value
+                    : prev.status_id,
                 label: label ?? [],
                 assigned: assigned?.map((user) => user.id) ?? [],
             };
@@ -279,9 +324,7 @@ export default function TaskForm({
             <AlertDialogContent className="!max-w-4xl max-h-[90vh] overflow-y-auto no-scrollbar">
                 <form onSubmit={handleSubmit}>
                     <div className="flex items-center gap-4">
-                        <IconBox>
-                            {isEdit ? <PenSquare/> : <Plus/>}
-                        </IconBox>
+                        <IconBox>{isEdit ? <PenSquare /> : <Plus />}</IconBox>
                         <AlertDialogHeader>
                             <AlertDialogTitle>
                                 {isEdit ? "Edit Tugas" : "Buat Tugas Baru"}
@@ -299,19 +342,32 @@ export default function TaskForm({
                         <FieldSet className="col-span-1 md:col-span-3">
                             <FormSection col={2}>
                                 {mainFields.map((field) => (
-                                    <FormField key={field.name} {...field} />
+                                    <FormField
+                                        key={field.name + field.label}
+                                        {...field}
+                                    />
                                 ))}
                             </FormSection>
                         </FieldSet>
                         <div className="col-span-1 md:col-span-2 flex flex-col gap-4">
                             <Card className="bg-muted/50">
                                 <CardHeader>
-                                    <CardTitle className="flex items-center gap-2">
+                                    <CardTitle
+                                        className={cn(
+                                            "flex items-center gap-2",
+                                            errors.label && "text-destructive",
+                                        )}
+                                    >
+                                        {" "}
                                         <Tag className="text-default" /> Label
                                     </CardTitle>
-                                    <CardDescription className="text-xs">
-                                        Daftar tag tugas ini
-                                    </CardDescription>
+                                    {Boolean(errors.label) ? (
+                                        <FieldError>{errors.label}</FieldError>
+                                    ) : (
+                                        <CardDescription className="text-xs">
+                                            Daftar tag tugas ini
+                                        </CardDescription>
+                                    )}
                                 </CardHeader>
                                 <CardContent>
                                     <InputGroup className="bg-background">
@@ -358,94 +414,112 @@ export default function TaskForm({
                                     )}
                                 </CardContent>
                             </Card>
-                            <Card className="bg-muted/50">
-                                <CardHeader>
-                                    <CardAction>
-                                        <Badge
-                                            className="size-sm rounded-full"
-                                            variant="outline"
+                            {project && !projects && (
+                                <Card className="bg-muted/50">
+                                    <CardHeader>
+                                        <CardAction>
+                                            <Badge
+                                                className="size-sm rounded-full"
+                                                variant="outline"
+                                            >
+                                                {assigned?.length ?? 0} terpilih
+                                            </Badge>
+                                        </CardAction>
+                                        <CardTitle
+                                            className={cn(
+                                                "flex items-center gap-2",
+                                                errors.assigned &&
+                                                    "text-destructive",
+                                            )}
                                         >
-                                            {assigned?.length ?? 0} terpilih
-                                        </Badge>
-                                    </CardAction>
-                                    <CardTitle className="flex items-center gap-2">
-                                        <UserRoundPlus /> Tetapkan team
-                                    </CardTitle>
-                                    <CardDescription className="text-xs">
-                                        Tetapkan sekarang (opsional)
-                                    </CardDescription>
-                                </CardHeader>
-                                <CardContent>
-                                    <SelectTeam
-                                        error={Boolean(errors.assigned)}
-                                        setTeam={setAssigned}
-                                        users={
-                                            project.teams
-                                                ? project?.teams.map(
-                                                      (team: UserWithRole) => ({
-                                                          id: team.id,
-                                                          name: team.name,
-                                                          position:
-                                                              team.position,
-                                                      }),
-                                                  )
-                                                : []
-                                        }
-                                        className="w-full bg-background"
-                                    />
-                                    {assigned && assigned?.length > 0 ? (
-                                        <div className="pt-2">
-                                            <CardDescription className="ps-2 py-2">
-                                                Anggota terpilih :{" "}
+                                            <UserRoundPlus /> Tetapkan team
+                                        </CardTitle>
+                                        {Boolean(errors.assigned) ? (
+                                            <FieldError>
+                                                {errors.assigned}
+                                            </FieldError>
+                                        ) : (
+                                            <CardDescription className="text-xs">
+                                                Tetapkan sekarang (opsional)
                                             </CardDescription>
-                                            <div className="flex w-full max-w-md flex-col gap-2">
-                                                {assigned.map(
-                                                    (
-                                                        user: UserWithRole,
-                                                        i: number,
-                                                    ) => (
-                                                        <Item
-                                                            variant="muted"
-                                                            className="p-2"
-                                                            key={user.id}
-                                                        >
-                                                            <ItemContent className="p-0">
-                                                                <ItemTitle>
-                                                                    {i + 1}.{" "}
-                                                                    {user.name}{" "}
-                                                                    |{" "}
-                                                                    {
-                                                                        user.position
-                                                                    }
-                                                                </ItemTitle>
-                                                            </ItemContent>
-                                                            <ItemActions>
-                                                                <Button
-                                                                    type="button"
-                                                                    variant="destructive"
-                                                                    size="icon-xs"
-                                                                    className="cursor-pointer"
-                                                                    onClick={() =>
-                                                                        handleDeleteTeam(
-                                                                            user,
-                                                                        )
-                                                                    }
-                                                                >
-                                                                    <Trash />
-                                                                </Button>
-                                                            </ItemActions>
-                                                        </Item>
-                                                    ),
-                                                )}
+                                        )}
+                                    </CardHeader>
+                                    <CardContent>
+                                        <SelectTeam
+                                            error={Boolean(errors.assigned)}
+                                            setTeam={setAssigned}
+                                            users={
+                                                project && project.teams
+                                                    ? project?.teams.map(
+                                                          (
+                                                              team: UserWithRole,
+                                                          ) => ({
+                                                              id: team.id,
+                                                              name: team.name,
+                                                              position:
+                                                                  team.position,
+                                                          }),
+                                                      )
+                                                    : []
+                                            }
+                                            className="w-full bg-background"
+                                        />
+                                        {assigned && assigned?.length > 0 ? (
+                                            <div className="pt-2">
+                                                <CardDescription className="ps-2 py-2">
+                                                    Anggota terpilih :{" "}
+                                                </CardDescription>
+                                                <div className="flex w-full max-w-md flex-col gap-2">
+                                                    {assigned.map(
+                                                        (
+                                                            user: UserWithRole,
+                                                            i: number,
+                                                        ) => (
+                                                            <Item
+                                                                variant="muted"
+                                                                className="p-2"
+                                                                key={user.id}
+                                                            >
+                                                                <ItemContent className="p-0">
+                                                                    <ItemTitle>
+                                                                        {i + 1}.{" "}
+                                                                        {
+                                                                            user.name
+                                                                        }{" "}
+                                                                        |{" "}
+                                                                        {
+                                                                            user.position
+                                                                        }
+                                                                    </ItemTitle>
+                                                                </ItemContent>
+                                                                <ItemActions>
+                                                                    <Button
+                                                                        type="button"
+                                                                        variant="destructive"
+                                                                        size="icon-xs"
+                                                                        className="cursor-pointer"
+                                                                        onClick={() =>
+                                                                            handleDeleteTeam(
+                                                                                user,
+                                                                            )
+                                                                        }
+                                                                    >
+                                                                        <Trash />
+                                                                    </Button>
+                                                                </ItemActions>
+                                                            </Item>
+                                                        ),
+                                                    )}
+                                                </div>
                                             </div>
-                                        </div>
-                                    ) : (
-                                        <CardDescription className="text-center pt-4">
-                                            Belum ada anggota terpilih
-                                        </CardDescription>
-                                    )}
-                                </CardContent>
-                            </Card>
+                                        ) : (
+                                            <CardDescription className="text-center pt-4">
+                                                Belum ada anggota terpilih
+                                            </CardDescription>
+                                        )}
+                                    </CardContent>
+                                </Card>
+                            )}
                         </div>
                     </div>
 

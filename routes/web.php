@@ -85,9 +85,9 @@ Route::middleware(["auth", "verified"])->group(function () {
         ->name("task.")
         ->group(function () {
 
-            // Route::get("/", [ViewProjectController::class, "index"])->name(
-            //     "index",
-            // )->middleware("permission:project.view.own|project.view.team|project.view.all");
+            Route::get("/", [ViewTaskController::class, "index"])->name(
+                "index",
+            );
 
             Route::post("/", CreateTaskController::class)->name("create");
             Route::put("/change-status", ChangeStatusTaskController::class)->name("change.status");

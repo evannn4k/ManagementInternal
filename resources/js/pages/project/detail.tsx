@@ -7,7 +7,7 @@ import { DeleteAlert } from "@/components/delete-alert";
 import { index as projectIndex } from "@/routes/project";
 import { ProjectDetailData } from "./components/project-detail-data";
 import { TaskKanban } from "./components/task-kanban";
-import TaskForm from "./components/task-form";
+import TaskForm from "../task/components/task-form";
 import ProjectStatusForm from "./components/project-status-form";
 import deleteTask from "@/actions/App/Http/Controllers/Task/DeleteTaskController";
 import deleteStatusProject from "@/actions/App/Http/Controllers/Project/DeleteStatusProjectController";
@@ -19,8 +19,15 @@ import { Item, ItemContent, ItemDescription } from "@/components/ui/item";
 import { Card } from "@/components/ui/card";
 import ProjectTeam from "./components/project-team";
 import { UserWithRole } from "@/types/data/user";
+import { Separator } from "@/components/ui/separator";
 
-export default function ProjectPage({ project, users }: { project: ProjectType, users: UserWithRole[] }) {
+export default function ProjectPage({
+    project,
+    users,
+}: {
+    project: ProjectType;
+    users: UserWithRole[];
+}) {
     const taskModal = useModal();
     const projectStatusModal = useModal();
     const [query, setQuery] = useState<{
@@ -92,7 +99,7 @@ export default function ProjectPage({ project, users }: { project: ProjectType, 
                     </div>
                 </header>
                 <ProjectDetailData project={project} />
-                <Tabs defaultValue="team" className="gap-4">
+                <Tabs defaultValue="kanban">
                     <TabsList className="bg-muted/50 p-2">
                         <TabsTrigger value="kanban">
                             <SquareKanban /> Kanban Board
@@ -111,6 +118,7 @@ export default function ProjectPage({ project, users }: { project: ProjectType, 
                                 project={project}
                                 updateQuery={updateQuery}
                             />
+                            <Separator />
                             {project.statuses
                                 .flatMap((status) => {
                                     return status.tasks.length;
@@ -127,7 +135,7 @@ export default function ProjectPage({ project, users }: { project: ProjectType, 
                                         <div className="text-center flex flex-col items-center justify-center gap-2 py-4">
                                             <PackageOpen />
                                             <ItemDescription>
-                                                Tidak ada data proyek.
+                                                Belum ada tugas.
                                             </ItemDescription>
                                         </div>
                                     </ItemContent>
@@ -136,7 +144,11 @@ export default function ProjectPage({ project, users }: { project: ProjectType, 
                         </Card>
                     </TabsContent>
                     <TabsContent value="team">
-                        <ProjectTeam teams={project.teams} users={users} projectId={project.id}/>
+                        <ProjectTeam
+                            teams={project.teams}
+                            users={users}
+                            projectId={project.id}
+                        />
                     </TabsContent>
                     <TabsContent value="activity">
                         Lorem ipsum dolor sit amet consectetur adipisicing elit.
