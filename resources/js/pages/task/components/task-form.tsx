@@ -76,7 +76,7 @@ export default function TaskForm({
     const isOpenModal = modal.isOpen("create") || isEdit;
     const [assigned, setAssigned] = useState<UserWithRole[] | undefined>();
     const [label, setLabel] = useState<string[] | undefined>();
-    const [inputLabel, setInputLabel] = useState<string | undefined>("");
+    const [inputLabel, setInputLabel] = useState<string | undefined>();
     const [selectedProject, setSelectedProject] = useState<
         { label: string; value: string } | undefined
     >();
@@ -197,8 +197,9 @@ export default function TaskForm({
                 : [],
             setData: setSelectedProject,
             required: true,
-            placeholder: "Pilih status tugas",
+            placeholder: "Pilih project tugas",
             hidden: Boolean(project && !projects) || isEdit,
+            description: "Default status tugas",
         },
         {
             label: isEdit ? "File" : "Ganti File",
@@ -212,7 +213,7 @@ export default function TaskForm({
         {
             label: "Prioritas",
             name: "priority",
-            onChange: handleChange,
+            onChange: handleChange, 
             error: errors.priority,
             value: data.priority,
             type: "radio-group",
@@ -372,7 +373,7 @@ export default function TaskForm({
                                 <CardContent>
                                     <InputGroup className="bg-background">
                                         <InputGroupInput
-                                            value={inputLabel}
+                                            value={inputLabel || ""}
                                             onChange={(e) => {
                                                 setInputLabel(e.target.value);
                                             }}

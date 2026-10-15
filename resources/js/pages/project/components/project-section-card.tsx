@@ -23,9 +23,9 @@ export function ProjectSectionCard({ cardData }: { cardData: CardData }) {
             icon: <Zap />,
         },
         {
-            label: "PERLU PERHATIAN",
-            value: cardData.at_risk_project ?? 0,
-            description: "Total proyek yang perlu perhatian",
+            label: "PROYEK TERLAMBAT",
+            value: cardData.overdue_project ?? 0,
+            description: "Total proyek yang terlambat",
             icon: <CircleAlert />,
         },
         {

@@ -24,15 +24,15 @@ class UpdateProjectController extends Controller
         try {
             DB::transaction(function () use ($credentials, $project) {
                 $teams = $credentials['teams'] ?? [];
-                $statuses = $credentials['status'] ?? [];
+                $statuses = $credentials['statuses'] ?? [];
 
-                unset($credentials['teams'], $credentials['status']);
+                unset($credentials['teams'], $credentials['statuses']);
 
                 $project->update($credentials);
 
                 $existingStatuses = Status::where('project_id', $project->id)->get()->pluck("name")->toArray();
 
-                $diffStatus = array_diff($existingStatuses, $statuses);
+                $diffStatus = array_diff($existingStatuses, array_column($statuses, "name"));
 
                 if (!empty($diffStatus)) {
                     $deletedStatuses = Status::where("project_id", $project->id)->whereIn("name", $diffStatus);
@@ -48,8 +48,8 @@ class UpdateProjectController extends Controller
 
                 foreach ($statuses as $index => $status) {
                     Status::updateOrCreate(
-                        ['project_id' => $project->id, "name" => $status],
-                        ["position" => $index]
+                        ['project_id' => $project->id, "name" => $status['name']],
+                        ["position" => $index, "type" => $status['type']]
                     );
                 }
 

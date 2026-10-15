@@ -88,7 +88,9 @@ class DatabaseSeeder extends Seeder
             "email_verified_at" => now(),
             "is_active" => true,
         ]);
-        
+
+        // $admin = User::where("email", "yahyaevan8@gmail.com")->first();
+
         $admin->assignRole("admin");
     }
 }

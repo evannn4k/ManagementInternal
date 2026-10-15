@@ -55,6 +55,7 @@ export default function FormField({
     orientation = "vertical",
     className,
 }: FormFieldProps) {
+    
     if (hidden) return null;
     const [open, setOpen] = useState(false);
 
@@ -261,7 +262,7 @@ export default function FormField({
                     onUpdate: ({ editor }) => {
                         setData((prev: {}) => ({
                             ...prev,
-                            description: editor.getHTML(),
+                            [name]: editor.getHTML(),
                         }));
                     },
                 });

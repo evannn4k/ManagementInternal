@@ -15,6 +15,15 @@ class DeleteRoleController extends Controller
     public function __invoke(Request $request, Role $role)
     {
         try {
+            if($role->is_system == true) {
+
+                return redirect()
+                    ->back()
+                    ->with(
+                        "error",
+                        "Role tersebut tidak bisa dihapus.",
+                    );
+            }
             $role->delete();
 
             return redirect()

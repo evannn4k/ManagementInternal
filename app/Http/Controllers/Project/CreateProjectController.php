@@ -22,7 +22,7 @@ class CreateProjectController extends Controller
         try {
             DB::transaction(function () use ($request, $credentials) {
                 $teams = $credentials['teams'] ?? [];
-                $statuses = $credentials['status'] ?? [];
+                $statuses = $credentials['statuses'] ?? [];
 
                 unset($credentials['teams'], $credentials['status']);
 
@@ -31,7 +31,7 @@ class CreateProjectController extends Controller
                 $project = Project::create($credentials);
 
                 foreach ($statuses as $index => $status) {
-                    Status::create(['project_id' => $project->id, "name" => $status, "position" => $index]);
+                    Status::create(['project_id' => $project->id, "name" => $status->name, "type" => $status->type, "position" => $index]);
                 }
 
                 $project->teams()->sync($teams);

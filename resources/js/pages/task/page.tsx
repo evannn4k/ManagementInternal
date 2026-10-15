@@ -24,12 +24,10 @@ import { DeleteAlert } from "@/components/delete-alert";
 export default function TaskPage({
     data,
     cardData,
-    users,
     projects,
 }: {
     data: LaravelPagination<ProjectGridType>;
     cardData: CardData;
-    users: UserWithRole[];
     projects: any[];
 }) {
     const [query, setQuery] = useState<{

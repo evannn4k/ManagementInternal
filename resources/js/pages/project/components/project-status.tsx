@@ -2,6 +2,7 @@ import {
     Item,
     ItemActions,
     ItemContent,
+    ItemDescription,
     ItemHeader,
     ItemTitle,
 } from "@/components/ui/item";
@@ -49,15 +50,22 @@ export function ProjectStatus({
                 isEdit ? "relative p-2" : "p-0",
             )}
         >
-            {isEdit && <Skeleton className="absolute h-full w-full rounded-xl" />}
+            {isEdit && (
+                <Skeleton className="absolute h-full w-full rounded-xl" />
+            )}
             <ItemHeader className="p-2 w-full flex justify-between">
-                <ItemTitle className="capitalize text-base">
-                    <span className="text-primary text-lg">•</span>{" "}
-                    {status.name}
-                    <Badge className="rounded-full text-xs" variant="outline">
-                        {status.tasks.length ?? 0}
-                    </Badge>
-                </ItemTitle>
+                <div className="">
+                    <ItemTitle className="capitalize text-base">
+                        {status.name}
+                        <Badge
+                            className="rounded-full text-xs"
+                            variant="outline"
+                        >
+                            {status.tasks.length ?? 0}
+                        </Badge>
+                    </ItemTitle>
+                    <ItemDescription className="text-xs capitalize">{status.type}</ItemDescription>
+                </div>
                 <ItemActions>
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>

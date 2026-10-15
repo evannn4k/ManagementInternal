@@ -16,7 +16,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignUuid("status_id")->constrained("statuses")->cascadeOnDelete();
             $table->string("title");
-            $table->text("description");
+            $table->text("description")->nullable();
             $table->enum('priority', ["urgent", "high", "medium", "low"])->default("medium");
             $table->date("due_date")->nullable();
             $table->json("label")->nullable();

@@ -32,7 +32,7 @@ export function SelectTeam({
     return (
         <>
             <Button
-                aria-invalid="true"
+                aria-invalid={error}
                 className={className}
                 type="button"
                 variant="outline"

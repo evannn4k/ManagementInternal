@@ -83,7 +83,6 @@ export default function RolePage({
                 onStart: () => setIsLoading(true),
                 onFinish: () => setIsLoading(false),
                 onError: (e) => {
-                    console.log(e);
                     toast.error("Gagal merubah perizinan");
                 },
             },

@@ -31,8 +31,10 @@ class CreateProjectRequest extends FormRequest
             "priority" => "required|string|in:low,medium,high",
             "repo_url" => "required|string|max:255",
             "branch" => "required|string|max:255",
-            "status" => "required|array",
-            "status.*" => "required|string|max:255",
+            "status" => "required|string|max:255|in:running,done,hold,canceled,archived",
+            "statuses" => "required|array",
+            "statuses.*.name" => "required|string|max:255",
+            "statuses.*.type" => "required|string|max:255",
             "teams" => "nullable|array",
             "teams.*" => "nullable|integer|exists:users,id"
         ];

@@ -42,27 +42,10 @@ export default function ProjectPage({
         });
     };
 
-    cardData = {
-        total_project: 100,
-        running_project: 80,
-        at_risk_project: 20,
-        completed_project: 10,
-    };
-
-    // const handleDelete = (id: number) => {
-    //     router.delete(userDelete({ id: id }));
-    // };
-
     return (
         <>
             <Head title="Project" />
             <ProjectForm modal={modal} users={users} />
-            {/* <DeleteAlert
-                modal={modal}
-                title="Hapus data user"
-                description="Data user yang telah dihapus dapat dikembalikan."
-                handleDelete={handleDelete}
-            /> */}
             <div className="p-4 md:p-6 flex flex-col gap-4">
                 <header className="flex justify-between items-start md:items-center flex-col md:flex-row gap-4 md:gap-8">
                     <div className="flex flex-col gap-2">

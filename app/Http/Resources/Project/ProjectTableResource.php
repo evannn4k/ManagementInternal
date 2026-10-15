@@ -29,7 +29,7 @@ class ProjectTableResource extends JsonResource
             "pic" => $this->pic,
             "createdBy" => $this->createdBy,
             "status" => $this->status,
-            "statuses" => $this->statuses->pluck("name"),
+            "statuses" => $this->statuses,
         ];
     }
 }
