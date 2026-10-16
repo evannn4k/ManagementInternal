@@ -44,7 +44,7 @@ export const SelectScopePermission = ({
                     }
                 >
                     {scopes.map((s: Permission) => (
-                        <ToggleGroupItem key={s.id} value={s.id.toString()}>
+                        <ToggleGroupItem className="capitalize" key={s.id} value={s.id.toString()}>
                             {s.scope}
                         </ToggleGroupItem>
                     ))}

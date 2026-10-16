@@ -100,7 +100,7 @@ export default function ProjectPage({
                 </header>
                 <ProjectDetailData project={project} />
                 <Tabs defaultValue="kanban">
-                    <TabsList className="bg-muted/50 p-2">
+                    <TabsList className="bg-muted/50 p-2 border">
                         <TabsTrigger value="kanban">
                             <SquareKanban /> Kanban Board
                         </TabsTrigger>
@@ -112,7 +112,7 @@ export default function ProjectPage({
                         </TabsTrigger>
                     </TabsList>
                     <TabsContent className="flex flex-col gap-4" value="kanban">
-                        <Card className="bg-muted/50 gap-4">
+                        <Card className="bg-muted/50 gap-4 pb-0">
                             <ProjectDetailToolbar
                                 url={url}
                                 project={project}

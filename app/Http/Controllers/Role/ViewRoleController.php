@@ -20,7 +20,6 @@ class ViewRoleController extends Controller
                 return $p->groupBy('action');
             });
 
-
         return Inertia::render("role/page", compact("roles", "permissions"));
     }
 }

@@ -13,3 +13,10 @@ export type TaskType = {
     status: ProjectStatusType;
     assigned: UserWithRole[];
 };
+
+export type CardData = {
+    total_running: number;
+    total_overdue: number;
+    this_week: number;
+    total_task: number;
+};

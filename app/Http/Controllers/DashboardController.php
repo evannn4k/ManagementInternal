@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Dashboard\DashboardTaskOverdueResource;
+use App\Models\Task;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -41,7 +43,20 @@ class DashboardController extends Controller
         })->limit(4)->get();
         $pending = $taskPending->limit(4)->get();
 
+        $defaultStatusDistribution = [
+            "pending" => 0,
+            "running" => 0,
+            "completed" => 0,
+            "canceled" => 0
+        ];
 
-        return Inertia::render("dashboard/page", compact("cardData", "overdue", "thisWeek", "pending"));
+        $statusDistribution = [...$defaultStatusDistribution, ...Task::with("status")->get()->groupBy("status.type")->map->count()];
+        $assignedDistribution = User::select('name')->withCount('tasks')->limit(5)->get();
+
+        $tasks = Task::select("title", "due_date")->where("due_date", "<", now())->paginate(5)->withQueryString();
+
+        $overdueTasks = DashboardTaskOverdueResource::collection($tasks);
+
+        return Inertia::render("dashboard/page", compact("cardData", "overdue", "thisWeek", "pending", "statusDistribution", "assignedDistribution", "overdueTasks"));
     }
 }

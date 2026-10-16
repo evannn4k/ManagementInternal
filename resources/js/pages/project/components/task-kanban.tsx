@@ -166,7 +166,7 @@ export function TaskKanban({
                     </div>
                 </CardAction>
             </CardHeader>
-            <CardContent className="flex items-start gap-4 w-full flex-nowrap no-scrollbar overflow-x-auto">
+            <CardContent className="pb-4 flex items-start gap-4 w-full overflow-x-auto">
                 <DragDropProvider onDragEnd={handleDragEnd}>
                     {statuses.map((status) => (
                         <ProjectStatus

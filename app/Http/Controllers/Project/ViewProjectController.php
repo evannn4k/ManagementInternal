@@ -34,10 +34,10 @@ class ViewProjectController extends Controller
         $data = ProjectTableResource::collection($projects);
         $users =  User::select("id", "name", "position")->with('roles:id,name')->where("is_active", true)->get();
         $cardData = [
-            "total_project" => Project::count(),
-            "running_project" => Project::where("status", "running")->count(),
-            "overdue_project" => Project::where("end_date", "<", now())->count(),
-            "completed_project" => Project::where("status", "done")->count(),
+            "total_total" => Project::count(),
+            "total_running" => Project::where("status", "running")->count(),
+            "total_overdue" => Project::where("end_date", "<", now())->count(),
+            "total_completed" => Project::where("status", "done")->count(),
         ];
 
         return Inertia::render(

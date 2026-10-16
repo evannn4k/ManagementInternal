@@ -30,6 +30,7 @@ export function DashboardSectionTask({
                         </span>
                         <span>Tugas Terlambat</span>
                     </CardTitle>
+                    <CardDescription className="text-xs">4 Tugas teratas</CardDescription>
                     <CardAction>
                         <Badge variant="destructive">
                             {overdue.length ?? 0}
@@ -53,6 +54,7 @@ export function DashboardSectionTask({
                     <CardTitle className="text-xl flex items-center gap-2">
                         <span>Tenggat Minggu Ini</span>
                     </CardTitle>
+                    <CardDescription className="text-xs">4 Tugas teratas</CardDescription>
                     <CardAction>
                         <Badge variant="outline">{thisWeek.length ?? 0}</Badge>
                     </CardAction>
@@ -74,6 +76,7 @@ export function DashboardSectionTask({
                     <CardTitle className="text-xl flex items-center gap-2">
                         <span>Direncanakan Nanti</span>
                     </CardTitle>
+                    <CardDescription className="text-xs">4 Tugas teratas</CardDescription>
                     <CardAction>
                         <Badge variant="outline">{pending.length ?? 0}</Badge>
                     </CardAction>

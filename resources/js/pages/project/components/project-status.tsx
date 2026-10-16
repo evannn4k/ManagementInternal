@@ -46,7 +46,7 @@ export function ProjectStatus({
             key={status.id}
             ref={ref}
             className={cn(
-                "w-58 h-full gap-0 flex flex-col items-center justify-start transition-all ease-in-out duration-200",
+                "w-54 flex-shrink-0 h-full gap-0 flex flex-col items-center justify-start transition-all ease-in-out duration-200",
                 isEdit ? "relative p-2" : "p-0",
             )}
         >
@@ -64,7 +64,9 @@ export function ProjectStatus({
                             {status.tasks.length ?? 0}
                         </Badge>
                     </ItemTitle>
-                    <ItemDescription className="text-xs capitalize">{status.type}</ItemDescription>
+                    <ItemDescription className="text-xs capitalize">
+                        {status.type}
+                    </ItemDescription>
                 </div>
                 <ItemActions>
                     <DropdownMenu>

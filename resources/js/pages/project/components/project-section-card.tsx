@@ -12,25 +12,25 @@ export function ProjectSectionCard({ cardData }: { cardData: CardData }) {
     const cards = [
         {
             label: "TOTAL PROYEK",
-            value: cardData.total_project ?? 0,
+            value: cardData.total_total ?? 0,
             description: "Total seluruh proyek",
             icon: <FolderOpen />,
         },
         {
             label: "SEDANG BERJALAN",
-            value: cardData.running_project ?? 0,
+            value: cardData.total_running ?? 0,
             description: "Total proyek yang sedang berjalan",
             icon: <Zap />,
         },
         {
             label: "PROYEK TERLAMBAT",
-            value: cardData.overdue_project ?? 0,
+            value: cardData.total_overdue ?? 0,
             description: "Total proyek yang terlambat",
             icon: <CircleAlert />,
         },
         {
             label: "PROYEK SELESAI",
-            value: cardData.completed_project ?? 0,
+            value: cardData.total_completed ?? 0,
             description: "Total proyek yang selesai",
             icon: <FolderCheck />,
         },

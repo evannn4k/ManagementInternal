@@ -1,25 +1,21 @@
 import { Button } from "@/components/ui/button";
-import { Download, Plus, View } from "lucide-react";
+import { Plus } from "lucide-react";
 import { LaravelPagination } from "@/types/paginate";
-import {
-    CardData,
-    ProjectGridType,
-    ProjectStatusType,
-} from "@/types/data/project";
+import { ProjectGridType } from "@/types/data/project";
 import { PaginationPage } from "@/components/pagination-page";
 import { useState } from "react";
 import { Head, router } from "@inertiajs/react";
 import { useModal } from "@/hooks/use-modal";
 import { index as taskIndex } from "@/routes/task";
-import { UserWithRole } from "@/types/data/user";
 import { TaskSectionCard } from "./components/task-section-card";
 import { TaskTable } from "./components/task-table";
 import { TaskToolbar } from "./components/task-toolbar";
 import { Card } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import TaskForm from "./components/task-form";
 import { deleteMethod as deleteTask } from "@/routes/task";
 import { DeleteAlert } from "@/components/delete-alert";
+import { CardData } from "@/types/data/task";
 
 export default function TaskPage({
     data,
@@ -48,13 +44,6 @@ export default function TaskPage({
             preserveScroll: true,
             replace: true,
         });
-    };
-
-    cardData = {
-        total_project: 100,
-        running_project: 80,
-        at_risk_project: 20,
-        completed_project: 10,
     };
 
     const tableHead = [
@@ -116,7 +105,7 @@ export default function TaskPage({
                         <TaskToolbar
                             url={url}
                             updateQuery={updateQuery}
-                            projects={projects}
+                            projects={projects} 
                         />
                         <TaskTable
                             tableHead={tableHead}

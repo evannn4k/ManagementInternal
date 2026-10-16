@@ -39,6 +39,7 @@ const navigationNavItems: NavItem[] = [
         title: "Proyek",
         href: projectIndex(),
         icon: FolderOpen,
+        permission: ["project.view.all", "project.view.all"],
     },
     {
         title: "Tugas",
@@ -104,7 +105,7 @@ export function AppSidebar() {
             </SidebarContent>
 
             <SidebarFooter>
-                <NavFooter items={footerNavItems} className="mt-auto" />
+                {/* <NavFooter items={footerNavItems} className="mt-auto" /> */}
                 <NavUser />
             </SidebarFooter>
         </Sidebar>

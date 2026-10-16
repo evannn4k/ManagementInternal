@@ -1,15 +1,53 @@
-import { Head, usePage } from "@inertiajs/react";
-import { PlaceholderPattern } from "@/components/ui/placeholder-pattern";
+import { Head, router, usePage } from "@inertiajs/react";
 import { dashboard } from "@/routes";
 import { User } from "lucide-react";
 import { DashboardSectionCard } from "./components/dashboard-section-card";
-import { Card, CardContent } from "@/components/ui/card";
-import { CardData } from "@/types/data/dashboard";
+import { Card, CardContent, CardTitle } from "@/components/ui/card";
+import {
+    AssignedDistributionType,
+    CardData,
+    StatusDistributionType,
+} from "@/types/data/dashboard";
 import { DashboardSectionTask } from "./components/dashboard-section-task";
 import { TaskType } from "@/types/data/task";
+import DashboardSummaryData from "./components/dashboard-summary-data";
+import { LaravelPagination } from "@/types/paginate";
+import { useState } from "react";
+import { dashboard as DashboardIndex } from "@/routes";
 
-export default function Dashboard({ cardData, overdue, thisWeek, pending }: { cardData: CardData, overdue: TaskType[], thisWeek: TaskType[] , pending: TaskType[]}) {
+export default function Dashboard({
+    cardData,
+    overdue,
+    thisWeek,
+    pending,
+    statusDistribution,
+    assignedDistribution,
+    overdueTasks,
+}: {
+    cardData: CardData;
+    overdue: TaskType[];
+    thisWeek: TaskType[];
+    pending: TaskType[];
+    statusDistribution?: StatusDistributionType;
+    assignedDistribution?: AssignedDistributionType;
+    overdueTasks?: LaravelPagination<{ title: string; due_date: string }>;
+}) {
     const { auth } = usePage().props;
+
+    const { url } = DashboardIndex();
+    const [query, setQuery] = useState<{}>();
+
+    const updateQuery = (params: Record<string, any>) => {
+        const updated = { ...query, ...params };
+
+        setQuery(updated as any);
+
+        router.get(url, updated, {
+            preserveState: true,
+            preserveScroll: true,
+            replace: true,
+        });
+    };
 
     return (
         <>
@@ -42,10 +80,27 @@ export default function Dashboard({ cardData, overdue, thisWeek, pending }: { ca
                         </header>
                     </CardContent>
                 </Card>
-                <DashboardSectionCard cardData={cardData} />
-                <DashboardSectionTask overdue={overdue} thisWeek={thisWeek} pending={pending}/>
+                <div className="flex flex-col gap-4">
+                    <CardTitle>Personal Data</CardTitle>
+                    <div className="flex flex-col gap-4 p-0">
+                        <DashboardSectionCard cardData={cardData} />
+                        <DashboardSectionTask
+                            overdue={overdue}
+                            thisWeek={thisWeek}
+                            pending={pending}
+                        />
+                    </div>
+                </div>
+                <div className="flex flex-col gap-4">
+                    <CardTitle>Ringkasan Data</CardTitle>
+                    <DashboardSummaryData
+                        statusDistribution={statusDistribution}
+                        assignedDistribution={assignedDistribution}
+                        overdueTasks={overdueTasks}
+                    />
+                </div>
             </div>
-        </> 
+        </>
     );
 }
 

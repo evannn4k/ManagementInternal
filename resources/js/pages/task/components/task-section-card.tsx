@@ -5,34 +5,34 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { CardData } from "@/types/data/project";
-import { CircleAlert, FolderCheck, FolderOpen, Zap } from "lucide-react";
+import { CardData } from "@/types/data/task";
+import { CircleAlert, Clock, FolderOpen, Zap } from "lucide-react";
 
 export function TaskSectionCard({ cardData }: { cardData: CardData }) {
     const cards = [
         {
-            label: "TOTAL PROYEK",
-            value: cardData.total_project ?? 0,
-            description: "Total seluruh proyek",
+            label: "TOTAL TUGAS",
+            value: cardData.total_task ?? 0,
+            description: "Total seluruh tugas",
             icon: <FolderOpen />,
         },
         {
             label: "SEDANG BERJALAN",
-            value: cardData.running_project ?? 0,
+            value: cardData.total_running ?? 0,
             description: "Total proyek yang sedang berjalan",
             icon: <Zap />,
         },
         {
-            label: "PERLU PERHATIAN",
-            value: cardData.at_risk_project ?? 0,
-            description: "Total proyek yang perlu perhatian",
+            label: "TUGAS TERLAMBAT",
+            value: cardData.total_overdue ?? 0,
+            description: "Total proyek terlambat",
             icon: <CircleAlert />,
         },
         {
-            label: "PROYEK SELESAI",
-            value: cardData.completed_project ?? 0,
-            description: "Total proyek yang selesai",
-            icon: <FolderCheck />,
+            label: "TENGGAT MINGGU INI",
+            value: cardData.this_week ?? 0,
+            description: "Total batas tenggat minggu depan",
+            icon: <Clock />,
         },
     ];
 

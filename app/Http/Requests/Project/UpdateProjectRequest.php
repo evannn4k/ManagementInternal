@@ -34,6 +34,7 @@ class UpdateProjectRequest extends FormRequest
             "status" => "required|string|max:255|in:running,done,hold,canceled,archived",
             "statuses" => "required|array",
             "statuses.*.name" => "required|string|max:255",
+            "statuses.*.type" => "required|string|max:255",
             "teams" => "nullable|array",
             "teams.*" => "nullable|integer|exists:users,id"
         ];

@@ -24,14 +24,14 @@ class CreateProjectController extends Controller
                 $teams = $credentials['teams'] ?? [];
                 $statuses = $credentials['statuses'] ?? [];
 
-                unset($credentials['teams'], $credentials['status']);
+                unset($credentials['teams'], $credentials['statuses']);
 
                 $credentials['created_by'] = $request->user()->id;
 
                 $project = Project::create($credentials);
 
                 foreach ($statuses as $index => $status) {
-                    Status::create(['project_id' => $project->id, "name" => $status->name, "type" => $status->type, "position" => $index]);
+                    Status::create(['project_id' => $project->id, "name" => $status['name'], "type" => $status['type'], "position" => $index]);
                 }
 
                 $project->teams()->sync($teams);

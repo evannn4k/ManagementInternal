@@ -20,16 +20,29 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        $role = Role::firstOrCreate(["name" => "admin", "description" => "Akses menyeluruh terhadap kofigurasi server dan sistem.", "is_system" => true]);
+        // $role = Role::firstOrCreate(["name" => "admin", "description" => "Akses menyeluruh terhadap kofigurasi server dan sistem.", "is_system" => true]);
+
 
         $permissions = [
             [
                 "name" => "role.manage",
-                "description" => "Mengelola role dan perizinan",
+                "description" => "Mengelola role dan hak akses pengguna",
+            ],
+            [
+                "name" => "dashboard.view.personal",
+                "description" => "Melihat dashboard yang menampilkan ringkasan tugas dan aktivitas pribadi",
+            ],
+            [
+                "name" => "dashboard.view.project",
+                "description" => "Melihat dashboard yang menampilkan ringkasan dan progres proyek",
+            ],
+            [
+                "name" => "dashboard.view.sistem",
+                "description" => "Melihat dashboard yang menampilkan ringkasan aktivitas dan statistik sistem",
             ],
             [
                 "name" => "user.view",
-                "description" => "melihat daftar akun pengguna",
+                "description" => "Melihat daftar dan detail akun pengguna",
             ],
             [
                 "name" => "user.create",
@@ -37,7 +50,7 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 "name" => "user.edit",
-                "description" => "Mengedit akun yang sudah ada pengguna",
+                "description" => "Mengubah informasi dan data akun pengguna",
             ],
             [
                 "name" => "user.delete",
@@ -45,30 +58,51 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 "name" => "project.view.all",
-                "description" => "Melihat daftar proyek",
-            ],
-            [
-                "name" => "project.view.team",
-                "description" => "Melihat daftar proyek",
+                "description" => "Melihat seluruh proyek yang tersedia dalam sistem",
             ],
             [
                 "name" => "project.view.own",
-                "description" => "Melihat daftar proyek",
+                "description" => "Melihat proyek yang dimiliki atau ditugaskan kepada pengguna",
             ],
             [
                 "name" => "project.create",
-                "description" => "Membuat inisiasi proyek baru",
+                "description" => "Membuat dan menginisiasi proyek baru",
             ],
             [
                 "name" => "project.edit",
-                "description" => "Mengedit data proyek",
+                "description" => "Mengubah informasi, konfigurasi, dan data proyek",
+            ],
+            [
+                "name" => "project.delete",
+                "description" => "Menghapus proyek dari sistem",
+            ],
+            [
+                "name" => "task.view.all",
+                "description" => "Melihat seluruh tugas dari berbagai proyek yang tersedia",
+            ],
+            [
+                "name" => "task.view.own",
+                "description" => "Melihat tugas yang ditugaskan kepada pengguna",
+            ],
+            [
+                "name" => "task.create",
+                "description" => "Membuat tugas baru dalam suatu proyek",
+            ],
+            [
+                "name" => "task.edit",
+                "description" => "Mengubah informasi, status, dan penugasan tugas",
+            ],
+            [
+                "name" => "task.delete",
+                "description" => "Menghapus tugas dari suatu proyek",
             ],
         ];
+
 
         foreach ($permissions as $permission) {
             $parts = explode(".", $permission["name"]);
 
-            Permission::firstOrCreate(
+            Permission::updateOrCreate(
                 ["name" => $permission["name"]],
                 [
                     "description" => $permission["description"],
@@ -79,18 +113,18 @@ class DatabaseSeeder extends Seeder
             );
         }
 
-        $role->givePermissionTo(Permission::all());
+        // $role->givePermissionTo(Permission::all());
 
-        $admin = User::firstOrCreate([
-            "name" => "SUPER ADMIN",
-            "email" => "yahyaevan8@gmail.com",
-            "password" => Hash::make("123123123"),
-            "email_verified_at" => now(),
-            "is_active" => true,
-        ]);
+        // $admin = User::firstOrCreate([
+        //     "name" => "SUPER ADMIN",
+        //     "email" => "yahyaevan8@gmail.com",
+        //     "password" => Hash::make("123123123"),
+        //     "email_verified_at" => now(),
+        //     "is_active" => true,
+        // ]);
 
         // $admin = User::where("email", "yahyaevan8@gmail.com")->first();
 
-        $admin->assignRole("admin");
+        // $admin->assignRole("admin");
     }
 }

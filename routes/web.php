@@ -90,7 +90,7 @@ Route::middleware(["auth", "verified"])->group(function () {
                 "index",
             );
 
-            Route::post("/", CreateTaskController::class)->name("create");
+            Route::post("/", CreateTaskController::class)->name("create")->middleware("can:task.create");
             Route::put("/change-status", ChangeStatusTaskController::class)->name("change.status");
 
             Route::get("/{task}", [ViewTaskController::class, "detail"])->name(

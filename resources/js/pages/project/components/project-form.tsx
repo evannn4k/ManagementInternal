@@ -112,6 +112,7 @@ export default function ProjectForm({
                 priority: isEdit ? modal.data.priority : "",
                 repo_url: isEdit ? modal.data.repo_url : "",
                 branch: isEdit ? modal.data.branch : "",
+                status: isEdit ? modal.data.status : "",
             }));
             setStatus(modal.data?.statuses);
             setTeam(modal.data?.teams);
@@ -125,7 +126,7 @@ export default function ProjectForm({
 
     useEffect(() => {
         setStatus(modal.data?.statuses);
-    }, [errors.status]);
+    }, [errors.statuses]);
 
     const handleChange = (
         e: React.ChangeEvent<
@@ -263,7 +264,7 @@ export default function ProjectForm({
         transform((prev) => {
             return {
                 ...prev,
-                status: status ?? [],
+                statuses: status ?? [],
                 teams: team?.map((t) => t.id) ?? [],
             };
         });
@@ -400,7 +401,7 @@ export default function ProjectForm({
                                     <CardContent>
                                         <Button
                                             aria-invalid={Boolean(
-                                                errors.status,
+                                                errors.statuses,
                                             )}
                                             className="w-full"
                                             type="button"
@@ -412,9 +413,9 @@ export default function ProjectForm({
                                             <Plus /> Tambah
                                         </Button>
 
-                                        {Boolean(errors.status) && (
+                                        {Boolean(errors.statuses) && (
                                             <FieldError className="pt-2">
-                                                {errors.status}
+                                                {errors.statuses}
                                             </FieldError>
                                         )}
 

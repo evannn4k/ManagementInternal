@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Task\TaskTableResource;
 use App\Models\Project;
 use App\Models\Task;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -48,9 +49,24 @@ class ViewTaskController extends Controller
 
         $projects = Project::with("defaultStatus")->select("id", "name")->get();
 
+        $user = User::find(Auth::user()->id);
+
+        $cardData = [
+            "total_pending" => $user->tasks()->whereHas("status", function ($query) {
+                return $query->where("type", "pending");
+            })->count(),
+            "total_running" => $user->tasks()->whereHas("status", function ($query) {
+                return $query->where("due_date", "<", now());
+            })->count(),
+            "total_overdue" => $user->tasks()->whereHas("status", function ($query) {
+                return $query->where("due_date", "<", now());
+            })->count(),
+            "total_task" => $user->tasks()->count(),
+        ];
+
         return Inertia::render(
             "task/page",
-            compact("data", "projects"),
+            compact("data", "projects", "cardData"),
         );
     }
     public function detail(Task $task)

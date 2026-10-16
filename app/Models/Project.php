@@ -31,11 +31,6 @@ class Project extends Model
         return $this->belongsTo(User::class, "created_by");
     }
 
-    public function activity()
-    {
-        return $this->hasMany(ActivityProject::class);
-    }
-
     public function defaultStatus()
     {
         return $this->hasOne(Status::class)->oldest("position");

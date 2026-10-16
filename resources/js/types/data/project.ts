@@ -2,10 +2,10 @@ import { TaskType } from "./task";
 import { UserWithRole } from "./user";
 
 export type CardData = {
-    total_project: number;
-    running_project: number;
-    overdue_project: number;
-    completed_project: number;
+    total_total: number;
+    total_running: number;
+    total_overdue: number;
+    total_completed: number;
 };
 
 export type ProjectGridType = {

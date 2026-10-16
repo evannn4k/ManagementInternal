@@ -35,38 +35,15 @@ export function DashboardTaskCard({ task }: { task: TaskType }) {
                         }}
                         className="text-xs w-full line-clamp-3 break-words [&_p]:m-0 [&_pre]:m-0 [&_pre]:whitespace-pre-wrap"
                     />
-                    <div className="flex items-start flex-wrap gap-1">
-                        {task.label.slice(0, 3).map((label) => (
-                            <Badge key={label} className="rounded-full text-xs">
-                                {label}
-                            </Badge>
-                        ))}
-                    </div>
                 </div>
             </CardHeader>
-            <CardContent className="flex flex-col gap-2 min-w-0">
-                <div className="flex justify-between items-center gap-2 w-full">
-                    <Badge
-                        className={cn("capitalize text-xs rounded-sm", {
-                            "text-blue-800 dark:text-blue-500":
-                                task.priority === "low",
-                            "text-yellow-800 dark:text-yellow-500":
-                                task.priority === "medium",
-                            "text-red-800 dark:text-red-500":
-                                task.priority === "high",
-                            "text-foreground": task.priority === "urgent",
-                        })}
-                        variant="outline"
-                    >
-                        {task.priority}
-                    </Badge>
-                    {task.due_date && (
-                        <div className="text-xs text-muted-foreground">
-                            Target: {task.due_date}
-                        </div>
-                    )}
-                </div>
-            </CardContent>
+            {task.due_date && (
+                <CardContent className="min-w-0">
+                    <div className="text-xs text-muted-foreground">
+                        Target: {task.due_date}
+                    </div>
+                </CardContent>
+            )}
         </Card>
     );
 }
