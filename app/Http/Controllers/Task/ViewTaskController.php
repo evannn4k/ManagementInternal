@@ -28,7 +28,7 @@ class ViewTaskController extends Controller
                 if ($value == "due") {
                     return $query->where("due_date", "<=", now()->toDateString());
                 } else if ($value == "this_week") {
-                    return $query->where("due_date", "<=", now()->addWeek()->toDateString());
+                    return $query->where("due_date", "<=", now()->addWeek()->toDateString())->where("due_date", ">=", now()->toDateString());
                 } else {
                     return $query;
                 }
@@ -52,16 +52,12 @@ class ViewTaskController extends Controller
         $user = User::find(Auth::user()->id);
 
         $cardData = [
-            "total_pending" => $user->tasks()->whereHas("status", function ($query) {
-                return $query->where("type", "pending");
-            })->count(),
-            "total_running" => $user->tasks()->whereHas("status", function ($query) {
-                return $query->where("due_date", "<", now());
-            })->count(),
-            "total_overdue" => $user->tasks()->whereHas("status", function ($query) {
-                return $query->where("due_date", "<", now());
-            })->count(),
             "total_task" => $user->tasks()->count(),
+            "total_running" => $user->tasks()->whereHas("status", function ($query) {
+                return $query->where("type", "running");
+            })->count(),
+            "total_overdue" => $user->tasks()->where("due_date", "<", now())->count(),
+            "this_week" => $user->tasks()->where("due_date", "<=", now()->addWeek()->toDateString())->where("due_date", ">=", now()->toDateString())->count(),
         ];
 
         return Inertia::render(

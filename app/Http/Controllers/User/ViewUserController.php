@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Project\ProjectTableResource;
 use App\Http\Resources\User\UserTableResource;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -11,7 +12,7 @@ use Spatie\Permission\Models\Role;
 
 class ViewUserController extends Controller
 {
-    function index(Request $request)
+    public function index(Request $request)
     {
         $users = User::when($request->search, function ($query, $value) {
             $query
@@ -31,7 +32,7 @@ class ViewUserController extends Controller
             ->withQueryString();
 
         $data = UserTableResource::collection($users);
-        
+
         $cardData = [
             "total_account" => User::count(),
             "total_active" => User::where("is_active", 1)->count(),
@@ -44,5 +45,32 @@ class ViewUserController extends Controller
             "user/page",
             compact("data", "cardData", "roles"),
         );
+    }
+
+    public function detail(User $user)
+    {
+        $projects = $user->projects()->with("pic:id,name")->limit(2)->get();
+
+        $data = [
+            ...$user->toArray(),
+            "role" => $user->getRoleNames()->first(),
+            "total_pic" => $user->picProject()->count(),
+            "total_create_project" => $user->createProject()->count()
+        ];
+
+        $taskSummary = [
+            "total" => $user->tasks()->count(),
+            "pending" => $user->tasks()->whereHas("status", function ($query) {
+                return $query->where("type", "pending");
+            })->count(),
+            "due" => $user->tasks()->where("due_date", "<", now()->toDateString())->count(),
+            "completed" => $user->tasks()->whereHas("status", function ($query) {
+                return $query->where("type", "completed");
+            })->count(),
+        ];
+
+        $tasks = $user->tasks()->with("status:id,name,project_id", "status.project:id,name")->limit(10)->get();
+
+        return Inertia::render("user/detail", compact("data", "projects", "taskSummary", "tasks"));
     }
 }

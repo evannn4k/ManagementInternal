@@ -8,6 +8,7 @@ import {
     UsersRound,
     ShieldCheck,
     Settings,
+    Activity,
 } from "lucide-react";
 import AppLogo from "@/components/app-logo";
 import { NavFooter } from "@/components/nav-footer";
@@ -45,6 +46,7 @@ const navigationNavItems: NavItem[] = [
         title: "Tugas",
         href: taskIndex(),
         icon: ClipboardCheck,
+        permission: ["task.view.own", "task.view.all"],
     },
 ];
 
@@ -60,6 +62,11 @@ const administrationNavItems: NavItem[] = [
         href: roleIndex(),
         icon: ShieldCheck,
         permission: "role.manage",
+    },
+    {
+        title: "Aktivitas",
+        href: "/activity",
+        icon: Activity,
     },
     {
         title: "Setelan",

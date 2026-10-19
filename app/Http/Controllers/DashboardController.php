@@ -36,27 +36,42 @@ class DashboardController extends Controller
                 return $query->where("type", "completed");
             })->count(),
         ];
-
         $overdue = $taskOverdue->limit(4)->get();
         $thisWeek = $user->tasks()->whereHas("status", function ($query) {
             return $query->where("due_date", ">=", Carbon::now())->where("due_date", "<", Carbon::now()->addWeek());
         })->limit(4)->get();
         $pending = $taskPending->limit(4)->get();
-
-        $defaultStatusDistribution = [
-            "pending" => 0,
-            "running" => 0,
-            "completed" => 0,
-            "canceled" => 0
+        $summaryTask = [
+            "overdue" => $overdue,
+            "thisWeek" => $thisWeek,
+            "pending" => $pending,
         ];
 
-        $statusDistribution = [...$defaultStatusDistribution, ...Task::with("status")->get()->groupBy("status.type")->map->count()];
-        $assignedDistribution = User::select('name')->withCount('tasks')->limit(5)->get();
+        $summaryData = [
+            "statusDistribution" => [],
+            "assignedDistribution" => [],
+            "overdueTasks" =>  []
+        ];
 
-        $tasks = Task::select("title", "due_date")->where("due_date", "<", now())->paginate(5)->withQueryString();
+        if ($user->can("dashboard.view.project")) {
+            $defaultStatusDistribution = [
+                "pending" => 0,
+                "running" => 0,
+                "completed" => 0,
+                "canceled" => 0
+            ];
+            $statusDistribution = [...$defaultStatusDistribution, ...Task::with("status")->get()->groupBy("status.type")->map->count()];
+            $assignedDistribution = User::select('name')->withCount('tasks')->limit(5)->get();
+            $tasks = Task::select("title", "due_date")->where("due_date", "<", now())->paginate(5)->withQueryString();
+            $overdueTasks = DashboardTaskOverdueResource::collection($tasks);
 
-        $overdueTasks = DashboardTaskOverdueResource::collection($tasks);
+            $summaryData = [
+                "statusDistribution" => $statusDistribution,
+                "assignedDistribution" => $assignedDistribution,
+                "overdueTasks" => $overdueTasks,
+            ];
+        }
 
-        return Inertia::render("dashboard/page", compact("cardData", "overdue", "thisWeek", "pending", "statusDistribution", "assignedDistribution", "overdueTasks"));
+        return Inertia::render("dashboard/page", compact("cardData", "summaryTask", "summaryData"));
     }
 }

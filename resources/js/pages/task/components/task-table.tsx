@@ -28,7 +28,8 @@ import {
     SquarePen,
     Trash2,
 } from "lucide-react";
-import { detail } from "@/routes/task";
+import { detail as detailTask } from "@/routes/task";
+import { detail as detailProject } from "@/routes/project";
 
 export function TaskTable({
     data,
@@ -60,7 +61,16 @@ export function TaskTable({
                             <TableRow key={task.id}>
                                 <TableCell>{task.title ?? "-"}</TableCell>
                                 <TableCell>
-                                    {task.status.project.name ?? "-"}
+                                    <Link
+                                        href={
+                                            detailProject(
+                                                task.status.project.id,
+                                            ).url
+                                        }
+                                        className="text-blue-400 hover:text-blue-500 hover:underline"
+                                    >
+                                        {task.status.project.name ?? "-"}
+                                    </Link>
                                 </TableCell>
                                 <TableCell>{task.priority ?? "-"}</TableCell>
                                 <TableCell>{task.status.name ?? "-"}</TableCell>
@@ -80,32 +90,42 @@ export function TaskTable({
                                             </Button>
                                         </DropdownMenuTrigger>
                                         <DropdownMenuContent align="end">
-                                            <DropdownMenuItem
-                                                onClick={() =>
-                                                    modal.openEdit(task)
-                                                }
-                                            >
-                                                <SquarePen />
-                                                Edit
-                                            </DropdownMenuItem>
+                                            {can("task.edit") && (
+                                                <DropdownMenuItem
+                                                    onClick={() =>
+                                                        modal.openEdit(task)
+                                                    }
+                                                >
+                                                    <SquarePen />
+                                                    Edit
+                                                </DropdownMenuItem>
+                                            )}
                                             <DropdownMenuItem asChild>
                                                 <Link
-                                                    href={detail(task.id).url}
+                                                    href={
+                                                        detailTask(task.id).url
+                                                    }
                                                 >
                                                     <FileText />
                                                     Detail
                                                 </Link>
                                             </DropdownMenuItem>
-                                            <DropdownMenuSeparator />
-                                            <DropdownMenuItem
-                                                onClick={() =>
-                                                    modal.openDelete(task.id)
-                                                }
-                                                variant="destructive"
-                                            >
-                                                <Trash2 />
-                                                Delete
-                                            </DropdownMenuItem>
+                                            {can("task.delete") && (
+                                                <>
+                                                    <DropdownMenuSeparator />
+                                                    <DropdownMenuItem
+                                                        onClick={() =>
+                                                            modal.openDelete(
+                                                                task.id,
+                                                            )
+                                                        }
+                                                        variant="destructive"
+                                                    >
+                                                        <Trash2 />
+                                                        Delete
+                                                    </DropdownMenuItem>
+                                                </>
+                                            )}
                                         </DropdownMenuContent>
                                     </DropdownMenu>
                                 </TableCell>

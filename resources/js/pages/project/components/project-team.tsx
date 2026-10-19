@@ -2,7 +2,6 @@ import {
     Card,
     CardAction,
     CardContent,
-    CardDescription,
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
@@ -20,12 +19,13 @@ import { PackageOpen, PenSquare } from "lucide-react";
 import ProjectTeamForm from "./project-team-form";
 import { useModal } from "@/hooks/use-modal";
 import { Button } from "@/components/ui/button";
-import { useForm } from "@inertiajs/react";
+import { Link } from "@inertiajs/react";
+import { detail as userDetail } from "@/routes/user";
 
 export default function ProjectTeam({
     teams,
     users,
-    projectId
+    projectId,
 }: {
     teams: UserWithRole[] | undefined;
     users: UserWithRole[];
@@ -35,12 +35,20 @@ export default function ProjectTeam({
 
     return (
         <>
-            <ProjectTeamForm modal={modal} teams={teams} users={users} projectId={projectId}/>
+            <ProjectTeamForm
+                modal={modal}
+                teams={teams}
+                users={users}
+                projectId={projectId}
+            />
             <Card className="bg-muted/50">
                 <CardHeader>
                     <CardTitle>Anggota & Tim</CardTitle>
                     <CardAction>
-                        <Button size="sm" onClick={() => modal.openModal("edit-team", teams)}>
+                        <Button
+                            size="sm"
+                            onClick={() => modal.openModal("edit-team", teams)}
+                        >
                             <PenSquare /> Edit
                         </Button>
                     </CardAction>
@@ -52,24 +60,29 @@ export default function ProjectTeam({
                                 key={team.id}
                                 className="bg-background p-2"
                                 variant="outline"
+                                asChild
                             >
-                                <ItemMedia>
-                                    <Avatar>
-                                        <AvatarFallback>
-                                            {getInitials(team.name)}
-                                        </AvatarFallback>
-                                    </Avatar>
-                                </ItemMedia>
-                                <ItemContent>
-                                    <ItemTitle>{team.name}</ItemTitle>
-                                    <ItemDescription className="text-xs capitalize">
-                                        {team.roles ? team.roles[0].name : ""}
-                                        {team.roles && team.position
-                                            ? " - "
-                                            : ""}
-                                        {team.position ? team.position : ""}
-                                    </ItemDescription>
-                                </ItemContent>
+                                <Link href={userDetail(team.id).url}>
+                                    <ItemMedia>
+                                        <Avatar>
+                                            <AvatarFallback>
+                                                {getInitials(team.name)}
+                                            </AvatarFallback>
+                                        </Avatar>
+                                    </ItemMedia>
+                                    <ItemContent>
+                                        <ItemTitle>{team.name}</ItemTitle>
+                                        <ItemDescription className="text-xs capitalize">
+                                            {team.roles
+                                                ? team.roles[0].name
+                                                : ""}
+                                            {team.roles && team.position
+                                                ? " - "
+                                                : ""}
+                                            {team.position ? team.position : ""}
+                                        </ItemDescription>
+                                    </ItemContent>
+                                </Link>
                             </Item>
                         ))
                     ) : (

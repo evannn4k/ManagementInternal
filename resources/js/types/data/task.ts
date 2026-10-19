@@ -14,9 +14,16 @@ export type TaskType = {
     assigned: UserWithRole[];
 };
 
-export type CardData = {
+export type CardDataType = {
     total_running: number;
     total_overdue: number;
     this_week: number;
     total_task: number;
 };
+
+export type TaskSummaryType = {
+    total: number,
+    pending: number,
+    due: number,
+    completed: number,
+}

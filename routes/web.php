@@ -27,7 +27,7 @@ use Illuminate\Support\Facades\Route;
 Route::inertia("/", "welcome")->name("home");
 
 Route::middleware(["auth", "verified"])->group(function () {
-    Route::get("/dashboard", DashboardController::class)->name("dashboard");
+    Route::get("/dashboard", DashboardController::class)->name("dashboard")->middleware("permission:dashboard.view.personal|dashboard.view.project|dashboard.view.sistem");
 
     Route::prefix("/role")
         ->name("role.")
@@ -54,7 +54,10 @@ Route::middleware(["auth", "verified"])->group(function () {
                 "index",
             )->middleware("can:user.view");
             Route::post("/", CreateUserController::class)->name("create")->middleware("can:user.create");
-
+            
+            Route::get("/{user}", [ViewUserController::class, "detail"])->name(
+                "detail",
+            )->middleware("can:user.view");
             Route::put("/{user}", UpdateUserController::class)->name("update")->middleware("can:user.edit");
             Route::delete("/{user}", DeleteUserController::class)->name(
                 "delete",
@@ -66,7 +69,7 @@ Route::middleware(["auth", "verified"])->group(function () {
         ->group(function () {
             Route::get("/", [ViewProjectController::class, "index"])->name(
                 "index",
-            )->middleware("permission:project.view.own|project.view.team|project.view.all");
+            )->middleware("permission:project.view.own|project.view.all");
             Route::post("/", CreateProjectController::class)->name("create")->middleware("can:project.create");
 
             Route::get("/{project}", [ViewProjectController::class, "detail"])->name(
@@ -88,18 +91,18 @@ Route::middleware(["auth", "verified"])->group(function () {
 
             Route::get("/", [ViewTaskController::class, "index"])->name(
                 "index",
-            );
+            )->middleware("permission:task.view.all|task.view.own");
 
             Route::post("/", CreateTaskController::class)->name("create")->middleware("can:task.create");
             Route::put("/change-status", ChangeStatusTaskController::class)->name("change.status");
 
             Route::get("/{task}", [ViewTaskController::class, "detail"])->name(
                 "detail",
-            );
-            Route::put("/{task}", UpdateTaskController::class)->name("update");
+            )->middleware("permission:task.view.all|task.view.own");
+            Route::put("/{task}", UpdateTaskController::class)->name("update")->middleware("can:task.edit");
             Route::delete("/{task}", DeleteTaskController::class)->name(
                 "delete",
-            );
+            )->middleware("can:task.delete");
         });
 });
 

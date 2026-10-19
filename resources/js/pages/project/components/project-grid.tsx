@@ -16,6 +16,7 @@ import {
     PackageOpen,
     SquarePen,
     Trash2,
+    Users,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -144,7 +145,7 @@ export function ProjectGrid({
                                             {project.description}
                                         </CardDescription>
                                     </div>
-                                    <div className="my-auto">
+                                    <div className="mt-auto">
                                         <div className="text-xs text-muted-foreground flex gap-2 items-center mb-2 justify-between">
                                             <span>Penyelesaian Tugas</span>
                                             <span>
@@ -152,39 +153,13 @@ export function ProjectGrid({
                                             </span>
                                         </div>
                                         <Progress value={66} />
-                                        <div className="flex justify-between items-center gap-4 pt-4 tb-2">
-                                            <AvatarGroup className="grayscale">
-                                                <Avatar size="sm">
-                                                    <AvatarImage
-                                                        src="https://github.com/shadcn.png"
-                                                        alt="@shadcn"
-                                                    />
-                                                    <AvatarFallback>
-                                                        CN
-                                                    </AvatarFallback>
-                                                </Avatar>
-                                                <Avatar size="sm">
-                                                    <AvatarImage
-                                                        src="https://github.com/maxleiter.png"
-                                                        alt="@maxleiter"
-                                                    />
-                                                    <AvatarFallback>
-                                                        LR
-                                                    </AvatarFallback>
-                                                </Avatar>
-                                                <Avatar size="sm">
-                                                    <AvatarImage
-                                                        src="https://github.com/evilrabbit.png"
-                                                        alt="@evilrabbit"
-                                                    />
-                                                    <AvatarFallback>
-                                                        ER
-                                                    </AvatarFallback>
-                                                </Avatar>
-                                                <AvatarGroupCount>
-                                                    +3
-                                                </AvatarGroupCount>
-                                            </AvatarGroup>
+                                        <div className="flex justify-between items-center gap-4 pt-4">
+                                            <div className="flex items-center gap-2">
+                                                <Users className="size-4"/>
+                                                {project?.teams?.length ??
+                                                    0}{" "}
+                                                Anggota
+                                            </div>
                                             <div className="flex gap-1 items-center text-xs text-muted-foreground">
                                                 <CalendarDays className="size-4" />{" "}
                                                 {project.start_date}

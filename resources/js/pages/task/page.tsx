@@ -15,7 +15,8 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import TaskForm from "./components/task-form";
 import { deleteMethod as deleteTask } from "@/routes/task";
 import { DeleteAlert } from "@/components/delete-alert";
-import { CardData } from "@/types/data/task";
+import { CardDataType } from "@/types/data/task";
+import { can } from "@/lib/middleware";
 
 export default function TaskPage({
     data,
@@ -23,7 +24,7 @@ export default function TaskPage({
     projects,
 }: {
     data: LaravelPagination<ProjectGridType>;
-    cardData: CardData;
+    cardData: CardDataType;
     projects: any[];
 }) {
     const [query, setQuery] = useState<{
@@ -67,6 +68,8 @@ export default function TaskPage({
         });
     };
 
+    console.log(cardData)
+
     return (
         <>
             <Head title="Project" />
@@ -89,9 +92,11 @@ export default function TaskPage({
                             voluptatem sint.
                         </p>
                     </div>
-                    <Button onClick={() => modal.openCreate()}>
-                        <Plus /> Proyek Baru
-                    </Button>
+                    {can("task.create") && (
+                        <Button onClick={() => modal.openCreate()}>
+                            <Plus /> Proyek Baru
+                        </Button>
+                    )}
                 </header>
                 <TaskSectionCard cardData={cardData} />
 
@@ -105,7 +110,7 @@ export default function TaskPage({
                         <TaskToolbar
                             url={url}
                             updateQuery={updateQuery}
-                            projects={projects} 
+                            projects={projects}
                         />
                         <TaskTable
                             tableHead={tableHead}

@@ -11,10 +11,6 @@ import { edit } from '@/routes/profile';
 import type { Auth } from '@/types';
 import { send } from '@/routes/verification';
 
-type PageProps = {
-    auth: Auth;
-};
-
 export default function Profile({
     mustVerifyEmail,
     status,
@@ -22,7 +18,7 @@ export default function Profile({
     mustVerifyEmail: boolean;
     status?: string;
 }) {
-    const { auth } = usePage<PageProps>().props;
+    const { auth } = usePage().props;
 
     return (
         <>

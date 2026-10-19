@@ -14,23 +14,28 @@ import DashboardSummaryData from "./components/dashboard-summary-data";
 import { LaravelPagination } from "@/types/paginate";
 import { useState } from "react";
 import { dashboard as DashboardIndex } from "@/routes";
+import { can } from "@/lib/middleware";
 
-export default function Dashboard({
-    cardData,
-    overdue,
-    thisWeek,
-    pending,
-    statusDistribution,
-    assignedDistribution,
-    overdueTasks,
-}: {
-    cardData: CardData;
+type SummaryTaskType = {
     overdue: TaskType[];
     thisWeek: TaskType[];
     pending: TaskType[];
+};
+
+type SummaryDataType = {
     statusDistribution?: StatusDistributionType;
     assignedDistribution?: AssignedDistributionType;
     overdueTasks?: LaravelPagination<{ title: string; due_date: string }>;
+};
+
+export default function Dashboard({
+    cardData,
+    summaryTask,
+    summaryData,
+}: {
+    cardData: CardData;
+    summaryTask: SummaryTaskType;
+    summaryData: SummaryDataType;
 }) {
     const { auth } = usePage().props;
 
@@ -85,20 +90,24 @@ export default function Dashboard({
                     <div className="flex flex-col gap-4 p-0">
                         <DashboardSectionCard cardData={cardData} />
                         <DashboardSectionTask
-                            overdue={overdue}
-                            thisWeek={thisWeek}
-                            pending={pending}
+                            overdue={summaryTask.overdue}
+                            thisWeek={summaryTask.thisWeek}
+                            pending={summaryTask.pending}
                         />
                     </div>
                 </div>
-                <div className="flex flex-col gap-4">
-                    <CardTitle>Ringkasan Data</CardTitle>
-                    <DashboardSummaryData
-                        statusDistribution={statusDistribution}
-                        assignedDistribution={assignedDistribution}
-                        overdueTasks={overdueTasks}
-                    />
-                </div>
+                {can("dashboard.view.project") && (
+                    <div className="flex flex-col gap-4">
+                        <CardTitle>Ringkasan Data</CardTitle>
+                        <DashboardSummaryData
+                            statusDistribution={summaryData.statusDistribution}
+                            assignedDistribution={
+                                summaryData.assignedDistribution
+                            }
+                            overdueTasks={summaryData.overdueTasks}
+                        />
+                    </div>
+                )}
             </div>
         </>
     );

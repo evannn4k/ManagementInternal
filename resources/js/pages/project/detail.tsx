@@ -171,7 +171,6 @@ ProjectPage.layout = (props: any) => ({
         },
         {
             title: props?.project?.name ?? "",
-            href: "#",
         },
     ],
 });

@@ -1,15 +1,7 @@
-import { Head, router, useForm } from "@inertiajs/react";
+import { Head, Link } from "@inertiajs/react";
 import { index as projectIndex } from "@/routes/project";
 import { TaskType } from "@/types/data/task";
-import {
-    CalendarDays,
-    FileText,
-    PenSquare,
-    Plus,
-    Text,
-    Trash,
-    Users,
-} from "lucide-react";
+import { CalendarDays, FileText, PenSquare, Text, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
     Card,
@@ -23,6 +15,7 @@ import { cn, formatDate } from "@/lib/utils";
 import { Item, ItemContent } from "@/components/ui/item";
 import TaskForm from "./components/task-form";
 import { useModal } from "@/hooks/use-modal";
+import { detail as userDetail } from "@/routes/user";
 
 export default function ProjectPage({ task }: { task: TaskType }) {
     const modal = useModal();
@@ -153,14 +146,17 @@ export default function ProjectPage({ task }: { task: TaskType }) {
                                         variant="muted"
                                         className="p-2"
                                         key={user.id}
+                                        asChild
                                     >
-                                        <ItemContent className="p-0 flex flex-row justify-start gap-2">
-                                            <span>{i + 1}.</span>
-                                            <div className="flex-1 flex items-center justify-between gap-2">
-                                                <span>{user.name}</span>
-                                                <span>{user.position}</span>
-                                            </div>
-                                        </ItemContent>
+                                        <Link href={userDetail(user.id).url}>
+                                            <ItemContent className="p-0 flex flex-row justify-start gap-2">
+                                                <span>{i + 1}.</span>
+                                                <div className="flex-1 flex items-center justify-between gap-2">
+                                                    <span>{user.name}</span>
+                                                    <span>{user.position}</span>
+                                                </div>
+                                            </ItemContent>
+                                        </Link>
                                     </Item>
                                 ))}
                             </CardContent>

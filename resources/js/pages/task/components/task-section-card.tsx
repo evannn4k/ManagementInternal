@@ -5,10 +5,10 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { CardData } from "@/types/data/task";
+import { CardDataType } from "@/types/data/task";
 import { CircleAlert, Clock, FolderOpen, Zap } from "lucide-react";
 
-export function TaskSectionCard({ cardData }: { cardData: CardData }) {
+export function TaskSectionCard({ cardData }: { cardData: CardDataType }) {
     const cards = [
         {
             label: "TOTAL TUGAS",

@@ -7,8 +7,10 @@ export type User = {
     two_factor_enabled?: boolean;
     created_at: string;
     updated_at: string;
-    role?: string[];
+    role?: string[] | string;
     position: string;
+    total_pic?: number;
+    total_create_project?: number;
     permissions?: string[];
     [key: string]: unknown;
 };

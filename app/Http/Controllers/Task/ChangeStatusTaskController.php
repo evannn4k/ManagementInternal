@@ -21,7 +21,6 @@ class ChangeStatusTaskController extends Controller
                     return $t["task_id"];
                 }, $credentials['task']))->get();
 
-
                 foreach ($tasks as $task) {
                     $task->status_id = array_find($credentials['task'], function ($t) use ($task) {
                         return $t["task_id"] == $task->id;

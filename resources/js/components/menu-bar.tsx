@@ -122,7 +122,7 @@ export function MenuBar({ editor }: { editor: Editor }) {
     ];
 
     return (
-        <Card className="p-1 rounded-lg">
+        <Card className="p-1 rounded-lg bg-input dark:bg-input/30">
             <CardContent className="p-0">
                 {Options.map((option, i) => (
                     <Toggle
