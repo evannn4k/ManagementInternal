@@ -29,6 +29,7 @@ import { index as userIndex } from "@/routes/user";
 import { index as roleIndex } from "@/routes/role";
 import { index as projectIndex } from "@/routes/project";
 import { index as taskIndex } from "@/routes/task";
+import { index as activityIndex } from "@/routes/activity";
 
 const navigationNavItems: NavItem[] = [
     {
@@ -65,7 +66,7 @@ const administrationNavItems: NavItem[] = [
     },
     {
         title: "Aktivitas",
-        href: "/activity",
+        href: activityIndex(),
         icon: Activity,
     },
     {

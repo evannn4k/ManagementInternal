@@ -6,7 +6,6 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { Item, ItemContent, ItemDescription } from "@/components/ui/item";
 import {
     Table,
     TableBody,
@@ -16,12 +15,12 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TaskSummaryType, TaskType } from "@/types/data/task";
 import { Link } from "@inertiajs/react";
 import { detail as detailProject } from "@/routes/project";
 import { cn } from "@/lib/utils";
-import { ArrowRight, PackageOpen } from "lucide-react";
+import { PackageOpen } from "lucide-react";
+import { detail as detailTask } from "@/routes/task";
 
 export function UserDetailTask({
     tasks,
@@ -130,7 +129,12 @@ export function UserDetailTask({
                                 tasks.map((task, i) => (
                                     <TableRow key={task.id}>
                                         <TableCell>
-                                            {task.title ?? "-"}
+                                            <Link
+                                                href={detailTask(task.id).url}
+                                                className="text-blue-400 hover:text-blue-500 hover:underline"
+                                            >
+                                                {task.title ?? "-"}
+                                            </Link>
                                         </TableCell>
                                         <TableCell>
                                             <Link

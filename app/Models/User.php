@@ -92,4 +92,8 @@ class User extends Authenticatable implements PasskeyUser
     {
         return $this->belongsToMany(Task::class, "assigned_task", "user_id", "task_id")->using(AssignedTask::class);
     }
+
+    public function activity() {
+        return $this->hasMany(Activity::class);
+    }
 }

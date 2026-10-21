@@ -38,19 +38,23 @@ export function ProjectSectionCard({ cardData }: { cardData: CardData }) {
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            {cards.map((card) => (
-                <Card key={card.label} className="bg-muted/50">
+            {cards.map((card, index) => (
+                <Card key={index} className="bg-muted/50">
                     <CardHeader className="h-full">
                         <div className="flex flex-col gap-2 h-full">
-                            <CardDescription>{card.label}</CardDescription>
-                            <CardTitle className="text-2xl">
-                                {card.value}
+                            <div className="flex items-center justify-between">
+                                <CardDescription className="font-semibold tracking-wider text-xs">
+                                    {card.label}
+                                </CardDescription>
+                                <div>{card.icon}</div>
+                            </div>
+                            <CardTitle className="text-3xl font-bold">
+                                {card.value.toLocaleString()}
                             </CardTitle>
-                            <CardDescription className="mt-auto">
+                            <CardDescription className="text-xs mt-auto">
                                 {card.description}
                             </CardDescription>
                         </div>
-                        <CardAction>{card.icon}</CardAction>
                     </CardHeader>
                 </Card>
             ))}

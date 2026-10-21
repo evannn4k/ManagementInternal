@@ -5,7 +5,6 @@ import {
     Card,
     CardContent,
     CardDescription,
-    CardHeader,
     CardTitle,
 } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -29,7 +28,7 @@ import { UserDetailProject } from "./components/user-detail-project";
 import { ProjectGridType } from "@/types/data/project";
 import { UserDetailTask } from "./components/user-detail-task";
 import { TaskSummaryType, TaskType } from "@/types/data/task";
-import { Button } from "@/components/ui/button";
+
 
 export default function UserDetail({
     data,

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Activity\ViewActivityController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Project\CreateProjectController;
 use App\Http\Controllers\Project\DeleteProjectController;
@@ -54,7 +55,7 @@ Route::middleware(["auth", "verified"])->group(function () {
                 "index",
             )->middleware("can:user.view");
             Route::post("/", CreateUserController::class)->name("create")->middleware("can:user.create");
-            
+
             Route::get("/{user}", [ViewUserController::class, "detail"])->name(
                 "detail",
             )->middleware("can:user.view");
@@ -103,6 +104,14 @@ Route::middleware(["auth", "verified"])->group(function () {
             Route::delete("/{task}", DeleteTaskController::class)->name(
                 "delete",
             )->middleware("can:task.delete");
+        });
+
+    Route::prefix("/activity")
+        ->name("activity.")
+        ->group(function () {
+            Route::get("/", [ViewActivityController::class, "index"])->name(
+                "index",
+            );
         });
 });
 

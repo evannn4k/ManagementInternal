@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignUuid("project_id")->constrained()->cascadeOnDelete();
             $table->string("name");
             $table->integer("position");
+            $table->enum("type", ["pending", "running", "completed", "canceled"])->default("pending");
             $table->timestamps();
         });
     }

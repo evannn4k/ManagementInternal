@@ -68,8 +68,6 @@ export default function TaskPage({
         });
     };
 
-    console.log(cardData)
-
     return (
         <>
             <Head title="Project" />

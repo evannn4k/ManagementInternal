@@ -12,7 +12,17 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('activities', function (Blueprint $table) {
-            $table->id();
+            // $table->id();
+            $table->uuid("id")->primary();
+            $table->foreignId("user_id")->constrained("users")->nullOnDelete();
+            $table->string("table_name")->nullable();
+            $table->string("target_id")->nullable();
+            $table->string("target_name")->nullable();
+            $table->string("target_url")->nullable();
+            $table->enum("type", ['create', 'update', 'delete'])->nullable();
+            $table->json("old_data")->nullable();
+            $table->json("new_data")->nullable();
+            $table->string("ip_address")->nullable();
             $table->timestamps();
         });
     }
