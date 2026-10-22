@@ -4,10 +4,7 @@ export type ActivityType = {
     id: string;
     user_id: number | null;
     user: UserWithRole;
-    table_name: string | null;
-    target_id: string | null;
-    target_name: string | null;
-    target_url: string | null;
+    subject?: { id?: number | string; type?: string; name?: string };
     type: "create" | "update" | "delete" | string | null;
     old_data: Record<string, any>[] | null;
     new_data: Record<string, any>[] | null;

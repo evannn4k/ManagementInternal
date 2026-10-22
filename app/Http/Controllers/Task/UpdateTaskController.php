@@ -50,12 +50,8 @@ class UpdateTaskController extends Controller
 
                 $task->update($credentials);
 
-                Activity::create([
+                $task->activities()->create([
                     "user_id" => Auth::user()->id,
-                    "table_name" => "tasks",
-                    "target_id" => $task->id,
-                    "target_name" => $task->title,
-                    "target_url" => "/task/" . $task->id,
                     "type" => "update",
                     "old_data" => $oldData,
                     "new_data" => $diffData,

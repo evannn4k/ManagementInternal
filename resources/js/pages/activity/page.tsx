@@ -38,9 +38,11 @@ export default function ActivityPage({
         { label: "target" },
         { label: "tabel target" },
         { label: "waktu" },
-        { label: "ip" },
+        { label: "alamat ip" },
         { label: "" },
     ];
+
+    console.log(data.data)
 
     return (
         <>
@@ -57,7 +59,7 @@ export default function ActivityPage({
                         host.
                     </p>
                 </header>
-                <ActivitySectionCard cardData={cardData}/>
+                <ActivitySectionCard cardData={cardData} />
                 <ActivityToolbar updateQuery={updateQuery} url={url} />
                 <ActivityTable tableHead={tableHead} data={data.data} />
                 {data.data.length > 0 && (

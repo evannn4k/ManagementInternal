@@ -31,7 +31,6 @@ import {
 import { Button } from "@/components/ui/button";
 import React, { useState } from "react";
 import { Link } from "@inertiajs/react";
-import { detail as userDetail } from "@/routes/user";
 import {
     CodeBlock,
     CodeBlockActions,
@@ -42,6 +41,9 @@ import {
     CodeBlockLine,
     CodeBlockTitle,
 } from "@/components/ui/code-block";
+import { detail as userDetail } from "@/routes/user";
+import project, { detail as projectDetail } from "@/routes/project";
+import { detail as taskDetail } from "@/routes/task";
 
 export function ActivityTable({
     data,
@@ -54,6 +56,18 @@ export function ActivityTable({
 
     const handleChangeOpen = (id: string) => {
         setOpen((prev) => (prev == id ? null : id));
+    };
+
+    const getUrl = (type?: string, id?: string | number) => {
+        const typeModel = type ? type.toLowerCase() : "";
+
+        return typeModel === "task"
+            ? taskDetail(id as string).url
+            : typeModel === "project"
+              ? projectDetail(id as string).url
+              : typeModel === "user"
+                ? userDetail(id as number).url
+                : "#";
     };
 
     return (
@@ -98,28 +112,23 @@ export function ActivityTable({
                                                 {activity.type}
                                             </TableCell>
                                             <TableCell>
-                                                {activity.target_name ? (
-                                                    activity.target_url ? (
-                                                        <Link
-                                                            href={
-                                                                activity.target_url ??
-                                                                "#"
-                                                            }
-                                                            className="text-blue-500 hover:underline"
-                                                        >
-                                                            {
-                                                                activity.target_name
-                                                            }
-                                                        </Link>
-                                                    ) : (
-                                                        activity.target_name
-                                                    )
+                                                {activity.subject?.name ? (
+                                                    <Link
+                                                        href={getUrl(
+                                                            activity.subject
+                                                                .type,
+                                                            activity.subject.id,
+                                                        )}
+                                                        className="text-blue-500 hover:underline"
+                                                    >
+                                                        {activity.subject?.name}
+                                                    </Link>
                                                 ) : (
-                                                    "-"
+                                                    activity.subject?.name
                                                 )}
                                             </TableCell>
                                             <TableCell>
-                                                {activity.table_name}
+                                                {activity.subject?.type ?? "-"}
                                             </TableCell>
                                             <TableCell>
                                                 {formatDate(
@@ -129,7 +138,7 @@ export function ActivityTable({
                                             <TableCell>
                                                 {activity.ip_address}
                                             </TableCell>
-                                            <TableCell>
+                                            <TableCell className="text-end">
                                                 <Button
                                                     variant="ghost"
                                                     size="sm"

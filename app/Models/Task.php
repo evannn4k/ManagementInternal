@@ -21,6 +21,11 @@ class Task extends Model
         return $this->belongsTo(Status::class);
     }
 
+    public function activities()
+    {
+        return $this->morphMany(Activity::class, 'subject');
+    }
+
     protected function casts(): array
     {
         return [

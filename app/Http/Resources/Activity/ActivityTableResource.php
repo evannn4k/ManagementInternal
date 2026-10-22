@@ -18,10 +18,11 @@ class ActivityTableResource extends JsonResource
             "id" => $this->id,
             "user_id" => $this->user_id,
             "user" => $this->whenLoaded('user'),
-            "table_name" => $this->table_name,
-            "target_id" => $this->target_id,
-            "target_name" => $this->target_name,
-            "target_url" => $this->target_url,
+            "subject" => [
+                "id" => $this->subject?->id,
+                "type" => class_basename($this->subject_type),
+                "name" => $this->subject_name
+            ],
             "type" => $this->type,
             "old_data" => $this->old_data,
             "new_data" => $this->new_data,

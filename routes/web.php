@@ -19,6 +19,7 @@ use App\Http\Controllers\Task\CreateTaskController;
 use App\Http\Controllers\Task\DeleteTaskController;
 use App\Http\Controllers\Task\UpdateTaskController;
 use App\Http\Controllers\Task\ViewTaskController;
+use App\Http\Controllers\Telegram\ConnectTelegramController;
 use App\Http\Controllers\User\CreateUserController;
 use App\Http\Controllers\User\DeleteUserController;
 use App\Http\Controllers\User\UpdateUserController;
@@ -29,6 +30,8 @@ Route::inertia("/", "welcome")->name("home");
 
 Route::middleware(["auth", "verified"])->group(function () {
     Route::get("/dashboard", DashboardController::class)->name("dashboard")->middleware("permission:dashboard.view.personal|dashboard.view.project|dashboard.view.sistem");
+
+    Route::post("/telegram/connect", ConnectTelegramController::class)->name("telegram.connect")->middleware("auth");
 
     Route::prefix("/role")
         ->name("role.")

@@ -39,6 +39,8 @@ use Spatie\Permission\Traits\HasRoles;
         "last_login_at",
         "position",
         "avatar",
+        "telegram_chat_id",
+        "telegram_link_token",
     ]),
 ]
 #[

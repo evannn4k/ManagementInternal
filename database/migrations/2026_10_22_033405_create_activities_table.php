@@ -15,10 +15,7 @@ return new class extends Migration
             // $table->id();
             $table->uuid("id")->primary();
             $table->foreignId("user_id")->constrained("users")->nullOnDelete();
-            $table->string("table_name")->nullable();
-            $table->string("target_id")->nullable();
-            $table->string("target_name")->nullable();
-            $table->string("target_url")->nullable();
+            $table->uuidMorphs('subject');
             $table->enum("type", ['create', 'update', 'delete'])->nullable();
             $table->json("old_data")->nullable();
             $table->json("new_data")->nullable();
