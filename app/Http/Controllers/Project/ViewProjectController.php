@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Project;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Activity\ActivityTableResource;
 use App\Http\Resources\Project\ProjectTableResource;
+use App\Models\Activity;
 use App\Models\Project;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -80,11 +82,13 @@ class ViewProjectController extends Controller
             ]
         );
 
+        $activity = ActivityTableResource::collection(Activity::with("user:id,name")->taskProject($project->id)->latest()->limit(10)->get());
+
         $users = User::select("id", "name", "position")->get();
 
         return Inertia::render(
             "project/detail",
-            compact("project", "users"),
+            compact("project", "users", "activity"),
         );
     }
 }

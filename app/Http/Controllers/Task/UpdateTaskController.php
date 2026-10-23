@@ -23,9 +23,16 @@ class UpdateTaskController extends Controller
 
         try {
             DB::transaction(function () use ($request, $credentials, $task) {
-                $assigned = $credentials['assigned'] ?? [];
+                $newAssigned = $credentials['assigned'] ? $credentials['assigned'] : [];
+                $oldAssigned = $task->assigned()->pluck("id")->toArray();
+
+                $newLabel = $credentials['label'] ?? [];
+                $oldLabel = $task->label ?? [];
+
+                $diffCredentials = $credentials;
 
                 unset($credentials['assigned']);
+                unset($diffCredentials['label'], $diffCredentials['assigned']);
 
                 if ($request->hasFile('file')) {
                     $filename = FileService::save("task/", $request->file("file"), $task->file);
@@ -35,18 +42,24 @@ class UpdateTaskController extends Controller
                     unset($credentials['file']);
                 }
 
-                $diffLabel = array_diff($credentials['label'], $task->label);
+                // pengecekan perubahan
+                $addedLabel = array_values(array_diff($newLabel, $oldLabel));
+                $removedLabel = array_values(array_diff($oldLabel, $newLabel));
 
-                $diffCredentials = $credentials;
-                unset($diffCredentials['label']);
+                $addedAssigned = array_values(array_diff($newAssigned, $oldAssigned));
+                $removedAssigned = array_values(array_diff($oldAssigned, $newAssigned));
 
                 $diffData = array_diff_assoc($diffCredentials, $task->only(array_keys($diffCredentials)));
+                $oldData = $task->only(array_keys($diffData));
 
-                if ($diffLabel) {
+                if ($addedLabel || $removedLabel) {
                     $diffData["label"] = $credentials["label"];
                 }
 
-                $oldData = $task->only(array_keys($diffData));
+                if ($addedAssigned || ($removedAssigned && !empty($diffCredentials["assigned"]))) {
+                    $diffData["assigned"] = $newAssigned;
+                    $oldData["assigned"] = $oldAssigned;
+                }
 
                 $task->update($credentials);
 
@@ -58,7 +71,7 @@ class UpdateTaskController extends Controller
                     "ip_address" => $request->ip(),
                 ]);
 
-                $task->assigned()->sync($assigned);
+                $task->assigned()->sync($newAssigned);
             });
 
             return redirect()

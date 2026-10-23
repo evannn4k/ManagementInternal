@@ -2,23 +2,40 @@
 
 namespace App\Http\Controllers\Activity;
 
-use App\Http\Controllers\Controller;
 use App\Http\Resources\Activity\ActivityTableResource;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 use App\Models\Activity;
 use App\Models\Project;
 use App\Models\Task;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Illuminate\Support\Facades\DB;
+use App\Models\User;
 use Inertia\Inertia;
 
 class ViewActivityController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $activities = Activity::with([
             "user:id,name",
             "subject"
-        ])->orderBy("created_at", "desc")->paginate($request->per_page ?? 10)
+        ])->when($request->search, function ($query, $value) {
+            $query->whereHas("user", function ($q) use ($value) {
+                return $q->where("name", "ilike", "%$value%");
+            });
+        })->when($request->type, function ($query, $value) {
+            $query
+                ->where("type", $value);
+        })->when($request->table, function ($query, $value) {
+            $query
+                ->where("subject_type", "ilike", "%$value");
+        })->when($request->date_from, function ($query, $value) {
+            $query
+                ->where("created_at", ">=", $value);
+        })->when($request->date_to, function ($query, $value) {
+            $query
+                ->where("created_at", "<=", $value);
+        })->orderBy("created_at", "desc")->paginate($request->per_page ?? 10)
             ->withQueryString();
 
         $data = ActivityTableResource::collection($activities);

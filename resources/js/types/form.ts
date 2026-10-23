@@ -8,7 +8,7 @@ export interface OptionItem {
 
 export interface FormFieldProps {
     icon?: LucideIcon;
-    label: string;
+    label?: string;
     name: string;
     type?: string;
     description?: string;
@@ -18,6 +18,7 @@ export interface FormFieldProps {
     required?: boolean;
     placeholder?: string;
     options?: OptionItem[];
+    max?: string;
     min?: string;
     cols?: number;
     col?: number;

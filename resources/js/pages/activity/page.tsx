@@ -42,8 +42,6 @@ export default function ActivityPage({
         { label: "" },
     ];
 
-    console.log(data.data)
-
     return (
         <>
             <Head title="Activity" />
@@ -60,7 +58,7 @@ export default function ActivityPage({
                     </p>
                 </header>
                 <ActivitySectionCard cardData={cardData} />
-                <ActivityToolbar updateQuery={updateQuery} url={url} />
+                <ActivityToolbar query={query} updateQuery={updateQuery} url={url} />
                 <ActivityTable tableHead={tableHead} data={data.data} />
                 {data.data.length > 0 && (
                     <PaginationPage

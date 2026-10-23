@@ -2,6 +2,7 @@ import { Card, CardContent, CardDescription } from "@/components/ui/card";
 import {
     Table,
     TableBody,
+    TableCaption,
     TableCell,
     TableHead,
     TableHeader,
@@ -23,34 +24,27 @@ import {
     EmptyMedia,
     EmptyTitle,
 } from "@/components/ui/empty";
-import {
-    Collapsible,
-    CollapsibleContent,
-    CollapsibleTrigger,
-} from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
 import React, { useState } from "react";
 import { Link } from "@inertiajs/react";
 import {
     CodeBlock,
-    CodeBlockActions,
     CodeBlockContent,
-    CodeBlockCopyButton,
-    CodeBlockFooter,
     CodeBlockHeader,
-    CodeBlockLine,
     CodeBlockTitle,
 } from "@/components/ui/code-block";
 import { detail as userDetail } from "@/routes/user";
-import project, { detail as projectDetail } from "@/routes/project";
+import { detail as projectDetail } from "@/routes/project";
 import { detail as taskDetail } from "@/routes/task";
 
 export function ActivityTable({
     data,
     tableHead,
+    tableCaption,
 }: {
     data: ActivityType[];
     tableHead: TableHeadType[];
+    tableCaption?: any;
 }) {
     const [open, setOpen] = useState<string | null>();
 
@@ -74,6 +68,9 @@ export function ActivityTable({
         <Card className="p-0">
             <CardContent className="p-0">
                 <Table>
+                    {tableCaption && (
+                        <TableCaption>{tableCaption}</TableCaption>
+                    )}
                     <TableHeader className="sticky top-0 z-10 bg-muted/50">
                         <TableRow>
                             {tableHead.map((th) => (

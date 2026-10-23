@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Appends;
 use Illuminate\Database\Eloquent\Attributes\Guarded;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
@@ -22,6 +23,15 @@ class Activity extends Model
     public function subject()
     {
         return $this->morphTo();
+    }
+
+    public function scopeTaskProject(Builder $query, string $projectId)
+    {
+        return $query
+            ->where("subject_type", Task::class)
+            ->whereHas("subject.status.project", function ($q) use ($projectId) {
+                return $q->where("id", $projectId);
+            });
     }
 
     protected function getSubjectNameAttribute()

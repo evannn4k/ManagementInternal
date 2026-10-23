@@ -213,7 +213,7 @@ export default function TaskForm({
         {
             label: "Prioritas",
             name: "priority",
-            onChange: handleChange, 
+            onChange: handleChange,
             error: errors.priority,
             value: data.priority,
             type: "radio-group",
@@ -487,10 +487,9 @@ export default function TaskForm({
                                                                         {
                                                                             user.name
                                                                         }{" "}
-                                                                        |{" "}
-                                                                        {
-                                                                            user.position
-                                                                        }
+                                                                        {user.position
+                                                                            ? ` | ${user.position}`
+                                                                            : ""}
                                                                     </ItemTitle>
                                                                 </ItemContent>
                                                                 <ItemActions>

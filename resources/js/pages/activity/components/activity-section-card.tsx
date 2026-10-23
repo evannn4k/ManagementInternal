@@ -13,26 +13,26 @@ export function ActivitySectionCard({ cardData }: { cardData?: CardDataType }) {
         {
             label: "TOTAL EVENT TERCATAT",
             value: cardData?.total_activity ?? 0,
-            description: "Rentang 30 hari kalender",
+            description: "Seluruh aktivitas yang tercatat",
             icon: <Code className="size-4" />,
         },
         {
             label: "MUTASI CREATE",
             value: cardData?.total_create ?? 0,
             unit: "record baru",
-            description: "test",
+            description: "Total seluruh aktivitas create",
         },
         {
             label: "MUTASI UPDATE",
             value: cardData?.total_update ?? 0,
             unit: "perubahan",
-            description: "test",
+            description: "Total seluruh aktivitas update",
         },
         {
             label: "MUTASI DELETE",
             value: cardData?.total_delete ?? 0,
-            unit: "purge total",
-            description: "test",
+            unit: "terhapus",
+            description: "Total seluruh aktivitas delete",
         },
     ];
 

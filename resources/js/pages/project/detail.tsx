@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Activity, PackageOpen, Plus, SquareKanban, Users } from "lucide-react";
 import { ProjectType } from "@/types/data/project";
-import { Head, router } from "@inertiajs/react";
+import { Head, Link, router } from "@inertiajs/react";
 import { useModal } from "@/hooks/use-modal";
 import { DeleteAlert } from "@/components/delete-alert";
 import { index as projectIndex } from "@/routes/project";
@@ -12,7 +12,6 @@ import ProjectStatusForm from "./components/project-status-form";
 import deleteTask from "@/actions/App/Http/Controllers/Task/DeleteTaskController";
 import deleteStatusProject from "@/actions/App/Http/Controllers/Project/DeleteStatusProjectController";
 import { ProjectDetailToolbar } from "./components/project-detail-toolbar";
-import { detail as projectDetail } from "@/actions/App/Http/Controllers/Project/ViewProjectController";
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Item, ItemContent, ItemDescription } from "@/components/ui/item";
@@ -20,13 +19,19 @@ import { Card } from "@/components/ui/card";
 import ProjectTeam from "./components/project-team";
 import { UserWithRole } from "@/types/data/user";
 import { Separator } from "@/components/ui/separator";
+import { detail as projectDetail } from "@/routes/project";
+import { ActivityType } from "@/types/data/activity";
+import { ActivityTable } from "../activity/components/activity-table";
+import { index as activityIndex } from "@/routes/activity";
 
 export default function ProjectPage({
     project,
     users,
+    activity,
 }: {
     project: ProjectType;
     users: UserWithRole[];
+    activity: { data: ActivityType[] };
 }) {
     const taskModal = useModal();
     const projectStatusModal = useModal();
@@ -67,6 +72,16 @@ export default function ProjectPage({
             },
         });
     };
+
+    const tableHead = [
+        { label: "pengguna" },
+        { label: "tipe" },
+        { label: "target" },
+        { label: "tabel target" },
+        { label: "waktu" },
+        { label: "alamat ip" },
+        { label: "" },
+    ];
 
     return (
         <>
@@ -151,11 +166,20 @@ export default function ProjectPage({
                         />
                     </TabsContent>
                     <TabsContent value="activity">
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                        Non corporis perspiciatis et architecto mollitia ut
-                        eveniet aut dolorum. Possimus, beatae dolore.
-                        Voluptatibus omnis dolor aliquid incidunt molestiae ab!
-                        Ipsa, porro.
+                        <ActivityTable
+                            tableHead={tableHead}
+                            data={activity.data}
+                            tableCaption={
+                                <div className="pb-4">
+                                    <Link
+                                        href={activityIndex().url}
+                                        className="hover:text-blue-600 hover:underline"
+                                    >
+                                        Lihat selengkapnya
+                                    </Link>
+                                </div>
+                            }
+                        />
                     </TabsContent>
                 </Tabs>
             </div>

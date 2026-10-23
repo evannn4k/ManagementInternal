@@ -7,7 +7,7 @@ import {
     TooltipContent,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Link, router } from "@inertiajs/react";
+import { Link, router, usePage } from "@inertiajs/react";
 import { FaTelegramPlane } from "react-icons/fa";
 import ConnectTelegram from "@/actions/App/Http/Controllers/Telegram/ConnectTelegramController";
 
@@ -16,6 +16,8 @@ export function AppSidebarHeader({
 }: {
     breadcrumbs?: BreadcrumbItemType[];
 }) {
+    const { auth } = usePage().props;
+
     const handleTelegramConnect = (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -30,13 +32,9 @@ export function AppSidebarHeader({
             </div>
             <div className="">
                 <Tooltip>
-                    <TooltipTrigger>
+                    <TooltipTrigger asChild>
                         <form onSubmit={handleTelegramConnect}>
-                            <Button
-                                type="submit"
-                                size="icon"
-                                variant="secondary"
-                            >
+                            <Button type="submit" size="icon">
                                 <FaTelegramPlane />
                             </Button>
                         </form>

@@ -45,6 +45,7 @@ export default function FormField({
     required = false,
     placeholder = "",
     options = [],
+    max,
     min,
     cols = 2,
     col = 1,
@@ -55,7 +56,6 @@ export default function FormField({
     orientation = "vertical",
     className,
 }: FormFieldProps) {
-    
     if (hidden) return null;
     const [open, setOpen] = useState(false);
 
@@ -77,6 +77,7 @@ export default function FormField({
                         value={value}
                         type={type}
                         disabled={disabled}
+                        max={max}
                         min={min}
                     />
                 );
@@ -287,14 +288,16 @@ export default function FormField({
             )}
             data-invalid={Boolean(error)}
         >
-            <FieldLabel
-                htmlFor="name"
-                className="flex items-center gap-2 capitalize"
-            >
-                {Icon && <Icon className="size-4" />}
-                {label}
-                {required && <span className="text-destructive">*</span>}
-            </FieldLabel>
+            {label && (
+                <FieldLabel
+                    htmlFor="name"
+                    className="flex items-center gap-2 capitalize"
+                >
+                    {Icon && <Icon className="size-4" />}
+                    {label}
+                    {required && <span className="text-destructive">*</span>}
+                </FieldLabel>
+            )}
 
             {renderInput()}
 

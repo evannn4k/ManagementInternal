@@ -24,6 +24,8 @@ use App\Http\Controllers\User\CreateUserController;
 use App\Http\Controllers\User\DeleteUserController;
 use App\Http\Controllers\User\UpdateUserController;
 use App\Http\Controllers\User\ViewUserController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::inertia("/", "welcome")->name("home");
@@ -79,6 +81,7 @@ Route::middleware(["auth", "verified"])->group(function () {
             Route::get("/{project}", [ViewProjectController::class, "detail"])->name(
                 "detail",
             )->middleware("permission:project.view.own|project.view.team|project.view.all");
+
             Route::put("/{project}", UpdateProjectController::class)->name("update")->middleware("can:project.edit");
             Route::delete("/{project}", DeleteProjectController::class)->name(
                 "delete",
