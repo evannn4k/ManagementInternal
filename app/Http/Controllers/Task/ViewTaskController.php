@@ -13,9 +13,16 @@ use Inertia\Inertia;
 
 class ViewTaskController extends Controller
 {
+    protected $user;
+
+    public function __construct()
+    {
+        $this->user = Auth::user();
+    }
+
     public function index(Request $request)
     {
-        $tasks = Task::with(["status:id,name,project_id", "status.project:id,name"])
+        $tasks = Task::permissionScopeData($this->user)->with(["status:id,name,project_id", "status.project:id,name"])
             ->when($request->search, function ($query, $value) {
                 $query
                     ->where("title", "ilike", "%$value%");
@@ -38,10 +45,7 @@ class ViewTaskController extends Controller
             })->when($request->task_view, function ($q, $value) {
                 if ($value != "own") return $q;
 
-                return $q->whereHas("assigned", function ($t) {
-                    $id = Auth::user()->id;
-                    return $t->where("id", $id);
-                });
+                return $q->own($this->user);
             })->orderBy("created_at", "desc")->paginate($request->per_page ?? 10)
             ->withQueryString();
 
@@ -49,15 +53,15 @@ class ViewTaskController extends Controller
 
         $projects = Project::with("defaultStatus")->select("id", "name")->get();
 
-        $user = User::find(Auth::user()->id);
+        $myTask = $request->task_view == "own";
 
         $cardData = [
-            "total_task" => $user->tasks()->count(),
-            "total_running" => $user->tasks()->whereHas("status", function ($query) {
+            "total_task" => Task::permissionScopeData($this->user)->own($this->user, $myTask)->count(),
+            "total_running" => Task::permissionScopeData($this->user)->own($this->user, $myTask)->whereHas("status", function ($query) {
                 return $query->where("type", "running");
             })->count(),
-            "total_overdue" => $user->tasks()->where("due_date", "<", now())->count(),
-            "this_week" => $user->tasks()->where("due_date", "<=", now()->addWeek()->toDateString())->where("due_date", ">=", now()->toDateString())->count(),
+            "total_overdue" => Task::permissionScopeData($this->user)->own($this->user, $myTask)->where("due_date", "<", now())->count(),
+            "this_week" => Task::permissionScopeData($this->user)->own($this->user, $myTask)->where("due_date", "<=", now()->addWeek()->toDateString())->where("due_date", ">=", now()->toDateString())->count(),
         ];
 
         return Inertia::render(

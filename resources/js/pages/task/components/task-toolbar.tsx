@@ -11,6 +11,7 @@ import { useState } from "react";
 import { Link } from "@inertiajs/react";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { can } from "@/lib/middleware";
 
 export function TaskToolbar({
     url,
@@ -68,17 +69,19 @@ export function TaskToolbar({
                     </div>
                 </div>
                 <div className="flex gap-2">
-                    <div className="flex items-center space-x-2">
-                        <Label htmlFor="my-task">Tugas Saya Saja</Label>
-                        <Switch
-                            id="my-task"
-                            onCheckedChange={(val: boolean) =>
-                                updateQuery({
-                                    task_view: val ? "own" : "all",
-                                })
-                            }
-                        />
-                    </div>
+                    {can("task.view.all") && (
+                        <div className="flex items-center space-x-2">
+                            <Label htmlFor="my-task">Tugas Saya Saja</Label>
+                            <Switch
+                                id="my-task"
+                                onCheckedChange={(val: boolean) =>
+                                    updateQuery({
+                                        task_view: val ? "own" : "all",
+                                    })
+                                }
+                            />
+                        </div>
+                    )}
 
                     <Button variant="outline" asChild>
                         <Link href={url}>
