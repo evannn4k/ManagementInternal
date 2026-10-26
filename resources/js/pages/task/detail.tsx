@@ -157,7 +157,7 @@ export default function ProjectPage({ task }: { task: TaskType }) {
                                                 </div>
                                             </ItemContent>
                                         </Link>
-                                    </Item>
+                                     </Item>
                                 ))}
                             </CardContent>
                         </Card>

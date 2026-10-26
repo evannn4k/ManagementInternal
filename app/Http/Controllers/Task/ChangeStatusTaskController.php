@@ -20,8 +20,6 @@ class ChangeStatusTaskController extends Controller
 
             $task->save();
 
-            Log::info("berhasil mengganti status task");
-
             return redirect()
                 ->back()
                 ->with("success", "Berhasil mengganti status tugas");

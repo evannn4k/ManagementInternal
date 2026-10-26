@@ -1,5 +1,4 @@
 import {
-    Card,
     CardAction,
     CardContent,
     CardHeader,
@@ -13,6 +12,8 @@ import { TaskType } from "@/types/data/task";
 import { router } from "@inertiajs/react";
 import { UseModalReturn } from "@/types/modal";
 import { status as changeStatus } from "@/routes/task/change/index";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
 
 export function TaskKanban({
     statuses: initialStatus,
@@ -85,11 +86,19 @@ export function TaskKanban({
 
     return (
         <>
-            <CardHeader>
-                <CardTitle className="">Kanban Tugas</CardTitle>
-            </CardHeader>
-            <CardContent className="pb-4 flex items-start gap-4 w-full overflow-x-auto">
-                <DragDropProvider onDragEnd={handleDragEnd}>
+            <DragDropProvider onDragEnd={handleDragEnd}>
+                <CardHeader>
+                    <CardTitle className="">Kanban Tugas</CardTitle>
+                    <CardAction>
+                        <Button
+                            size="sm"
+                            onClick={() => taskModal.openCreate()}
+                        >
+                            <Plus /> Tambah Tugas
+                        </Button>
+                    </CardAction>
+                </CardHeader>
+                <CardContent className="pb-4 flex items-start gap-4 w-full overflow-x-auto">
                     {statuses.map((status) => (
                         <ProjectStatus
                             key={status.id}
@@ -98,8 +107,8 @@ export function TaskKanban({
                             projectStatusModal={projectStatusModal}
                         />
                     ))}
-                </DragDropProvider>
-            </CardContent>
+                </CardContent>
+            </DragDropProvider>
         </>
     );
 }

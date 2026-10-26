@@ -9,10 +9,8 @@ import {
 import { ProjectStatusType } from "@/types/data/project";
 import { useDroppable } from "@dnd-kit/react";
 import { TaskCard } from "./task-card";
-import { Link } from "@inertiajs/react";
 import { UseModalReturn } from "@/types/modal";
 import { cn } from "@/lib/utils";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import {
     DropdownMenu,
@@ -22,8 +20,13 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { MoreVertical, SquarePen, Trash2 } from "lucide-react";
-import { detail as taskDetail } from "@/actions/App/Http/Controllers/Task/ViewTaskController";
+import { ClipboardX, MoreVertical, SquarePen, Trash2 } from "lucide-react";
+import {
+    Empty,
+    EmptyHeader,
+    EmptyMedia,
+    EmptyDescription,
+} from "@/components/ui/empty";
 
 export function ProjectStatus({
     status,
@@ -43,7 +46,7 @@ export function ProjectStatus({
             key={status.id}
             ref={ref}
             className={cn(
-                "w-54 flex-shrink-0 h-full gap-0 flex flex-col items-center justify-start transition-all ease-in-out duration-200 p-0",
+                "w-54 flex-shrink-0 bg-muted/50 gap-0 flex flex-col items-center justify-start transition-all ease-in-out duration-200 p-2 rounded-2xl",
             )}
         >
             <ItemHeader className="p-2 w-full flex justify-between">
@@ -97,13 +100,20 @@ export function ProjectStatus({
                 </ItemActions>
             </ItemHeader>
             <ItemContent className="p-0 flex-1 flex flex-col gap-3 w-full">
-                {status.tasks.map((task) => (
-                    <TaskCard
-                        key={task.id}
-                        task={task}
-                        modal={taskModal}
-                    />
-                ))}
+                {status.tasks.length > 0 ? (
+                    status.tasks.map((task) => (
+                        <TaskCard key={task.id} task={task} modal={taskModal} />
+                    ))
+                ) : (
+                    <Empty>
+                        <EmptyHeader>
+                            <EmptyMedia>
+                                <ClipboardX />
+                            </EmptyMedia>
+                            <EmptyDescription className="text-xs/4">Belum ada tugas</EmptyDescription>
+                        </EmptyHeader>
+                    </Empty>
+                )}
             </ItemContent>
         </Item>
     );

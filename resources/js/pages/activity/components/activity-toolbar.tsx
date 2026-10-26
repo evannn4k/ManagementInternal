@@ -21,10 +21,12 @@ import FormField from "@/components/form-field";
 export function ActivityToolbar({
     url,
     query,
+    isProjectDetail = false,
     updateQuery,
 }: {
     url: string;
     query: Record<string, any> | undefined;
+    isProjectDetail?: boolean;
     updateQuery: (params: Record<string, any>) => void;
 }) {
     const [search, setSearch] = useState("");
@@ -72,10 +74,12 @@ export function ActivityToolbar({
                     </form>
                     <div className="flex gap-2">
                         <Filter updateQuery={updateQuery} data={typeFilter} />
-                        <Filter
-                            updateQuery={updateQuery}
-                            data={priorityFilter}
-                        />
+                        {!isProjectDetail && (
+                            <Filter
+                                updateQuery={updateQuery}
+                                data={priorityFilter}
+                            />
+                        )}
                     </div>
                 </div>
                 <div className="flex gap-2">

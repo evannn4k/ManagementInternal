@@ -41,10 +41,12 @@ export function ActivityTable({
     data,
     tableHead,
     tableCaption,
+    isProjectDetail,
 }: {
     data: ActivityType[];
     tableHead: TableHeadType[];
     tableCaption?: any;
+    isProjectDetail?: boolean;
 }) {
     const [open, setOpen] = useState<string | null>();
 
@@ -124,9 +126,12 @@ export function ActivityTable({
                                                     activity.subject?.name
                                                 )}
                                             </TableCell>
-                                            <TableCell>
-                                                {activity.subject?.type ?? "-"}
-                                            </TableCell>
+                                            {!isProjectDetail && (
+                                                <TableCell>
+                                                    {activity.subject?.type ??
+                                                        "-"}
+                                                </TableCell>
+                                            )}
                                             <TableCell>
                                                 {formatDate(
                                                     activity.created_at,

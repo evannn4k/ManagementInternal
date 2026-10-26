@@ -1,37 +1,30 @@
-import { Button } from "@/components/ui/button";
-import { Activity, PackageOpen, Plus, SquareKanban, Users } from "lucide-react";
 import { ProjectType } from "@/types/data/project";
-import { Head, Link, router } from "@inertiajs/react";
-import { useModal } from "@/hooks/use-modal";
-import { DeleteAlert } from "@/components/delete-alert";
-import { index as projectIndex } from "@/routes/project";
-import { ProjectDetailData } from "./components/project-detail-data";
+import ProjectDetailLayout from "./project-detail-layout";
+import LayoutDetail from "./project-detail-layout";
+import { ReactElement, ReactNode, useState } from "react";
+import { router, usePage } from "@inertiajs/react";
+import type { PageProps } from "@inertiajs/core";
+import { ProjectDetailToolbar } from "./components/project-detail-toolbar";
+import { Card } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 import { TaskKanban } from "./components/task-kanban";
+import { Item, ItemContent, ItemDescription } from "@/components/ui/item";
+import { PackageOpen } from "lucide-react";
+import { UserWithRole } from "@/types/data/user";
+import { ActivityType } from "@/types/data/activity";
+import { useModal } from "@/hooks/use-modal";
+import { detail as projectDetail } from "@/routes/project";
+import { deleteMethod as deleteTask } from "@/routes/task";
+import { deleteMethod as deleteStatusProject } from "@/routes/project/status";
+import { index as projectIndex } from "@/routes/project";
 import TaskForm from "../task/components/task-form";
 import ProjectStatusForm from "./components/project-status-form";
-import deleteTask from "@/actions/App/Http/Controllers/Task/DeleteTaskController";
-import deleteStatusProject from "@/actions/App/Http/Controllers/Project/DeleteStatusProjectController";
-import { ProjectDetailToolbar } from "./components/project-detail-toolbar";
-import { useState } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Item, ItemContent, ItemDescription } from "@/components/ui/item";
-import { Card } from "@/components/ui/card";
-import ProjectTeam from "./components/project-team";
-import { UserWithRole } from "@/types/data/user";
-import { Separator } from "@/components/ui/separator";
-import { detail as projectDetail } from "@/routes/project";
-import { ActivityType } from "@/types/data/activity";
-import { ActivityTable } from "../activity/components/activity-table";
-import { index as activityIndex } from "@/routes/activity";
+import { DeleteAlert } from "@/components/delete-alert";
 
-export default function ProjectPage({
+export default function ProjectDetail({
     project,
-    users,
-    activity,
 }: {
     project: ProjectType;
-    users: UserWithRole[];
-    activity: { data: ActivityType[] };
 }) {
     const taskModal = useModal();
     const projectStatusModal = useModal();
@@ -72,20 +65,9 @@ export default function ProjectPage({
             },
         });
     };
-
-    const tableHead = [
-        { label: "pengguna" },
-        { label: "tipe" },
-        { label: "target" },
-        { label: "tabel target" },
-        { label: "waktu" },
-        { label: "alamat ip" },
-        { label: "" },
-    ];
-
+    
     return (
         <>
-            <Head title="Project" />
             <TaskForm modal={taskModal} project={project} />
             <ProjectStatusForm modal={projectStatusModal} />
             <DeleteAlert
@@ -94,107 +76,38 @@ export default function ProjectPage({
                 description="Data tugas yang telah dihapus dapat dikembalikan."
                 handleDelete={handleDeleteTask}
             />
-            <DeleteAlert
-                modal={projectStatusModal}
-                title="Hapus data status"
-                description="Data status yang telah dihapus dapat dikembalikan."
-                handleDelete={handleDeleteProjectStatus}
-            />
-            <div className="p-4 md:p-6 flex flex-col gap-4">
-                <header className="flex justify-between items-start md:items-center flex-col md:flex-row gap-4 md:gap-8">
-                    <div className="flex flex-col gap-2">
-                        <h1 className="font-semibold text-2xl md:text-3xl">
-                            {project.name}
-                        </h1>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <Button onClick={() => taskModal.openCreate()}>
-                            <Plus /> Tambah Tugas
-                        </Button>
-                    </div>
-                </header>
-                <ProjectDetailData project={project} />
-                <Tabs defaultValue="kanban">
-                    <TabsList className="bg-muted/50 p-2 border">
-                        <TabsTrigger value="kanban">
-                            <SquareKanban /> Kanban Board
-                        </TabsTrigger>
-                        <TabsTrigger value="team">
-                            <Users /> Anggota & Team
-                        </TabsTrigger>
-                        <TabsTrigger value="activity">
-                            <Activity /> Aktivitas
-                        </TabsTrigger>
-                    </TabsList>
-                    <TabsContent className="flex flex-col gap-4" value="kanban">
-                        <Card className="bg-muted/50 gap-4 pb-0">
-                            <ProjectDetailToolbar
-                                url={url}
-                                project={project}
-                                updateQuery={updateQuery}
-                            />
-                            <Separator />
-                            {project.statuses
-                                .flatMap((status) => {
-                                    return status.tasks.length;
-                                })
-                                .reduce((total, task) => total + task) > 0 ? (
-                                <TaskKanban
-                                    statuses={project.statuses}
-                                    taskModal={taskModal}
-                                    projectStatusModal={projectStatusModal}
-                                />
-                            ) : (
-                                <Item>
-                                    <ItemContent>
-                                        <div className="text-center flex flex-col items-center justify-center gap-2 py-4">
-                                            <PackageOpen />
-                                            <ItemDescription>
-                                                Belum ada tugas.
-                                            </ItemDescription>
-                                        </div>
-                                    </ItemContent>
-                                </Item>
-                            )}
-                        </Card>
-                    </TabsContent>
-                    <TabsContent value="team">
-                        <ProjectTeam
-                            teams={project.teams}
-                            users={users}
-                            projectId={project.id}
-                        />
-                    </TabsContent>
-                    <TabsContent value="activity">
-                        <ActivityTable
-                            tableHead={tableHead}
-                            data={activity.data}
-                            tableCaption={
-                                <div className="pb-4">
-                                    <Link
-                                        href={activityIndex().url}
-                                        className="hover:text-blue-600 hover:underline"
-                                    >
-                                        Lihat selengkapnya
-                                    </Link>
-                                </div>
-                            }
-                        />
-                    </TabsContent>
-                </Tabs>
-            </div>
+            <Card className="bg-muted/50 gap-4 pb-0">
+                <ProjectDetailToolbar
+                    url={url}
+                    project={project}
+                    updateQuery={updateQuery}
+                />
+                <Separator />
+                {project.statuses.some((status) => status.tasks.length > 0) ? (
+                    <TaskKanban
+                        statuses={project.statuses}
+                        taskModal={taskModal}
+                        projectStatusModal={projectStatusModal}
+                    />
+                ) : (
+                    <Item>
+                        <ItemContent>
+                            <div className="text-center flex flex-col items-center justify-center gap-2 py-4">
+                                <PackageOpen />
+                                <ItemDescription>
+                                    Belum ada tugas.
+                                </ItemDescription>
+                            </div>
+                        </ItemContent>
+                    </Item>
+                )}
+            </Card>
         </>
     );
 }
 
-ProjectPage.layout = (props: any) => ({
-    breadcrumbs: [
-        {
-            title: "Project",
-            href: projectIndex(),
-        },
-        {
-            title: props?.project?.name ?? "",
-        },
-    ],
-});
+ProjectDetail.layout = (page: any) => {
+    const project = page.project ?? page.props.project;
+
+    return <ProjectDetailLayout project={project}>{page}</ProjectDetailLayout>;
+};

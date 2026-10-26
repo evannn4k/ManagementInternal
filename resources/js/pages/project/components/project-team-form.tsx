@@ -51,7 +51,7 @@ import { IconBox } from "@/components/icon";
 import updateTeamProject from "@/actions/App/Http/Controllers/Project/UpdateTeamProjectController";
 import { toast } from "sonner";
 
-export default function ProjectForm({
+export default function ProjectTeamForm({
     modal,
     teams,
     users,
