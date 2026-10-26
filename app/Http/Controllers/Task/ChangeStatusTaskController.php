@@ -11,24 +11,16 @@ use Illuminate\Support\Facades\Log;
 
 class ChangeStatusTaskController extends Controller
 {
-    public function __invoke(ChangeStatusTaskRequest $request)
+    public function __invoke(ChangeStatusTaskRequest $request, Task $task)
     {
         $credentials = $request->validated();
-
+        
         try {
-            DB::transaction(function () use ($credentials) {
-                $tasks = Task::whereIn("id", array_map(function ($t) {
-                    return $t["task_id"];
-                }, $credentials['task']))->get();
+            $task->status_id = $credentials["status_id"];
 
-                foreach ($tasks as $task) {
-                    $task->status_id = array_find($credentials['task'], function ($t) use ($task) {
-                        return $t["task_id"] == $task->id;
-                    })["status_id"];
+            $task->save();
 
-                    $task->save();
-                }
-            });
+            Log::info("berhasil mengganti status task");
 
             return redirect()
                 ->back()

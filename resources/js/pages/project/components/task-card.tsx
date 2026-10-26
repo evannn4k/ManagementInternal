@@ -18,31 +18,30 @@ import { cn } from "@/lib/utils";
 import { TaskType } from "@/types/data/task";
 import { UseModalReturn } from "@/types/modal";
 import { useDraggable } from "@dnd-kit/react";
-import { Link } from "@inertiajs/react";
+import { Link, router } from "@inertiajs/react";
 import { FileText, MoreVertical, SquarePen, Trash2 } from "lucide-react";
 import { detail as taskDetail } from "@/actions/App/Http/Controllers/Task/ViewTaskController";
 
 export function TaskCard({
     task,
-    isEdit,
     modal,
 }: {
     task: TaskType;
-    isEdit: boolean;
     modal: UseModalReturn;
 }) {
     const { ref } = useDraggable({
         id: task.id,
-        disabled: !isEdit,
     });
+
+    const handleClick = () => {
+        router.get(taskDetail(task.id).url);
+    };
 
     return (
         <Card
+            onClick={handleClick}
             ref={ref}
-            className={cn(
-                "w-full z-10",
-                isEdit ? "cursor-grab" : "cursor-pointer bg-background/50",
-            )}
+            className={cn("w-full z-10 cursor-grab")}
             key={task.id}
         >
             <CardHeader>
@@ -111,9 +110,12 @@ export function TaskCard({
                 <div className="flex justify-between items-center gap-2 w-full">
                     <Badge
                         className={cn("capitalize text-xs rounded-sm", {
-                            "text-blue-800 dark:text-blue-500": task.priority === "low",
-                            "text-yellow-800 dark:text-yellow-500": task.priority === "medium",
-                            "text-red-800 dark:text-red-500": task.priority === "high",
+                            "text-blue-800 dark:text-blue-500":
+                                task.priority === "low",
+                            "text-yellow-800 dark:text-yellow-500":
+                                task.priority === "medium",
+                            "text-red-800 dark:text-red-500":
+                                task.priority === "high",
                             "text-foreground": task.priority === "urgent",
                         })}
                         variant="outline"

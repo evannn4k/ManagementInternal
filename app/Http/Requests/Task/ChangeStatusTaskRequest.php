@@ -23,9 +23,7 @@ class ChangeStatusTaskRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "task" => "required|array",
-            "task.*.task_id" => "required|uuid|exists:tasks,id",
-            "task.*.status_id" => "required|uuid|exists:statuses,id",
+            "status_id" => "required|string|exists:statuses,id",
         ];
     }
 }

@@ -101,7 +101,7 @@ Route::middleware(["auth", "verified"])->group(function () {
             )->middleware("permission:task.view.all|task.view.own");
 
             Route::post("/", CreateTaskController::class)->name("create")->middleware("can:task.create");
-            Route::put("/change-status", ChangeStatusTaskController::class)->name("change.status");
+            Route::patch("/{task}/change-status", ChangeStatusTaskController::class)->name("change.status");
 
             Route::get("/{task}", [ViewTaskController::class, "detail"])->name(
                 "detail",

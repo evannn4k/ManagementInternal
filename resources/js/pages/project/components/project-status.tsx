@@ -27,18 +27,15 @@ import { detail as taskDetail } from "@/actions/App/Http/Controllers/Task/ViewTa
 
 export function ProjectStatus({
     status,
-    isEdit,
     taskModal,
     projectStatusModal,
 }: {
     status: ProjectStatusType;
-    isEdit: boolean;
     taskModal: UseModalReturn;
     projectStatusModal: UseModalReturn;
 }) {
     const { ref } = useDroppable({
         id: status.id,
-        disabled: !isEdit,
     });
 
     return (
@@ -46,13 +43,9 @@ export function ProjectStatus({
             key={status.id}
             ref={ref}
             className={cn(
-                "w-54 flex-shrink-0 h-full gap-0 flex flex-col items-center justify-start transition-all ease-in-out duration-200",
-                isEdit ? "relative p-2" : "p-0",
+                "w-54 flex-shrink-0 h-full gap-0 flex flex-col items-center justify-start transition-all ease-in-out duration-200 p-0",
             )}
         >
-            {isEdit && (
-                <Skeleton className="absolute h-full w-full rounded-xl" />
-            )}
             <ItemHeader className="p-2 w-full flex justify-between">
                 <div className="">
                     <ItemTitle className="capitalize text-base">
@@ -104,31 +97,13 @@ export function ProjectStatus({
                 </ItemActions>
             </ItemHeader>
             <ItemContent className="p-0 flex-1 flex flex-col gap-3 w-full">
-                {status.tasks.map((task) => {
-                    if (isEdit) {
-                        return (
-                            <TaskCard
-                                key={task.id}
-                                task={task}
-                                isEdit={isEdit}
-                                modal={taskModal}
-                            />
-                        );
-                    } else {
-                        return (
-                            <Link
-                                href={taskDetail({ id: task.id }).url}
-                                key={task.id}
-                            >
-                                <TaskCard
-                                    task={task}
-                                    isEdit={isEdit}
-                                    modal={taskModal}
-                                />
-                            </Link>
-                        );
-                    }
-                })}
+                {status.tasks.map((task) => (
+                    <TaskCard
+                        key={task.id}
+                        task={task}
+                        modal={taskModal}
+                    />
+                ))}
             </ItemContent>
         </Item>
     );

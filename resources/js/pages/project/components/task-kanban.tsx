@@ -9,17 +9,10 @@ import { ProjectStatusType } from "@/types/data/project";
 import { useEffect, useState } from "react";
 import { DragDropProvider, DragEndEvent } from "@dnd-kit/react";
 import { ProjectStatus } from "./project-status";
-import { GripVertical, Save, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { TaskType } from "@/types/data/task";
 import { router } from "@inertiajs/react";
-import { Spinner } from "@/components/ui/spinner";
 import { UseModalReturn } from "@/types/modal";
-
-type SelectedTaskType = {
-    task_id: string;
-    status_id: string;
-};
+import { status as changeStatus } from "@/routes/task/change/index";
 
 export function TaskKanban({
     statuses: initialStatus,
@@ -30,12 +23,7 @@ export function TaskKanban({
     taskModal: UseModalReturn;
     projectStatusModal: UseModalReturn;
 }) {
-    const [selectedTask, setSelectedTask] = useState<
-        SelectedTaskType[] | undefined
-    >();
     const [statuses, setStatuses] = useState(initialStatus);
-    const [processing, setProcessing] = useState<boolean>(false);
-    const [isEdit, setIsEdit] = useState<boolean>(false);
 
     useEffect(() => {
         setStatuses(initialStatus);
@@ -84,49 +72,14 @@ export function TaskKanban({
                         tasks: [...status.tasks, draggedTask],
                     };
                 }
-
                 return status;
             });
         });
 
-        if (draggedTask.status_id != targetStatus.id) {
-            setSelectedTask((prev: SelectedTaskType[] | undefined) => {
-                prev = prev ?? [];
-
-                const prevTask = prev.filter(
-                    (t) => t.task_id != draggedTask.id,
-                );
-
-                return [
-                    ...prevTask,
-                    { task_id: draggedTask.id, status_id: targetStatus.id },
-                ];
-            });
-        } else {
-            setSelectedTask((prev: SelectedTaskType[] | undefined) => {
-                prev = prev ?? [];
-
-                return prev.filter((t) => t.task_id != draggedTask.id);
-            });
-        }
-    };
-
-    const handleSaveChangeStatus = () => {
-        router.put(
-            "/task/change-status",
-            { task: selectedTask },
-            {
-                onBefore: () => {
-                    setProcessing(true);
-                },
-                onSuccess: () => {
-                    setSelectedTask([]);
-                    setIsEdit(false);
-                },
-                onFinish: () => {
-                    setProcessing(false);
-                },
-            },
+        router.patch(
+            changeStatus(taskId as string).url,
+            { status_id: statusId },
+            { preserveScroll: true },
         );
     };
 
@@ -134,37 +87,6 @@ export function TaskKanban({
         <>
             <CardHeader>
                 <CardTitle className="">Kanban Tugas</CardTitle>
-                <CardAction>
-                    <div className="flex items-center gap-2">
-                        {isEdit && (
-                            <Button
-                                onClick={handleSaveChangeStatus}
-                                size="sm"
-                                disabled={
-                                    (selectedTask &&
-                                        selectedTask?.length <= 0) ||
-                                    processing
-                                }
-                            >
-                                {processing ? <Spinner /> : <Save />}
-                                Simpan
-                            </Button>
-                        )}
-                        <Button
-                            onClick={() => {
-                                if (isEdit) {
-                                    setStatuses(initialStatus);
-                                }
-                                setIsEdit((prev) => !prev);
-                            }}
-                            size="sm"
-                            variant={isEdit ? "destructive" : "default"}
-                        >
-                            {isEdit ? <X /> : <GripVertical />}
-                            {isEdit ? "Batal" : "Edit"}
-                        </Button>
-                    </div>
-                </CardAction>
             </CardHeader>
             <CardContent className="pb-4 flex items-start gap-4 w-full overflow-x-auto">
                 <DragDropProvider onDragEnd={handleDragEnd}>
@@ -172,7 +94,6 @@ export function TaskKanban({
                         <ProjectStatus
                             key={status.id}
                             status={status}
-                            isEdit={isEdit}
                             taskModal={taskModal}
                             projectStatusModal={projectStatusModal}
                         />
