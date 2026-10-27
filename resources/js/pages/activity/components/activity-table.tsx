@@ -89,7 +89,7 @@ export function ActivityTable({
                         {data.length > 0 ? (
                             data.map((activity) => {
                                 const isOpen = open === activity.id;
-
+                                console.log(activity);
                                 return (
                                     <React.Fragment key={activity.id}>
                                         <TableRow>
@@ -104,26 +104,37 @@ export function ActivityTable({
                                                     }
                                                     className="text-blue-500 hover:underline"
                                                 >
-                                                    {activity.user.name}
+                                                    {activity.user.name ?? "-"}
                                                 </Link>
                                             </TableCell>
                                             <TableCell>
                                                 {activity.type}
                                             </TableCell>
                                             <TableCell>
-                                                {activity.subject?.name ? (
-                                                    <Link
-                                                        href={getUrl(
-                                                            activity.subject
-                                                                .type,
-                                                            activity.subject.id,
-                                                        )}
-                                                        className="text-blue-500 hover:underline"
-                                                    >
-                                                        {activity.subject?.name}
-                                                    </Link>
+                                                {!activity.subject
+                                                    ?.is_deleted ? (
+                                                    activity.subject?.name ? (
+                                                        <Link
+                                                            href={getUrl(
+                                                                activity.subject
+                                                                    .type,
+                                                                activity.subject
+                                                                    .id,
+                                                            )}
+                                                            className="text-blue-500 hover:underline"
+                                                        >
+                                                            {
+                                                                activity.subject
+                                                                    ?.name
+                                                            }
+                                                        </Link>
+                                                    ) : (
+                                                        activity.subject?.name
+                                                    )
                                                 ) : (
-                                                    activity.subject?.name
+                                                    <p className="line-through">
+                                                        {activity.subject?.name}
+                                                    </p>
                                                 )}
                                             </TableCell>
                                             {!isProjectDetail && (

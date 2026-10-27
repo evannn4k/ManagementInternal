@@ -22,7 +22,7 @@ class Activity extends Model
 
     public function subject()
     {
-        return $this->morphTo();
+        return $this->morphTo()->withTrashed();
     }
 
     public function scopeTaskProject(Builder $query, string $projectId)

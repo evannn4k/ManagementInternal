@@ -5,11 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Attributes\Guarded;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 #[Guarded([])]
 class Task extends Model
 {
-    use HasUuids;
+    use HasUuids, SoftDeletes;
 
     public function assigned()
     {
@@ -24,6 +25,11 @@ class Task extends Model
     public function activities()
     {
         return $this->morphMany(Activity::class, 'subject');
+    }
+
+    public function subTasks()
+    {
+        return $this->hasMany(SubTask::class);
     }
 
     public function scopeOwn($query, User $user, $execution = true)

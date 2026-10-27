@@ -142,7 +142,7 @@ class ViewProjectController extends Controller
             ]
         );
 
-        $activities = Activity::with([
+        $activities = $project->activities()->with([
             "user:id,name",
             "subject"
         ])->when($request->search, function ($query, $value) {

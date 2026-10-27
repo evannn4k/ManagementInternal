@@ -1,6 +1,6 @@
+import { CountUp } from "@/components/count-up";
 import {
     Card,
-    CardAction,
     CardDescription,
     CardHeader,
     CardTitle,
@@ -49,7 +49,7 @@ export function TaskSectionCard({ cardData }: { cardData: CardDataType }) {
                                 <div>{card.icon}</div>
                             </div>
                             <CardTitle className="text-3xl font-bold">
-                                {card.value.toLocaleString()}
+                                <CountUp end={card.value} duration={2} />
                             </CardTitle>
                             <CardDescription className="text-xs mt-auto">
                                 {card.description}

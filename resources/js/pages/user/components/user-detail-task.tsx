@@ -21,6 +21,7 @@ import { detail as detailProject } from "@/routes/project";
 import { cn } from "@/lib/utils";
 import { PackageOpen } from "lucide-react";
 import { detail as detailTask } from "@/routes/task";
+import { CountUp } from "@/components/count-up";
 
 export function UserDetailTask({
     tasks,
@@ -60,7 +61,7 @@ export function UserDetailTask({
                         >
                             Total Tugas{" "}
                             <span className="font-medium">
-                                {taskSummary.total}
+                                <CountUp end={taskSummary.total} duration={2} />
                             </span>
                         </Badge>
                         <Badge
@@ -69,7 +70,10 @@ export function UserDetailTask({
                         >
                             Menunggu{" "}
                             <span className="font-medium">
-                                {taskSummary.pending}
+                                <CountUp
+                                    end={taskSummary.pending}
+                                    duration={2}
+                                />
                             </span>
                         </Badge>
                         <Badge
@@ -78,7 +82,7 @@ export function UserDetailTask({
                         >
                             Terlambat{" "}
                             <span className="font-medium">
-                                {taskSummary.due}
+                                <CountUp end={taskSummary.due} duration={2} />
                             </span>
                         </Badge>
                         <Badge
@@ -87,7 +91,10 @@ export function UserDetailTask({
                         >
                             Selesai{" "}
                             <span className="font-medium">
-                                {taskSummary.completed}
+                                <CountUp
+                                    end={taskSummary.completed}
+                                    duration={2}
+                                />
                             </span>
                         </Badge>
                     </div>

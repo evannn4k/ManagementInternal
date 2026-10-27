@@ -74,6 +74,9 @@ class ViewTaskController extends Controller
         $task->load([
             "status.project.statuses",
             "assigned:id,name,position",
+            "subTasks" => function ($subTask) {
+                $subTask->orderBy("created_at", "desc");
+            },
         ]);
 
         return Inertia::render(

@@ -21,7 +21,8 @@ class ActivityTableResource extends JsonResource
             "subject" => [
                 "id" => $this->subject?->id,
                 "type" => class_basename($this->subject_type),
-                "name" => $this->subject_name
+                "name" => $this->subject_name,
+                "is_deleted" => $this->subject?->trashed() ?? false
             ],
             "type" => $this->type,
             "old_data" => $this->old_data,

@@ -30,7 +30,7 @@ export function AppSidebarHeader({
                 <SidebarTrigger className="-ml-1" />
                 <Breadcrumbs breadcrumbs={breadcrumbs} />
             </div>
-            <div className="">
+            {!auth.user.telegram_chat_id && (
                 <Tooltip>
                     <TooltipTrigger asChild>
                         <form onSubmit={handleTelegramConnect}>
@@ -43,7 +43,7 @@ export function AppSidebarHeader({
                         <p>Dapatkan notifikasi Telegram</p>
                     </TooltipContent>
                 </Tooltip>
-            </div>
+            )}
         </header>
     );
 }

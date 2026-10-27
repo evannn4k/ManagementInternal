@@ -1,3 +1,4 @@
+import { CountUp } from "@/components/count-up";
 import {
     Card,
     CardAction,
@@ -40,7 +41,7 @@ export function DashboardSectionCard({ cardData }: { cardData: CardData }) {
                         <div className="flex flex-col gap-2 h-full">
                             <CardDescription>{card.label}</CardDescription>
                             <CardTitle className="text-2xl">
-                                {card.value}
+                                <CountUp end={card.value} duration={2} />
                             </CardTitle>
                         </div>
                         <CardAction>{card.icon}</CardAction>

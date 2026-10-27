@@ -1,6 +1,13 @@
 import { ProjectStatusType } from "./project";
 import { UserWithRole } from "./user";
 
+export type SubTasksType = {
+    id: string;
+    task_id: string;
+    name: string;
+    is_completed: boolean;
+}
+
 export type TaskType = {
     id: string;
     status_id: string;
@@ -12,6 +19,7 @@ export type TaskType = {
     file: [];
     status: ProjectStatusType;
     assigned: UserWithRole[];
+    sub_tasks: SubTasksType[];
 };
 
 export type CardDataType = {

@@ -40,4 +40,10 @@ class Project extends Model
     {
         return $this->hasOne(Status::class)->latest("position");
     }
+
+
+    public function activities()
+    {
+        return $this->morphMany(Activity::class, 'subject');
+    }
 }

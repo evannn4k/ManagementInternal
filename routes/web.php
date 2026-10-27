@@ -14,6 +14,9 @@ use App\Http\Controllers\Role\DeleteRoleController;
 use App\Http\Controllers\Role\SyncRolePermissionController;
 use App\Http\Controllers\Role\UpdateRoleController;
 use App\Http\Controllers\Role\ViewRoleController;
+use App\Http\Controllers\SubTask\CreateSubTaskController;
+use App\Http\Controllers\SubTask\DeleteSubTaskController;
+use App\Http\Controllers\SubTask\UpdateSubTaskController;
 use App\Http\Controllers\Task\ChangeStatusTaskController;
 use App\Http\Controllers\Task\CreateTaskController;
 use App\Http\Controllers\Task\DeleteTaskController;
@@ -116,6 +119,10 @@ Route::middleware(["auth", "verified"])->group(function () {
             Route::delete("/{task}", DeleteTaskController::class)->name(
                 "delete",
             )->middleware("can:task.delete");
+
+            Route::post("/sub-task/{task}", CreateSubTaskController::class)->name("sub-task.create")->middleware("can:task.create");
+            Route::patch("/sub-task/{subTask}", UpdateSubTaskController::class)->name("sub-task.update");
+            Route::delete("/sub-task/{subTask}", DeleteSubTaskController::class)->name("sub-task.delete");
         });
 
     Route::prefix("/activity")

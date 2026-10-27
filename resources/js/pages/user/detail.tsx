@@ -28,7 +28,7 @@ import { UserDetailProject } from "./components/user-detail-project";
 import { ProjectGridType } from "@/types/data/project";
 import { UserDetailTask } from "./components/user-detail-task";
 import { TaskSummaryType, TaskType } from "@/types/data/task";
-
+import { CountUp } from "@/components/count-up";
 
 export default function UserDetail({
     data,
@@ -129,7 +129,11 @@ export default function UserDetail({
                                         Memiliki Proyek
                                     </ItemDescription>
                                     <ItemTitle>
-                                        {data?.total_pic ?? 0} proyek
+                                        <CountUp
+                                            end={data?.total_pic ?? 0}
+                                            duration={2}
+                                        />
+                                        proyek
                                     </ItemTitle>
                                 </ItemContent>
                                 <ItemActions>
@@ -142,7 +146,13 @@ export default function UserDetail({
                                         Total Membuat Proyek
                                     </ItemDescription>
                                     <ItemTitle>
-                                        {data?.total_create_project ?? 0} proyek
+                                        <CountUp
+                                            end={
+                                                data?.total_create_project ?? 0
+                                            }
+                                            duration={2}
+                                        />
+                                        proyek
                                     </ItemTitle>
                                 </ItemContent>
                                 <ItemActions>
@@ -155,7 +165,13 @@ export default function UserDetail({
                                         Total Perizinan
                                     </ItemDescription>
                                     <ItemTitle>
-                                        {auth.user.permissions?.length ?? 0}{" "}
+                                        <CountUp
+                                            end={
+                                                auth.user.permissions?.length ??
+                                                0
+                                            }
+                                            duration={2}
+                                        />
                                         perizinan
                                     </ItemTitle>
                                 </ItemContent>
