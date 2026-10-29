@@ -15,7 +15,7 @@ import {
 import { UserWithRole } from "@/types/data/user";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { getInitials } from "@/lib/utils";
-import { PackageOpen, PenSquare } from "lucide-react";
+import { PackageOpen, PenSquare, UserRoundX } from "lucide-react";
 import { useModal } from "@/hooks/use-modal";
 import { Button } from "@/components/ui/button";
 import { Link } from "@inertiajs/react";
@@ -23,6 +23,7 @@ import { detail as userDetail } from "@/routes/user";
 import ProjectTeamForm from "./components/project-team-form";
 import ProjectDetailLayout from "./project-detail-layout";
 import { ProjectType } from "@/types/data/project";
+import { Empty, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 
 export default function ProjectDetailTeam({
     project,
@@ -89,10 +90,14 @@ export default function ProjectDetailTeam({
                         ))
                     ) : (
                         <div className="col-span-1 md:col-span-3 text-center flex flex-col items-center justify-center gap-2 py-4">
-                            <PackageOpen />
-                            <ItemDescription>
-                                Belum ada anggota team.
-                            </ItemDescription>
+                            <Empty>
+                                <EmptyHeader>
+                                    <EmptyMedia variant="icon">
+                                        <UserRoundX />
+                                    </EmptyMedia>
+                                    <EmptyTitle>Belum ada team tertugas.</EmptyTitle>
+                                </EmptyHeader>
+                            </Empty>
                         </div>
                     )}
                 </CardContent>

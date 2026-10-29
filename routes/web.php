@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Activity\ViewActivityController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Project\ArchiveProjectController;
 use App\Http\Controllers\Project\CreateProjectController;
 use App\Http\Controllers\Project\DeleteProjectController;
 use App\Http\Controllers\Project\DeleteStatusProjectController;
@@ -23,6 +24,7 @@ use App\Http\Controllers\Task\DeleteTaskController;
 use App\Http\Controllers\Task\UpdateTaskController;
 use App\Http\Controllers\Task\ViewTaskController;
 use App\Http\Controllers\Telegram\ConnectTelegramController;
+use App\Http\Controllers\TestingController;
 use App\Http\Controllers\User\CreateUserController;
 use App\Http\Controllers\User\DeleteUserController;
 use App\Http\Controllers\User\UpdateUserController;
@@ -35,7 +37,8 @@ Route::inertia("/", "welcome")->name("home");
 
 Route::middleware(["auth", "verified"])->group(function () {
     Route::get("/dashboard", DashboardController::class)->name("dashboard")->middleware("permission:dashboard.view.personal|dashboard.view.project|dashboard.view.sistem");
-
+    Route::delete("/act-del/{activity}", [TestingController::class, "deleteActivity"]);
+    
     Route::post("/telegram/connect", ConnectTelegramController::class)->name("telegram.connect")->middleware("auth");
 
     Route::prefix("/role")
@@ -92,6 +95,9 @@ Route::middleware(["auth", "verified"])->group(function () {
             )->middleware("permission:project.view.own|project.view.team|project.view.all");
 
             Route::put("/{project}", UpdateProjectController::class)->name("update")->middleware("can:project.edit");
+            Route::patch("/{project}/archive", ArchiveProjectController::class)->name(
+                "archive",
+            )->middleware("can:project.edit");
             Route::delete("/{project}", DeleteProjectController::class)->name(
                 "delete",
             )->middleware("can:project.delete");

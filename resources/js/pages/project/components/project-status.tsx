@@ -46,7 +46,7 @@ export function ProjectStatus({
             key={status.id}
             ref={ref}
             className={cn(
-                "w-54 flex-shrink-0 bg-muted/50 gap-0 flex flex-col items-center justify-start transition-all ease-in-out duration-200 p-2 rounded-2xl",
+                "w-58 flex-shrink-0 bg-muted/50 gap-0 flex flex-col items-center justify-start transition-all ease-in-out duration-200 p-2 rounded-2xl",
             )}
         >
             <ItemHeader className="p-2 w-full flex justify-between">

@@ -7,6 +7,7 @@ use App\Http\Requests\Task\CreateTaskRequest;
 use App\Models\Project;
 use App\Models\Task;
 use App\Services\FileService;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
@@ -45,6 +46,13 @@ class CreateTaskController extends Controller
                 }
 
                 $task = Task::create($credentials);
+
+                $task->activities()->create([
+                    "user_id" => Auth::user()->id,
+                    "type" => "create",
+                    "new_data" => $task,
+                    "ip_address" => $request->ip(),
+                ]);
 
                 $task->assigned()->sync($assigned);
             });

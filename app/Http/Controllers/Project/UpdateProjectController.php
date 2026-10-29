@@ -8,6 +8,7 @@ use App\Models\Project;
 use App\Models\Status;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
@@ -22,28 +23,39 @@ class UpdateProjectController extends Controller
         $credentials = $request->validated();
 
         try {
-            DB::transaction(function () use ($credentials, $project) {
+            DB::transaction(function () use ($credentials, $project, $request) {
                 $teams = $credentials['teams'] ?? [];
                 $statuses = $credentials['statuses'] ?? [];
 
                 unset($credentials['teams'], $credentials['statuses']);
 
+                $oldProject = clone $project;
                 $project->update($credentials);
 
-                $existingStatuses = Status::where('project_id', $project->id)->get()->pluck("name")->toArray();
+                $diffData = array_diff_assoc($credentials, $oldProject->only(array_keys($credentials)));
+                $oldData = $oldProject->only(array_keys($diffData));
 
-                $diffStatus = array_diff($existingStatuses, array_column($statuses, "name"));
+                $existingStatuses = Status::where('project_id', $project->id)->select(["name", "type"])->get();
+                $existingStatusesName = $existingStatuses->pluck("name")->toArray();
+
+                $diffStatus = array_diff($existingStatusesName, array_column($statuses, "name"));
+                $newStatus = array_diff(array_column($statuses, "name"), $existingStatusesName);
 
                 if (!empty($diffStatus)) {
                     $deletedStatuses = Status::where("project_id", $project->id)->whereIn("name", $diffStatus);
 
                     if ((clone $deletedStatuses)->whereHas('tasks')->exists()) {
                         throw ValidationException::withMessages([
-                            'status' => 'Status memiliki tugas terkait.'
+                            'statuses' => 'Status memiliki tugas terkait.'
                         ]);
                     }
 
                     $deletedStatuses->delete();
+                }
+
+                if ($newStatus || $diffStatus) {
+                    $diffData["statuses"] = $statuses;
+                    $oldData["statuses"] = $existingStatuses;
                 }
 
                 foreach ($statuses as $index => $status) {
@@ -68,6 +80,19 @@ class UpdateProjectController extends Controller
                         ]);
                     }
                 }
+
+                if ($deletedTeamIds) {
+                    $diffData["teams"] = $deletedTeamIds;
+                    $oldData["teams"] = $oldTeams;
+                }
+
+                $project->activities()->create([
+                    "user_id" => Auth::user()->id,
+                    "type" => "update",
+                    "old_data" => $oldData,
+                    "new_data" => $diffData,
+                    "ip_address" => $request->ip(),
+                ]);
 
                 $project->teams()->sync($teams);
             });

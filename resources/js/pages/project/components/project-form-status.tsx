@@ -79,7 +79,9 @@ export default function ProjectFormStatus({
             >
                 <form onSubmit={handleSubmit}>
                     <AlertDialogHeader>
-                        <AlertDialogTitle>Tambah Status Proyek</AlertDialogTitle>
+                        <AlertDialogTitle>
+                            Tambah Status Proyek
+                        </AlertDialogTitle>
                         <AlertDialogDescription>
                             Silakan edit nama status proyek di bawah ini.
                         </AlertDialogDescription>

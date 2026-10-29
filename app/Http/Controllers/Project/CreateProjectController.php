@@ -7,6 +7,7 @@ use App\Http\Requests\Project\CreateProjectRequest;
 use App\Models\Project;
 use App\Models\Status;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -33,6 +34,13 @@ class CreateProjectController extends Controller
                 foreach ($statuses as $index => $status) {
                     Status::create(['project_id' => $project->id, "name" => $status['name'], "type" => $status['type'], "position" => $index]);
                 }
+
+                $project->activities()->create([
+                    "user_id" => Auth::user()->id,
+                    "type" => "update",
+                    "new_data" => $project,
+                    "ip_address" => $request->ip(),
+                ]);
 
                 $project->teams()->sync($teams);
             });

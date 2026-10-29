@@ -55,6 +55,8 @@ export function SubTask({ task }: { task: TaskType }) {
         e.preventDefault();
 
         post(subTask.create(task.id).url, {
+            preserveState: true,
+            preserveScroll: true,
             onSuccess: () => {
                 reset();
             },
@@ -78,9 +80,10 @@ export function SubTask({ task }: { task: TaskType }) {
 
     const handleChakedChange = (val: boolean, id: string) => {
         router.patch(
-            subTask.delete(id),
+            subTask.update(id),
             { status: val },
             {
+                preserveState: true,
                 preserveScroll: true,
                 onError: () => {
                     toast.error("Gagal mengganti status subtugas.");
@@ -115,7 +118,8 @@ export function SubTask({ task }: { task: TaskType }) {
                                     orientation="horizontal"
                                 >
                                     <Checkbox
-                                        onCheckedChange={(val) =>
+                                        checked={sub_task.is_completed}
+                                        onCheckedChange={(val: boolean) =>
                                             handleChakedChange(val, sub_task.id)
                                         }
                                     />

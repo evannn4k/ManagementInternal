@@ -7,6 +7,8 @@ use App\Http\Requests\SubTask\CreateSubTaskRequest;
 use App\Models\SubTask;
 use App\Models\Task;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class CreateSubTaskController extends Controller
@@ -19,9 +21,18 @@ class CreateSubTaskController extends Controller
         $credentials = $request->validated();
 
         try {
-            $credentials["task_id"] = $task->id;
+            DB::transaction(function () use ($credentials, $request, $task) {
+                $credentials["task_id"] = $task->id;
 
-            SubTask::create($credentials);
+                $subTask = SubTask::create($credentials);
+
+                $subTask->activities()->create([
+                    "user_id" => Auth::user()->id,
+                    "type" => "create",
+                    "new_data" => $subTask,
+                    "ip_address" => $request->ip(),
+                ]);
+            });
 
             return redirect()
                 ->back()

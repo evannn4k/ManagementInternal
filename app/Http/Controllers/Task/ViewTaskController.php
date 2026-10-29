@@ -75,7 +75,7 @@ class ViewTaskController extends Controller
             "status.project.statuses",
             "assigned:id,name,position",
             "subTasks" => function ($subTask) {
-                $subTask->orderBy("created_at", "desc");
+                $subTask->orderBy("created_at", "asc");
             },
         ]);
 

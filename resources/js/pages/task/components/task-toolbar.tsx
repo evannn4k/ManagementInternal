@@ -8,7 +8,7 @@ import {
 import { Filter } from "@/components/filter";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { Link } from "@inertiajs/react";
+import { Link, router } from "@inertiajs/react";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { can } from "@/lib/middleware";
@@ -34,6 +34,10 @@ export function TaskToolbar({
         placeholder: "Semua Proyek",
         key: "project",
         options: projects.map((p) => p.name),
+    };
+
+    const handleReset = () => {
+        router.get(url, {}, { preserveScroll: true });
     };
 
     return (
@@ -83,10 +87,8 @@ export function TaskToolbar({
                         </div>
                     )}
 
-                    <Button variant="outline" asChild>
-                        <Link href={url}>
-                            <RotateCcw /> Reset
-                        </Link>
+                    <Button variant="outline" onClick={handleReset}>
+                        <RotateCcw /> Reset
                     </Button>
                 </div>
             </CardContent>

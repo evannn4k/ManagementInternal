@@ -24,6 +24,7 @@ return new class extends Migration
             $table->enum('status', ["running", "done", "hold", "canceled", "archived"])->default("running");
             $table->string('repo_url')->nullable();
             $table->string('branch')->default("main")->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

@@ -30,6 +30,7 @@ class ProjectTableResource extends JsonResource
             "createdBy" => $this->createdBy,
             "status" => $this->status,
             "statuses" => $this->statuses,
+            "total_task" => $this->total_task,
         ];
     }
 }

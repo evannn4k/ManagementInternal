@@ -26,7 +26,7 @@ import {
 } from "@/components/ui/empty";
 import { Button } from "@/components/ui/button";
 import React, { useState } from "react";
-import { Link } from "@inertiajs/react";
+import { Link, router } from "@inertiajs/react";
 import {
     CodeBlock,
     CodeBlockContent,
@@ -41,12 +41,10 @@ export function ActivityTable({
     data,
     tableHead,
     tableCaption,
-    isProjectDetail,
 }: {
     data: ActivityType[];
     tableHead: TableHeadType[];
     tableCaption?: any;
-    isProjectDetail?: boolean;
 }) {
     const [open, setOpen] = useState<string | null>();
 
@@ -64,6 +62,13 @@ export function ActivityTable({
               : typeModel === "user"
                 ? userDetail(id as number).url
                 : "#";
+    };
+
+    const handleDeleteActivity = (id: string) => {
+        router.delete("/act-del/" + id, {
+            preserveScroll: true,
+            preserveState: true,
+        });
     };
 
     return (
@@ -89,10 +94,14 @@ export function ActivityTable({
                         {data.length > 0 ? (
                             data.map((activity) => {
                                 const isOpen = open === activity.id;
-                                console.log(activity);
+
                                 return (
                                     <React.Fragment key={activity.id}>
-                                        <TableRow>
+                                        <TableRow
+                                            onClick={() =>
+                                                handleChangeOpen(activity.id)
+                                            }
+                                        >
                                             <TableCell>
                                                 <Link
                                                     href={
@@ -103,6 +112,9 @@ export function ActivityTable({
                                                             : "#"
                                                     }
                                                     className="text-blue-500 hover:underline"
+                                                    onClick={(e) =>
+                                                        e.stopPropagation()
+                                                    }
                                                 >
                                                     {activity.user.name ?? "-"}
                                                 </Link>
@@ -111,7 +123,9 @@ export function ActivityTable({
                                                 {activity.type}
                                             </TableCell>
                                             <TableCell>
-                                                {!activity.subject
+                                                {activity.subject?.type !=
+                                                    "SubTask" &&
+                                                !activity.subject
                                                     ?.is_deleted ? (
                                                     activity.subject?.name ? (
                                                         <Link
@@ -122,6 +136,9 @@ export function ActivityTable({
                                                                     .id,
                                                             )}
                                                             className="text-blue-500 hover:underline"
+                                                            onClick={(e) =>
+                                                                e.stopPropagation()
+                                                            }
                                                         >
                                                             {
                                                                 activity.subject
@@ -132,17 +149,12 @@ export function ActivityTable({
                                                         activity.subject?.name
                                                     )
                                                 ) : (
-                                                    <p className="line-through">
-                                                        {activity.subject?.name}
-                                                    </p>
+                                                    activity.subject?.name
                                                 )}
                                             </TableCell>
-                                            {!isProjectDetail && (
-                                                <TableCell>
-                                                    {activity.subject?.type ??
-                                                        "-"}
-                                                </TableCell>
-                                            )}
+                                            <TableCell>
+                                                {activity.subject?.type ?? "-"}
+                                            </TableCell>
                                             <TableCell>
                                                 {formatDate(
                                                     activity.created_at,
@@ -153,13 +165,19 @@ export function ActivityTable({
                                             </TableCell>
                                             <TableCell className="text-end">
                                                 <Button
+                                                    size="sm"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleDeleteActivity(
+                                                            activity.id,
+                                                        );
+                                                    }}
+                                                >
+                                                    hapus
+                                                </Button>
+                                                <Button
                                                     variant="ghost"
                                                     size="sm"
-                                                    onClick={() =>
-                                                        handleChangeOpen(
-                                                            activity.id,
-                                                        )
-                                                    }
                                                 >
                                                     {isOpen ? (
                                                         <ChevronUp />
@@ -190,7 +208,16 @@ export function ActivityTable({
                                                             </CardDescription>
                                                         </div>
                                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                            <CodeBlock>
+                                                            <CodeBlock
+                                                                className={cn(
+                                                                    !activity.new_data
+                                                                        ? "col-span-2"
+                                                                        : "",
+                                                                    !activity.old_data
+                                                                        ? "hidden"
+                                                                        : "",
+                                                                )}
+                                                            >
                                                                 <CodeBlockHeader>
                                                                     <CodeBlockTitle className="text-red-600 dark:text-red-500">
                                                                         <CircleMinus />
@@ -208,7 +235,16 @@ export function ActivityTable({
                                                                     </pre>
                                                                 </CodeBlockContent>
                                                             </CodeBlock>
-                                                            <CodeBlock>
+                                                            <CodeBlock
+                                                                className={cn(
+                                                                    !activity.old_data
+                                                                        ? "col-span-2"
+                                                                        : "",
+                                                                    !activity.new_data
+                                                                        ? "hidden"
+                                                                        : "",
+                                                                )}
+                                                            >
                                                                 <CodeBlockHeader>
                                                                     <CodeBlockTitle className="text-green-600 dark:text-green-500">
                                                                         <CirclePlus />

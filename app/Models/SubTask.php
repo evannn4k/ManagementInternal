@@ -8,11 +8,16 @@ use Illuminate\Database\Eloquent\Model;
 
 #[Guarded([''])]
 class SubTask extends Model
-{
+{   
     use HasUuids;
 
     public function task()
     {
         return $this->belongsTo(Task::class);
+    }
+
+    public function activities()
+    {
+        return $this->morphMany(Activity::class, "subject");
     }
 }

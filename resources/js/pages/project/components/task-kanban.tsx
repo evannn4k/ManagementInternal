@@ -88,7 +88,7 @@ export function TaskKanban({
         <>
             <DragDropProvider onDragEnd={handleDragEnd}>
                 <CardHeader>
-                    <CardTitle className="">Kanban Tugas</CardTitle>
+                    <CardTitle className="my-auto">Kanban Tugas</CardTitle>
                     <CardAction>
                         <Button
                             size="sm"

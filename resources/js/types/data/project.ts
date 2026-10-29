@@ -18,6 +18,8 @@ export type ProjectGridType = {
     teams?: UserWithRole[];
     start_date: string;
     status: string;
+    statuses: ProjectStatusType[];
+    total_task?: number;
 };
 
 export type ProjectType = {
@@ -34,6 +36,7 @@ export type ProjectType = {
     pic: UserWithRole;
     teams?: UserWithRole[];
     statuses: ProjectStatusType[];
+    total_task?: number;
 };
 
 export type ProjectStatusType = {
@@ -43,5 +46,6 @@ export type ProjectStatusType = {
     position: number;
     project: ProjectType;
     type: string;
-    tasks: TaskType[]
+    tasks: TaskType[];
+    total_task?: number;
 };

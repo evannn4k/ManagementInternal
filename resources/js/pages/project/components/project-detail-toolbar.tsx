@@ -8,7 +8,7 @@ import {
 import { Filter } from "@/components/filter";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { Link } from "@inertiajs/react";
+import { Link, router } from "@inertiajs/react";
 import { ProjectType } from "@/types/data/project";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -34,6 +34,10 @@ export function ProjectDetailToolbar({
         placeholder: "Anggota Team",
         key: "team",
         options: project.teams ? project.teams.map((t) => t.name) : [],
+    };
+
+    const handleReset = () => {
+        router.get(url, {}, { preserveScroll: true });
     };
 
     return (
@@ -78,10 +82,8 @@ export function ProjectDetailToolbar({
                         />
                     </div>
 
-                    <Button variant="outline" asChild>
-                        <Link href={url}>
-                            <RotateCcw /> Reset
-                        </Link>
+                    <Button variant="outline" onClick={handleReset}>
+                        <RotateCcw /> Reset
                     </Button>
                 </div>
             </CardContent>

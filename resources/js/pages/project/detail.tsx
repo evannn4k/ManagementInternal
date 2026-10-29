@@ -21,11 +21,7 @@ import TaskForm from "../task/components/task-form";
 import ProjectStatusForm from "./components/project-status-form";
 import { DeleteAlert } from "@/components/delete-alert";
 
-export default function ProjectDetail({
-    project,
-}: {
-    project: ProjectType;
-}) {
+export default function ProjectDetail({ project }: { project: ProjectType }) {
     const taskModal = useModal();
     const projectStatusModal = useModal();
     const [query, setQuery] = useState<{
@@ -65,7 +61,7 @@ export default function ProjectDetail({
             },
         });
     };
-    
+
     return (
         <>
             <TaskForm modal={taskModal} project={project} />
@@ -83,24 +79,11 @@ export default function ProjectDetail({
                     updateQuery={updateQuery}
                 />
                 <Separator />
-                {project.statuses.some((status) => status.tasks.length > 0) ? (
-                    <TaskKanban
-                        statuses={project.statuses}
-                        taskModal={taskModal}
-                        projectStatusModal={projectStatusModal}
-                    />
-                ) : (
-                    <Item>
-                        <ItemContent>
-                            <div className="text-center flex flex-col items-center justify-center gap-2 py-4">
-                                <PackageOpen />
-                                <ItemDescription>
-                                    Belum ada tugas.
-                                </ItemDescription>
-                            </div>
-                        </ItemContent>
-                    </Item>
-                )}
+                <TaskKanban
+                    statuses={project.statuses}
+                    taskModal={taskModal}
+                    projectStatusModal={projectStatusModal}
+                />
             </Card>
         </>
     );

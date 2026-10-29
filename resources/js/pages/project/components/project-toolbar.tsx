@@ -8,7 +8,7 @@ import {
 import { Filter } from "@/components/filter";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { Link } from "@inertiajs/react";
+import { Link, router } from "@inertiajs/react";
 
 export function ProjectToolbar({
     url,
@@ -29,6 +29,10 @@ export function ProjectToolbar({
         placeholder: "Semua Status",
         key: "status",
         options: ["running", "done", "hold", "canceled", "archived"],
+    };
+
+    const handleReset = () => {
+        router.get(url, {}, { preserveScroll: true });
     };
 
     return (
@@ -65,10 +69,8 @@ export function ProjectToolbar({
                         </div>
                     </div>
                     <div className="flex gap-2">
-                        <Button variant="outline" asChild>
-                            <Link href={url}>
-                                <RotateCcw /> Reset
-                            </Link>
+                        <Button variant="outline" onClick={handleReset}>
+                            <RotateCcw /> Reset
                         </Button>
                     </div>
                 </CardContent>

@@ -7,6 +7,8 @@ use App\Http\Resources\Activity\ActivityTableResource;
 use App\Http\Resources\Project\ProjectTableResource;
 use App\Models\Activity;
 use App\Models\Project;
+use App\Models\SubTask;
+use App\Models\Task;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,30 +19,35 @@ class ViewProjectController extends Controller
     function index(Request $request)
     {
         $projects = Project::with([
-            "statuses" => fn($q) => $q->orderBy('position', 'asc'),
+            "statuses" => fn($q) => $q->orderBy('position', 'asc')->withCount('tasks as total_task'),
             "teams:id,name,position",
             "pic:id,name",
             "createdBy:id,name"
-        ])->when($request->search, function ($query, $value) {
-            $query
-                ->where("name", "ilike", "%$value%");
-        })->when($request->status, function ($query, $value) {
-            $query
-                ->where("status", $value);
-        })->when($request->priority, function ($query, $value) {
-            $query
-                ->where("priority", $value);
-        })->orderBy("created_at", "desc")->paginate($request->per_page ?? 10)
+        ])
+            ->where("status", "<>", "archived")
+            ->withCount('tasks as total_task')
+            ->when($request->search, function ($query, $value) {
+                $query
+                    ->where("name", "ilike", "%$value%");
+            })->when($request->status, function ($query, $value) {
+                $query
+                    ->where("status", $value);
+            })->when($request->priority, function ($query, $value) {
+                $query
+                    ->where("priority", $value);
+            })->orderBy("created_at", "desc")->paginate($request->per_page ?? 10)
             ->withQueryString();
 
         $data = ProjectTableResource::collection($projects);
         $users =  User::select("id", "name", "position")->with('roles:id,name')->where("is_active", true)->get();
+
         $cardData = [
             "total_total" => Project::count(),
             "total_running" => Project::where("status", "running")->count(),
             "total_overdue" => Project::where("end_date", "<", now())->count(),
             "total_completed" => Project::where("status", "done")->count(),
         ];
+
 
         return Inertia::render(
             "project/page",
@@ -142,19 +149,28 @@ class ViewProjectController extends Controller
             ]
         );
 
-        $activities = $project->activities()->with([
+        $taskIds = $project->tasks()->withTrashed()->get()->pluck("id")->toArray();
+        $subTaskIds = SubTask::whereIn("task_id", $taskIds)->select("id");
+
+        $activities = Activity::with([
             "user:id,name",
             "subject"
-        ])->when($request->search, function ($query, $value) {
+        ])->where(function ($query) use ($taskIds, $project, $subTaskIds) {
+            $query->where(function ($q) use ($taskIds) {
+                $q->where("subject_type", Task::class)->whereIn("subject_id", $taskIds);
+            })->orWhere(function ($q) use ($project) {
+                $q->where("subject_type", Project::class)->where("subject_id", $project->id);
+            })->orWhere(function ($q) use ($subTaskIds) {
+                $q->where("subject_type", SubTask::class)
+                    ->whereIn("subject_id", $subTaskIds);
+            });
+        })->when($request->search, function ($query, $value) {
             $query->whereHas("user", function ($q) use ($value) {
                 return $q->where("name", "ilike", "%$value%");
             });
         })->when($request->type, function ($query, $value) {
             $query
                 ->where("type", $value);
-        })->when($request->table, function ($query, $value) {
-            $query
-                ->where("subject_type", "ilike", "%$value");
         })->when($request->date_from, function ($query, $value) {
             $query
                 ->where("created_at", ">=", $value);
@@ -163,6 +179,7 @@ class ViewProjectController extends Controller
                 ->where("created_at", "<=", $value);
         })->orderBy("created_at", "desc")->paginate($request->per_page ?? 10)
             ->withQueryString();
+
 
         $data = ActivityTableResource::collection($activities);
 

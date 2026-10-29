@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Task;
 use App\Services\FileService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class DeleteTaskController extends Controller
@@ -16,11 +18,20 @@ class DeleteTaskController extends Controller
     public function __invoke(Task $task, Request $request)
     {
         try {
-            if ($task->file) {
-                FileService::destroy($task->file);
-            }
+            DB::transaction(function () use ($request, $task) {
+                if ($task->file) {
+                    FileService::destroy($task->file);
+                }
 
-            $task->delete();
+                $task->activities()->create([
+                    "user_id" => Auth::user()->id,
+                    "type" => "delete",
+                    "old_data" => $task,
+                    "ip_address" => $request->ip(),
+                ]);
+
+                $task->delete();
+            });
 
             return redirect()
                 ->back()

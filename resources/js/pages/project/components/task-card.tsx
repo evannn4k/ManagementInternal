@@ -53,13 +53,6 @@ export function TaskCard({
                         }}
                         className="text-xs w-full line-clamp-3 break-words [&_p]:m-0 [&_pre]:m-0 [&_pre]:whitespace-pre-wrap"
                     />
-                    <div className="flex items-start flex-wrap gap-1">
-                        {task.label.slice(0, 3).map((label) => (
-                            <Badge key={label} className="rounded-full text-xs">
-                                {label}
-                            </Badge>
-                        ))}
-                    </div>
                 </div>
                 <CardAction>
                     <DropdownMenu>

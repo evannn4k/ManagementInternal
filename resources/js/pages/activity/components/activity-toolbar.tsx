@@ -8,7 +8,7 @@ import {
 import { Filter } from "@/components/filter";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { Link } from "@inertiajs/react";
+import { Link, router } from "@inertiajs/react";
 import {
     Popover,
     PopoverContent,
@@ -46,6 +46,10 @@ export function ActivityToolbar({
     const handleDateFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { id, value } = e.target;
         updateQuery({ [id]: value });
+    };
+
+    const handleReset = () => {
+        router.get(url, {}, { preserveScroll: true });
     };
 
     const dateFrom = query?.date_from ?? "";
@@ -115,10 +119,8 @@ export function ActivityToolbar({
                             </div>
                         </PopoverContent>
                     </Popover>
-                    <Button variant="outline" asChild>
-                        <Link href={url}>
-                            <RotateCcw /> Reset
-                        </Link>
+                    <Button variant="outline" onClick={handleReset}>
+                        <RotateCcw /> Reset
                     </Button>
                 </div>
             </CardContent>

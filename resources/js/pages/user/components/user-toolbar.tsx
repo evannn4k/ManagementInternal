@@ -8,7 +8,7 @@ import {
 import { Filter } from "@/components/filter";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { Link } from "@inertiajs/react";
+import { Link, router } from "@inertiajs/react";
 import { Role } from "@/types/data/role";
 
 export function UserToolbar({
@@ -32,6 +32,10 @@ export function UserToolbar({
         placeholder: "Semua Status",
         key: "is_active",
         options: ["aktif", "nonaktif"],
+    };
+
+    const handleReset = () => {
+        router.get(url, {}, { preserveScroll: true });
     };
 
     return (
@@ -68,10 +72,8 @@ export function UserToolbar({
                         </div>
                     </div>
                     <div className="flex gap-2">
-                        <Button variant="outline" asChild>
-                            <Link href={url}>
+                        <Button variant="outline" onClick={handleReset}>
                                 <RotateCcw /> Reset
-                            </Link>
                         </Button>
                         <Button variant="outline">
                             <Download /> Export CSV

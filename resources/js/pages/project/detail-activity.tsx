@@ -37,6 +37,7 @@ export default function ProjectDetailActivity({
         { label: "pengguna" },
         { label: "tipe" },
         { label: "target" },
+        { label: "tabel target" },
         { label: "waktu" },
         { label: "alamat ip" },
         { label: "" },
@@ -52,7 +53,6 @@ export default function ProjectDetailActivity({
                     url={url}
                 />
                 <ActivityTable
-                    isProjectDetail={true}
                     tableHead={tableHead}
                     data={data.data}
                 />

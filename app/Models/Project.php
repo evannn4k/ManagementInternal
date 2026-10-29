@@ -5,11 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Attributes\Guarded;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 #[Guarded([])]
 class Project extends Model
 {
-    use HasUuids;
+    use HasUuids, SoftDeletes;
 
     public function pic()
     {
@@ -26,6 +27,11 @@ class Project extends Model
         return $this->hasMany(Status::class);
     }
 
+    public function tasks()
+    {
+        return $this->hasManyThrough(Task::class, Status::class);
+    }
+
     public function createdBy()
     {
         return $this->belongsTo(User::class, "created_by");
@@ -40,7 +46,6 @@ class Project extends Model
     {
         return $this->hasOne(Status::class)->latest("position");
     }
-
 
     public function activities()
     {

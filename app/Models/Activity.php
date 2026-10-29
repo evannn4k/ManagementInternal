@@ -36,11 +36,7 @@ class Activity extends Model
 
     protected function getSubjectNameAttribute()
     {
-        if (!$this->subject) {
-            return 'unknown';
-        }
-
-        return $this->subject->name ?? $this->subject->title ?? $this->subject->username ?? "Item " . $this->subject_id;
+        return $this->subject->name ?? $this->subject->title ?? $this->subject->username ?? $this->subject_last_name ?? "Item " . $this->subject_id;
     }
 
     protected $casts = [

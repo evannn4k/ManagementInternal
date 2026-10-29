@@ -20,6 +20,7 @@ return new class extends Migration
             $table->json("old_data")->nullable();
             $table->json("new_data")->nullable();
             $table->string("ip_address")->nullable();
+            $table->string("subject_last_name")->nullable();
             $table->timestamps();
         });
     }
