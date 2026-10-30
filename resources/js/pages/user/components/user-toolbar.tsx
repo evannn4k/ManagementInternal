@@ -8,7 +8,7 @@ import {
 import { Filter } from "@/components/filter";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { Link, router } from "@inertiajs/react";
+import { router } from "@inertiajs/react";
 import { Role } from "@/types/data/role";
 
 export function UserToolbar({

@@ -1,25 +1,18 @@
 import { ProjectType } from "@/types/data/project";
 import ProjectDetailLayout from "./project-detail-layout";
-import LayoutDetail from "./project-detail-layout";
-import { ReactElement, ReactNode, useState } from "react";
-import { router, usePage } from "@inertiajs/react";
-import type { PageProps } from "@inertiajs/core";
+import { useState } from "react";
+import { router } from "@inertiajs/react";
 import { ProjectDetailToolbar } from "./components/project-detail-toolbar";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { TaskKanban } from "./components/task-kanban";
-import { Item, ItemContent, ItemDescription } from "@/components/ui/item";
-import { PackageOpen } from "lucide-react";
-import { UserWithRole } from "@/types/data/user";
-import { ActivityType } from "@/types/data/activity";
 import { useModal } from "@/hooks/use-modal";
 import { detail as projectDetail } from "@/routes/project";
 import { deleteMethod as deleteTask } from "@/routes/task";
 import { deleteMethod as deleteStatusProject } from "@/routes/project/status";
-import { index as projectIndex } from "@/routes/project";
 import TaskForm from "../task/components/task-form";
-import ProjectStatusForm from "./components/project-status-form";
 import { DeleteAlert } from "@/components/delete-alert";
+import ProjectFormStatusEdit from "./components/project-form-status-edit";
 
 export default function ProjectDetail({ project }: { project: ProjectType }) {
     const taskModal = useModal();
@@ -65,12 +58,18 @@ export default function ProjectDetail({ project }: { project: ProjectType }) {
     return (
         <>
             <TaskForm modal={taskModal} project={project} />
-            <ProjectStatusForm modal={projectStatusModal} />
+            <ProjectFormStatusEdit modal={projectStatusModal} />
             <DeleteAlert
                 modal={taskModal}
                 title="Hapus data tugas"
-                description="Data tugas yang telah dihapus dapat dikembalikan."
+                description="Data tugas yang telah dihapus dapat di kembalikan."
                 handleDelete={handleDeleteTask}
+            />
+            <DeleteAlert
+                modal={projectStatusModal}
+                title="Hapus data status"
+                description="Data status yang telah dihapus dapat dikembalikan."
+                handleDelete={handleDeleteProjectStatus}
             />
             <Card className="bg-muted/50 gap-4 pb-0">
                 <ProjectDetailToolbar

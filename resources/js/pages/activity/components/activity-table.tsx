@@ -164,7 +164,7 @@ export function ActivityTable({
                                                 {activity.ip_address}
                                             </TableCell>
                                             <TableCell className="text-end">
-                                                <Button
+                                                {/* <Button
                                                     size="sm"
                                                     onClick={(e) => {
                                                         e.stopPropagation();
@@ -174,7 +174,7 @@ export function ActivityTable({
                                                     }}
                                                 >
                                                     hapus
-                                                </Button>
+                                                </Button> */}
                                                 <Button
                                                     variant="ghost"
                                                     size="sm"

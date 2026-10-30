@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Project;
 use App\Http\Controllers\Controller;
 use App\Models\Status;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class DeleteStatusProjectController extends Controller
@@ -12,16 +14,26 @@ class DeleteStatusProjectController extends Controller
     public function __invoke(Request $request, Status $status)
     {
         try {
-            if ($status->tasks()->count() > 0) {
-                return redirect()
-                    ->back()
-                    ->with(
-                        "error",
-                        "Status memiliki tugas terkait.",
-                    );
-            }
+            DB::transaction(function () use ($request, $status) {
+                if ($status->tasks()->count() > 0) {
+                    return redirect()
+                        ->back()
+                        ->with(
+                            "error",
+                            "Status memiliki tugas terkait.",
+                        );
+                }
 
-            $status->delete();
+                $status->activities()->create([
+                    "user_id" => Auth::user()->id,
+                    "type" => "delete",
+                    "subject_last_name" => $status->name,
+                    "old_data" => $status,
+                    "ip_address" => $request->ip(),
+                ]);
+
+                $status->delete();
+            });
 
             return redirect()
                 ->back()

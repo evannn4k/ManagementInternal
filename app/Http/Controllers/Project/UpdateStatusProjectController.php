@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Project\UpdateStatusProjectRequest;
 use App\Models\Status;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class UpdateStatusProjectController extends Controller
@@ -15,7 +17,19 @@ class UpdateStatusProjectController extends Controller
         $credentials = $request->validated();
 
         try {
-            $status->update($credentials);
+            DB::transaction(function () use ($credentials, $request, $status) {
+                $diffData = array_diff_assoc($credentials, $status->only(array_keys($credentials)));
+
+                $status->activities()->create([
+                    "user_id" => Auth::user()->id,
+                    "type" => "update",
+                    "old_data" => $status->only(array_keys($diffData)),
+                    "new_data" => $diffData,
+                    "ip_address" => $request->ip(),
+                ]);
+
+                $status->update($credentials);
+            });
 
             return redirect()
                 ->back()

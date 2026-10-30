@@ -18,7 +18,7 @@ import { useForm } from "@inertiajs/react";
 import { Button } from "@/components/ui/button";
 import updateStatusProject from "@/actions/App/Http/Controllers/Project/UpdateStatusProjectController";
 
-export default function ProjectStatusForm({
+export default function ProjectFormStatusEdit({
     modal,
 }: {
     modal: UseModalReturn;
@@ -28,12 +28,14 @@ export default function ProjectStatusForm({
     const { put, errors, data, setData, processing, reset, clearErrors } =
         useForm({
             name: "",
+            type: "",
         });
 
     useEffect(() => {
         if (isOpenModal) {
             setData(() => ({
                 name: modal.data.name ?? "",
+                type: modal.data.type ?? "",
             }));
         } else {
             reset();
@@ -46,10 +48,11 @@ export default function ProjectStatusForm({
             HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
         >,
     ) => {
-        const { value } = e.target;
+        const { id, value } = e.target;
 
         setData({
-            name: value,
+            ...data,
+            [id]: value,
         });
     };
 
@@ -86,6 +89,21 @@ export default function ProjectStatusForm({
                                 error={errors.name}
                                 value={data.name}
                                 placeholder="Masukkan nama status"
+                                onChange={handleChange}
+                            />
+                            <FormField
+                                error={errors.type}
+                                label="Tipe"
+                                name="type"
+                                placeholder="Pilih tipe status"
+                                value={data.type}
+                                type="select"
+                                options={[
+                                    { label: "Pending", value: "pending" },
+                                    { label: "Running", value: "running" },
+                                    { label: "Completed", value: "completed" },
+                                    { label: "Canceled", value: "canceled" },
+                                ]}
                                 onChange={handleChange}
                             />
                         </FormSection>

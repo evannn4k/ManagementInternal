@@ -15,12 +15,13 @@ return new class extends Migration
             // $table->id();
             $table->uuid("id")->primary();
             $table->foreignId("user_id")->constrained("users")->nullOnDelete();
-            $table->uuidMorphs('subject');
+            $table->nullableUuidMorphs('subject');
+            $table->nullableUuidMorphs('parent');
+            $table->string("subject_last_name")->nullable();
             $table->enum("type", ['create', 'update', 'delete'])->nullable();
-            $table->json("old_data")->nullable();
+            $table->json("old_data")->nullable();git
             $table->json("new_data")->nullable();
             $table->string("ip_address")->nullable();
-            $table->string("subject_last_name")->nullable();
             $table->timestamps();
         });
     }

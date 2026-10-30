@@ -7,6 +7,7 @@ use App\Http\Resources\Activity\ActivityTableResource;
 use App\Http\Resources\Project\ProjectTableResource;
 use App\Models\Activity;
 use App\Models\Project;
+use App\Models\Status;
 use App\Models\SubTask;
 use App\Models\Task;
 use App\Models\User;
@@ -150,16 +151,20 @@ class ViewProjectController extends Controller
         );
 
         $taskIds = $project->tasks()->withTrashed()->get()->pluck("id")->toArray();
+        $statusIds = $project->statuses()->get()->pluck("id")->toArray();
+
         $subTaskIds = SubTask::whereIn("task_id", $taskIds)->select("id");
 
         $activities = Activity::with([
             "user:id,name",
             "subject"
-        ])->where(function ($query) use ($taskIds, $project, $subTaskIds) {
+        ])->where(function ($query) use ($taskIds, $project, $subTaskIds, $statusIds) {
             $query->where(function ($q) use ($taskIds) {
                 $q->where("subject_type", Task::class)->whereIn("subject_id", $taskIds);
             })->orWhere(function ($q) use ($project) {
                 $q->where("subject_type", Project::class)->where("subject_id", $project->id);
+            })->orWhere(function ($q) use ($statusIds) {
+                $q->where("subject_type", Status::class)->whereIn("subject_id", $statusIds);
             })->orWhere(function ($q) use ($subTaskIds) {
                 $q->where("subject_type", SubTask::class)
                     ->whereIn("subject_id", $subTaskIds);
