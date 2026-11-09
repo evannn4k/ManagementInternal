@@ -24,9 +24,13 @@ class DeleteStatusProjectController extends Controller
                         );
                 }
 
+                $project = $status->project()->first();
+
                 $status->activities()->create([
                     "user_id" => Auth::user()->id,
                     "type" => "delete",
+                    "parent_type" => class_basename($project),
+                    "parent_id" => $project->id,
                     "subject_last_name" => $status->name,
                     "old_data" => $status,
                     "ip_address" => $request->ip(),

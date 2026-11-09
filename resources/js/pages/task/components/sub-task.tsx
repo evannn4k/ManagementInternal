@@ -93,7 +93,7 @@ export function SubTask({ task }: { task: TaskType }) {
     };
 
     return (
-        <Card className="bg-muted/50">
+        <Card className="bg-muted/50" id="SubTask">
             <CardHeader className="flex flex-col gap-2">
                 <div className="w-full flex justify-between">
                     <div className="flex items-center gap-2">

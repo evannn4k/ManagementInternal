@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Task;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Task\UpdateTaskRequest;
 use App\Models\Activity;
+use App\Models\Status;
 use App\Models\Task;
 use App\Services\FileService;
 use Illuminate\Http\Request;
@@ -63,9 +64,13 @@ class UpdateTaskController extends Controller
 
                 $task->update($credentials);
 
+                $project = Status::find($task->status_id)->project->select("id")->first();
+
                 $task->activities()->create([
                     "user_id" => Auth::user()->id,
                     "type" => "update",
+                    "parent_type" => class_basename($project),
+                    "parent_id" => $project->id,
                     "old_data" => $oldData,
                     "new_data" => $diffData,
                     "ip_address" => $request->ip(),

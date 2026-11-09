@@ -19,14 +19,18 @@ class DeleteSubTaskController extends Controller
     {
         try {
             DB::transaction(function () use ($request, $subTask) {
+                $project = $subTask->task->project;
+
                 $subTask->activities()->create([
                     "user_id" => Auth::user()->id,
-                    "type" => "update",
+                    "type" => "delete",
+                    "parent_type" => class_basename($project),
+                    "parent_id" => $project->id,
                     "old_data" => $subTask,
                     "ip_address" => $request->ip(),
                 ]);
 
-                Activity::where("subject_id", $subTask->id)->update(["subject_name" => $subTask->name]);
+                Activity::where("subject_id", $subTask->id)->update(["subject_last_name" => $subTask->name]);
 
                 $subTask->delete();
             });

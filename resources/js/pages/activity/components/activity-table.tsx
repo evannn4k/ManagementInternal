@@ -52,17 +52,17 @@ export function ActivityTable({
         setOpen((prev) => (prev == id ? null : id));
     };
 
-    const getUrl = (type?: string, id?: string | number) => {
-        const typeModel = type ? type.toLowerCase() : "";
+    // const getUrl = (type?: string, id?: string | number) => {
+    //     const typeModel = type ? type.toLowerCase() : "";
 
-        return typeModel === "task"
-            ? taskDetail(id as string).url
-            : typeModel === "project"
-              ? projectDetail(id as string).url
-              : typeModel === "user"
-                ? userDetail(id as number).url
-                : "#";
-    };
+    //     return typeModel === "task"
+    //         ? taskDetail(id as string).url
+    //         : typeModel === "project"
+    //           ? projectDetail(id as string).url
+    //           : typeModel === "user"
+    //             ? userDetail(id as number).url
+    //             : "#";
+    // };
 
     const handleDeleteActivity = (id: string) => {
         router.delete("/act-del/" + id, {
@@ -114,7 +114,7 @@ export function ActivityTable({
                                                     className="text-blue-500 hover:underline"
                                                     onClick={(e) =>
                                                         e.stopPropagation()
-                                                    }
+                                                    }   
                                                 >
                                                     {activity.user.name ?? "-"}
                                                 </Link>
@@ -123,31 +123,18 @@ export function ActivityTable({
                                                 {activity.type}
                                             </TableCell>
                                             <TableCell>
-                                                {activity.subject?.type !=
-                                                    "SubTask" &&
-                                                !activity.subject
-                                                    ?.is_deleted ? (
-                                                    activity.subject?.name ? (
-                                                        <Link
-                                                            href={getUrl(
-                                                                activity.subject
-                                                                    .type,
-                                                                activity.subject
-                                                                    .id,
-                                                            )}
-                                                            className="text-blue-500 hover:underline"
-                                                            onClick={(e) =>
-                                                                e.stopPropagation()
-                                                            }
-                                                        >
-                                                            {
-                                                                activity.subject
-                                                                    ?.name
-                                                            }
-                                                        </Link>
-                                                    ) : (
-                                                        activity.subject?.name
-                                                    )
+                                                {!activity.is_disabled ? (
+                                                    <Link
+                                                        href={
+                                                            activity.target_url ?? ""
+                                                        }
+                                                        className="text-blue-500 hover:underline"
+                                                        onClick={(e) =>
+                                                            e.stopPropagation()
+                                                        }
+                                                    >
+                                                        {activity.subject?.name}
+                                                    </Link>
                                                 ) : (
                                                     activity.subject?.name
                                                 )}
@@ -166,6 +153,7 @@ export function ActivityTable({
                                             <TableCell className="text-end">
                                                 {/* <Button
                                                     size="sm"
+                                                    variant="destructive"
                                                     onClick={(e) => {
                                                         e.stopPropagation();
                                                         handleDeleteActivity(

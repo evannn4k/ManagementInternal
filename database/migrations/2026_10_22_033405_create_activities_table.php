@@ -19,7 +19,7 @@ return new class extends Migration
             $table->nullableUuidMorphs('parent');
             $table->string("subject_last_name")->nullable();
             $table->enum("type", ['create', 'update', 'delete'])->nullable();
-            $table->json("old_data")->nullable();git
+            $table->json("old_data")->nullable();   
             $table->json("new_data")->nullable();
             $table->string("ip_address")->nullable();
             $table->timestamps();

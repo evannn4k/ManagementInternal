@@ -23,12 +23,15 @@ class UpdateSubTaskController extends Controller
                 $oldIsComplete = $subTask->is_completed;
 
                 $subTask->is_completed = $credentials["status"];
-
                 $subTask->save();
+
+                $project = $subTask->task->status->project->select("id")->first();
 
                 $subTask->activities()->create([
                     "user_id" => Auth::user()->id,
                     "type" => "update",
+                    "parent_type" => class_basename($project),
+                    "parent_id" => $project->id,
                     "old_data" => ["is_completed" => $oldIsComplete],
                     "new_data" => ["is_completed" => $subTask->is_completed],
                     "ip_address" => $request->ip(),

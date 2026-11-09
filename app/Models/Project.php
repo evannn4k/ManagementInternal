@@ -51,4 +51,9 @@ class Project extends Model
     {
         return $this->morphMany(Activity::class, 'subject');
     }
+
+    public function childActivities()
+    {
+        return $this->morphMany(Activity::class, 'parent');
+    }
 }

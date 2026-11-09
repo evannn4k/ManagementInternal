@@ -164,6 +164,7 @@ export default function TaskForm({
             onChange: handleChange,
             error: errors.due_date,
             value: data.due_date,
+            max: project?.end_date ?? undefined,
             type: "date",
         },
         {

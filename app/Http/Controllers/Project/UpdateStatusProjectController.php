@@ -20,9 +20,13 @@ class UpdateStatusProjectController extends Controller
             DB::transaction(function () use ($credentials, $request, $status) {
                 $diffData = array_diff_assoc($credentials, $status->only(array_keys($credentials)));
 
+                $project = $status->project()->first();
+
                 $status->activities()->create([
                     "user_id" => Auth::user()->id,
                     "type" => "update",
+                    "parent_type" => class_basename($project),
+                    "parent_id" => $project->id,
                     "old_data" => $status->only(array_keys($diffData)),
                     "new_data" => $diffData,
                     "ip_address" => $request->ip(),

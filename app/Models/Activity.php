@@ -25,6 +25,11 @@ class Activity extends Model
         return $this->morphTo()->withTrashed();
     }
 
+    public function parent()
+    {
+        return $this->morphTo()->withTrashed();
+    }
+
     public function scopeTaskProject(Builder $query, string $projectId)
     {
         return $query

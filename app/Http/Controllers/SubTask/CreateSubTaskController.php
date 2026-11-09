@@ -26,10 +26,14 @@ class CreateSubTaskController extends Controller
 
                 $subTask = SubTask::create($credentials);
 
+                $project = $subTask->task->project;
+
                 $subTask->activities()->create([
                     "user_id" => Auth::user()->id,
                     "type" => "create",
-                    "new_data" => $subTask,
+                    "parent_type" => class_basename($project),
+                    "parent_id" => $project->id,
+                    "new_data" => $subTask->only(),
                     "ip_address" => $request->ip(),
                 ]);
             });

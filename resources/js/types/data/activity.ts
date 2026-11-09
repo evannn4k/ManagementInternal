@@ -8,9 +8,10 @@ export type ActivityType = {
         id?: number | string;
         type?: string;
         name?: string;
-        is_deleted: boolean;
     };
     type: "create" | "update" | "delete" | string | null;
+    target_url: string;
+    is_disabled: boolean;
     old_data: Record<string, any>[] | null;
     new_data: Record<string, any>[] | null;
     ip_address: string | null;

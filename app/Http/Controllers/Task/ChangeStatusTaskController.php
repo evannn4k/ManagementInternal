@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Task;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Task\ChangeStatusTaskRequest;
+use App\Models\Status;
 use App\Models\Task;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -22,9 +23,13 @@ class ChangeStatusTaskController extends Controller
 
                 $task->status_id = $credentials["status_id"];
 
+                $project = Status::find($credentials['status_id'])->project->select("id")->first();
+
                 $task->activities()->create([
                     "user_id" => Auth::user()->id,
                     "type" => "update",
+                    "parent_type" => class_basename($project),
+                    "parent_id" => $project->id,
                     "old_data" => ["status_id" => $oldStatuId],
                     "new_data" => ["status_id" => $task->status_id],
                     "ip_address" => $request->ip(),

@@ -150,41 +150,32 @@ class ViewProjectController extends Controller
             ]
         );
 
-        $taskIds = $project->tasks()->withTrashed()->get()->pluck("id")->toArray();
-        $statusIds = $project->statuses()->get()->pluck("id")->toArray();
+        // $taskIds = $project->tasks()->withTrashed()->get()->pluck("id")->toArray();
+        // $statusIds = $project->statuses()->get()->pluck("id")->toArray();
 
-        $subTaskIds = SubTask::whereIn("task_id", $taskIds)->select("id");
+        // $subTaskIds = SubTask::whereIn("task_id", $taskIds)->select("id");
 
         $activities = Activity::with([
-            "user:id,name",
-            "subject"
-        ])->where(function ($query) use ($taskIds, $project, $subTaskIds, $statusIds) {
-            $query->where(function ($q) use ($taskIds) {
-                $q->where("subject_type", Task::class)->whereIn("subject_id", $taskIds);
-            })->orWhere(function ($q) use ($project) {
-                $q->where("subject_type", Project::class)->where("subject_id", $project->id);
-            })->orWhere(function ($q) use ($statusIds) {
-                $q->where("subject_type", Status::class)->whereIn("subject_id", $statusIds);
-            })->orWhere(function ($q) use ($subTaskIds) {
-                $q->where("subject_type", SubTask::class)
-                    ->whereIn("subject_id", $subTaskIds);
-            });
-        })->when($request->search, function ($query, $value) {
-            $query->whereHas("user", function ($q) use ($value) {
-                return $q->where("name", "ilike", "%$value%");
-            });
-        })->when($request->type, function ($query, $value) {
-            $query
-                ->where("type", $value);
-        })->when($request->date_from, function ($query, $value) {
-            $query
-                ->where("created_at", ">=", $value);
-        })->when($request->date_to, function ($query, $value) {
-            $query
-                ->where("created_at", "<=", $value);
-        })->orderBy("created_at", "desc")->paginate($request->per_page ?? 10)
+                "user:id,name",
+                "subject"
+            ])->where(function ($query) use ($project) {
+                $query->where("subject_id", $project->id)->orWhere("parent_id", $project->id);
+            })
+            ->when($request->search, function ($query, $value) {
+                $query->whereHas("user", function ($q) use ($value) {
+                    return $q->where("name", "ilike", "%$value%");
+                });
+            })->when($request->type, function ($query, $value) {
+                $query
+                    ->where("type", $value);
+            })->when($request->date_from, function ($query, $value) {
+                $query
+                    ->where("created_at", ">=", $value);
+            })->when($request->date_to, function ($query, $value) {
+                $query
+                    ->where("created_at", "<=", $value);
+            })->orderBy("created_at", "desc")->paginate($request->per_page ?? 10)
             ->withQueryString();
-
 
         $data = ActivityTableResource::collection($activities);
 

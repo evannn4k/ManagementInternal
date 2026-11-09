@@ -32,6 +32,11 @@ class Task extends Model
         return $this->hasMany(SubTask::class);
     }
 
+    public function getProjectAttribute()
+    {
+        return $this->status->project;
+    }
+
     public function scopeOwn($query, User $user, $execution = true)
     {
         if (!$execution) return $query;
