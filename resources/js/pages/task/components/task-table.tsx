@@ -30,14 +30,18 @@ import {
 } from "lucide-react";
 import { detail as detailTask } from "@/routes/task";
 import { detail as detailProject } from "@/routes/project";
+import { TaskType } from "@/types/data/task";
+import { ProjectType } from "@/types/data/project";
 
 export function TaskTable({
     data,
     modal,
+    project,
     tableHead,
 }: {
-    data: any[];
-    modal: UseModalReturn;
+    data?: TaskType[];
+    modal?: UseModalReturn;
+    project?: ProjectType;
     tableHead: TableHeadType[];
 }) {
     return (
@@ -56,7 +60,7 @@ export function TaskTable({
                     </TableRow>
                 </TableHeader>
                 <TableBody className="**:data-[slot=table-cell]:first:w-8">
-                    {data.length > 0 ? (
+                    {data && data.length > 0 ? (
                         data.map((task, i) => (
                             <TableRow key={task.id}>
                                 <TableCell>{task.title ?? "-"}</TableCell>
@@ -64,71 +68,78 @@ export function TaskTable({
                                     <Link
                                         href={
                                             detailProject(
-                                                task.status.project.id,
+                                                project
+                                                    ? project.id
+                                                    : task.status.project.id,
                                             ).url
                                         }
                                         className="text-blue-400 hover:text-blue-500 hover:underline"
                                     >
-                                        {task.status.project.name ?? "-"}
+                                        {project
+                                            ? project.name
+                                            : (task.status.project.name ?? "-")}
                                     </Link>
                                 </TableCell>
                                 <TableCell>{task.priority ?? "-"}</TableCell>
                                 <TableCell>{task.status.name ?? "-"}</TableCell>
                                 <TableCell>{task.due_date ?? "-"}</TableCell>
-                                <TableCell className="text-right">
-                                    <DropdownMenu>
-                                        <DropdownMenuTrigger asChild>
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                className="size-8"
-                                            >
-                                                <MoreVertical className="size-4" />
-                                                <span className="sr-only">
-                                                    Open menu
-                                                </span>
-                                            </Button>
-                                        </DropdownMenuTrigger>
-                                        <DropdownMenuContent align="end">
-                                            {can("task.edit") && (
-                                                <DropdownMenuItem
-                                                    onClick={() =>
-                                                        modal.openEdit(task)
-                                                    }
+                                {modal && (
+                                    <TableCell className="text-right">
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger asChild>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="size-8"
                                                 >
-                                                    <SquarePen />
-                                                    Edit
-                                                </DropdownMenuItem>
-                                            )}
-                                            <DropdownMenuItem asChild>
-                                                <Link
-                                                    href={
-                                                        detailTask(task.id).url
-                                                    }
-                                                >
-                                                    <FileText />
-                                                    Detail
-                                                </Link>
-                                            </DropdownMenuItem>
-                                            {can("task.delete") && (
-                                                <>
-                                                    <DropdownMenuSeparator />
+                                                    <MoreVertical className="size-4" />
+                                                    <span className="sr-only">
+                                                        Open menu
+                                                    </span>
+                                                </Button>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent align="end">
+                                                {can("task.edit") && (
                                                     <DropdownMenuItem
                                                         onClick={() =>
-                                                            modal.openDelete(
-                                                                task.id,
-                                                            )
+                                                            modal.openEdit(task)
                                                         }
-                                                        variant="destructive"
                                                     >
-                                                        <Trash2 />
-                                                        Delete
+                                                        <SquarePen />
+                                                        Edit
                                                     </DropdownMenuItem>
-                                                </>
-                                            )}
-                                        </DropdownMenuContent>
-                                    </DropdownMenu>
-                                </TableCell>
+                                                )}
+                                                <DropdownMenuItem asChild>
+                                                    <Link
+                                                        href={
+                                                            detailTask(task.id)
+                                                                .url
+                                                        }
+                                                    >
+                                                        <FileText />
+                                                        Detail
+                                                    </Link>
+                                                </DropdownMenuItem>
+                                                {can("task.delete") && (
+                                                    <>
+                                                        <DropdownMenuSeparator />
+                                                        <DropdownMenuItem
+                                                            onClick={() =>
+                                                                modal.openDelete(
+                                                                    task.id,
+                                                                )
+                                                            }
+                                                            variant="destructive"
+                                                        >
+                                                            <Trash2 />
+                                                            Delete
+                                                        </DropdownMenuItem>
+                                                    </>
+                                                )}
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
+                                    </TableCell>
+                                )}
                             </TableRow>
                         ))
                     ) : (

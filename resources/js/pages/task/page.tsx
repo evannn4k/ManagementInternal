@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Plus, Trash } from "lucide-react";
 import { LaravelPagination } from "@/types/paginate";
 import { ProjectGridType } from "@/types/data/project";
 import { PaginationPage } from "@/components/pagination-page";
@@ -15,7 +15,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import TaskForm from "./components/task-form";
 import { deleteMethod as deleteTask } from "@/routes/task";
 import { DeleteAlert } from "@/components/delete-alert";
-import { CardDataType } from "@/types/data/task";
+import { CardDataType, TaskType } from "@/types/data/task";
 import { can } from "@/lib/middleware";
 
 export default function TaskPage({
@@ -23,7 +23,7 @@ export default function TaskPage({
     cardData,
     projects,
 }: {
-    data: LaravelPagination<ProjectGridType>;
+    data: LaravelPagination<TaskType>;
     cardData: CardDataType;
     projects: any[];
 }) {
@@ -103,6 +103,9 @@ export default function TaskPage({
                         <TabsTrigger value="all">Semua</TabsTrigger>
                         <TabsTrigger value="due">Terlambat</TabsTrigger>
                         <TabsTrigger value="this_week">Minggu Ini</TabsTrigger>
+                        <TabsTrigger value="trashed" className="!text-red-500">
+                            <Trash /> Tugas dihapus
+                        </TabsTrigger>
                     </TabsList>
                     <Card className="bg-muted/50 gap-4 pb-0">
                         <TaskToolbar

@@ -6,11 +6,16 @@ use Illuminate\Database\Eloquent\Attributes\Guarded;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Override;
 
 #[Guarded([])]
 class Project extends Model
 {
     use HasUuids, SoftDeletes;
+
+    public function scopeArchived() {
+        return $this->where("status", "archived");
+    }
 
     public function pic()
     {

@@ -34,6 +34,7 @@ import { detail as detailProject } from "@/routes/project";
 import { archive as archiveProject } from "@/routes/project";
 
 import { Item, ItemContent, ItemDescription } from "@/components/ui/item";
+import { cn } from "@/lib/utils";
 
 export function ProjectGrid({
     modal,
@@ -42,7 +43,6 @@ export function ProjectGrid({
     modal: UseModalReturn;
     projects: ProjectGridType[];
 }) {
-    
     const handleArchiveProject = (id: string) => {
         router.patch(
             archiveProject(id).url,
@@ -54,7 +54,7 @@ export function ProjectGrid({
     return (
         <>
             {projects && projects.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-background/50">
                     {projects.map((project) => {
                         const totalCompleted = project.statuses
                             .filter((status) => status.type == "completed")
@@ -80,11 +80,25 @@ export function ProjectGrid({
                                 <Card className="bg-muted/50 hover:bg-muted/70 transition-all h-full gap-2">
                                     <CardHeader>
                                         <div className="flex flex-row items-center space-y-0 gap-2">
-                                            <div className="bg-primary/10 p-2 rounded-md text-primary border border-primary/20">
+                                            <div
+                                                className={cn(
+                                                    project.status == "archived"
+                                                        ? "bg-red-600/10 p-2 rounded-md text-red-600 border border-red-600/20"
+                                                        : "bg-primary/10 p-2 rounded-md text-primary border border-primary/20",
+                                                )}
+                                            >
                                                 <FolderGit2 />
                                             </div>
                                             <div className="flex flex-col gap-0">
-                                                <CardTitle className="line-clamp-1">
+                                                <CardTitle
+                                                    className={cn(
+                                                        "line-clamp-1",
+                                                        project.status ==
+                                                            "archived"
+                                                            ? "text-red-600"
+                                                            : "",
+                                                    )}
+                                                >
                                                     {project.name}
                                                 </CardTitle>
                                                 <CardDescription className="text-xs text-muted-foreground">

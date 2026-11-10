@@ -32,7 +32,9 @@ class ViewTaskController extends Controller
                         return $q->where("name", $value);
                     });
             })->when($request->tabs, function ($query, $value) {
-                if ($value == "due") {
+                if ($value == "trashed") {
+                    return $query->onlyTrashed();
+                } else if ($value == "due") {
                     return $query->where("due_date", "<=", now()->toDateString());
                 } else if ($value == "this_week") {
                     return $query->where("due_date", "<=", now()->addWeek()->toDateString())->where("due_date", ">=", now()->toDateString());
@@ -46,22 +48,24 @@ class ViewTaskController extends Controller
                 if ($value != "own") return $q;
 
                 return $q->own($this->user);
-            })->orderBy("created_at", "desc")->paginate($request->per_page ?? 10)
+            });
+
+        $tasksPagination = $tasks->orderBy("created_at", "desc")->paginate($request->per_page ?? 10)
             ->withQueryString();
 
-        $data = TaskTableResource::collection($tasks);
+        $data = TaskTableResource::collection($tasksPagination);
 
         $projects = Project::with("defaultStatus")->select("id", "name")->get();
 
         $myTask = $request->task_view == "own";
 
         $cardData = [
-            "total_task" => Task::permissionScopeData($this->user)->own($this->user, $myTask)->count(),
-            "total_running" => Task::permissionScopeData($this->user)->own($this->user, $myTask)->whereHas("status", function ($query) {
+            "total_task" => $tasks->permissionScopeData($this->user)->own($this->user, $myTask)->count(),
+            "total_running" => $tasks->permissionScopeData($this->user)->own($this->user, $myTask)->whereHas("status", function ($query) {
                 return $query->where("type", "running");
             })->count(),
-            "total_overdue" => Task::permissionScopeData($this->user)->own($this->user, $myTask)->where("due_date", "<", now())->count(),
-            "this_week" => Task::permissionScopeData($this->user)->own($this->user, $myTask)->where("due_date", "<=", now()->addWeek()->toDateString())->where("due_date", ">=", now()->toDateString())->count(),
+            "total_overdue" => $tasks->permissionScopeData($this->user)->own($this->user, $myTask)->where("due_date", "<", now())->count(),
+            "this_week" => $tasks->permissionScopeData($this->user)->own($this->user, $myTask)->where("due_date", "<=", now()->addWeek()->toDateString())->where("due_date", ">=", now()->toDateString())->count(),
         ];
 
         return Inertia::render(

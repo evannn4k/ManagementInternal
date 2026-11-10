@@ -37,6 +37,7 @@ export type ProjectType = {
     teams?: UserWithRole[];
     statuses: ProjectStatusType[];
     total_task?: number;
+    tasks?: TaskType[];
 };
 
 export type ProjectStatusType = {

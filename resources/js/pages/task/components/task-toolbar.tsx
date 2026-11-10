@@ -1,5 +1,5 @@
-import { Card, CardContent } from "@/components/ui/card";
-import { Download, RotateCcw, Search } from "lucide-react";
+import { CardContent } from "@/components/ui/card";
+import { RotateCcw, Search } from "lucide-react";
 import {
     InputGroup,
     InputGroupAddon,
@@ -8,7 +8,7 @@ import {
 import { Filter } from "@/components/filter";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { Link, router } from "@inertiajs/react";
+import { router } from "@inertiajs/react";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { can } from "@/lib/middleware";
@@ -20,7 +20,7 @@ export function TaskToolbar({
 }: {
     url: string;
     updateQuery: (params: Record<string, any>) => void;
-    projects: any[];
+    projects?: any[];
 }) {
     const [search, setSearch] = useState("");
 
@@ -33,9 +33,8 @@ export function TaskToolbar({
     const projectFilter = {
         placeholder: "Semua Proyek",
         key: "project",
-        options: projects.map((p) => p.name),
+        options: projects ? projects.map((p) => p.name) : [],
     };
-
     const handleReset = () => {
         router.get(url, {}, { preserveScroll: true });
     };
@@ -62,10 +61,12 @@ export function TaskToolbar({
                         </InputGroup>
                     </form>
                     <div className="flex gap-2">
-                        <Filter
-                            updateQuery={updateQuery}
-                            data={projectFilter}
-                        />
+                        {projects && (
+                            <Filter
+                                updateQuery={updateQuery}
+                                data={projectFilter}
+                            />
+                        )}
                         <Filter
                             updateQuery={updateQuery}
                             data={priorityFilter}

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Project;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Activity\ActivityTableResource;
 use App\Http\Resources\Project\ProjectTableResource;
+use App\Http\Resources\Task\TaskTableResource;
 use App\Models\Activity;
 use App\Models\Project;
 use App\Models\Status;
@@ -17,6 +18,13 @@ use Inertia\Inertia;
 
 class ViewProjectController extends Controller
 {
+    protected $user;
+
+    public function __construct()
+    {
+        $this->user = Auth::user();
+    }
+
     function index(Request $request)
     {
         $projects = Project::with([
@@ -25,30 +33,31 @@ class ViewProjectController extends Controller
             "pic:id,name",
             "createdBy:id,name"
         ])
-            ->where("status", "<>", "archived")
             ->withCount('tasks as total_task')
             ->when($request->search, function ($query, $value) {
                 $query
                     ->where("name", "ilike", "%$value%");
             })->when($request->status, function ($query, $value) {
-                $query
-                    ->where("status", $value);
+                $query->where("status", $value);
+            }, function ($query) {
+                $query->where("status", "!=", "archived");
             })->when($request->priority, function ($query, $value) {
                 $query
                     ->where("priority", $value);
-            })->orderBy("created_at", "desc")->paginate($request->per_page ?? 10)
+            });
+
+        $projectsPagination = $projects->orderBy("created_at", "desc")->paginate($request->per_page ?? 10)
             ->withQueryString();
 
-        $data = ProjectTableResource::collection($projects);
+        $data = ProjectTableResource::collection($projectsPagination);
         $users =  User::select("id", "name", "position")->with('roles:id,name')->where("is_active", true)->get();
 
         $cardData = [
-            "total_total" => Project::count(),
-            "total_running" => Project::where("status", "running")->count(),
-            "total_overdue" => Project::where("end_date", "<", now())->count(),
-            "total_completed" => Project::where("status", "done")->count(),
+            "total_total" => $projects->count(),
+            "total_running" => $projects->where("status", "running")->count(),
+            "total_overdue" => $projects->where("end_date", "<", now())->count(),
+            "total_completed" => $projects->where("status", "done")->count(),
         ];
-
 
         return Inertia::render(
             "project/page",
@@ -80,7 +89,7 @@ class ViewProjectController extends Controller
                         if ($value != "own") return $q;
 
                         return $q->whereHas("assigned", function ($t) {
-                            $id = Auth::user()->id;
+                            $id = $this->user->id;
                             return $t->where("id", $id);
                         });
                     });
@@ -120,7 +129,7 @@ class ViewProjectController extends Controller
                         if ($value != "own") return $q;
 
                         return $q->whereHas("assigned", function ($t) {
-                            $id = Auth::user()->id;
+                            $id = $this->user->id;
                             return $t->where("id", $id);
                         });
                     });
@@ -150,17 +159,12 @@ class ViewProjectController extends Controller
             ]
         );
 
-        // $taskIds = $project->tasks()->withTrashed()->get()->pluck("id")->toArray();
-        // $statusIds = $project->statuses()->get()->pluck("id")->toArray();
-
-        // $subTaskIds = SubTask::whereIn("task_id", $taskIds)->select("id");
-
         $activities = Activity::with([
-                "user:id,name",
-                "subject"
-            ])->where(function ($query) use ($project) {
-                $query->where("subject_id", $project->id)->orWhere("parent_id", $project->id);
-            })
+            "user:id,name",
+            "subject"
+        ])->where(function ($query) use ($project) {
+            $query->where("subject_id", $project->id)->orWhere("parent_id", $project->id);
+        })
             ->when($request->search, function ($query, $value) {
                 $query->whereHas("user", function ($q) use ($value) {
                     return $q->where("name", "ilike", "%$value%");
@@ -182,6 +186,42 @@ class ViewProjectController extends Controller
         return Inertia::render(
             "project/detail-activity",
             compact("project", "data"),
+        );
+    }
+
+    public function detailTrashed(Request $request, Project $project)
+    {
+        $project->load(
+            [
+                "pic:id,name,position",
+                "pic.roles:id,name",
+                "teams:id,name,position",
+                "teams.roles:id,name",
+                "createdBy"
+            ]
+        );
+
+        $tasks = TaskTableResource::collection($project
+            ->tasks()
+            ->with(
+                "status:id,name,project_id",
+            )->onlyTrashed()
+            ->when($request->search, function ($query, $value) {
+                $query
+                    ->where("title", "ilike", "%$value%");
+            })->when($request->priority, function ($query, $value) {
+                $query
+                    ->where("priority", $value);
+            })->when($request->task_view, function ($q, $value) {
+                if ($value != "own") return $q;
+
+                return $q->own($this->user);
+            })->orderBy("created_at", "desc")->paginate($request->per_page ?? 10)
+            ->withQueryString());
+
+        return Inertia::render(
+            "project/detail-trashed",
+            compact("project", "tasks"),
         );
     }
 }

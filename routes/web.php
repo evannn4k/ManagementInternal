@@ -91,6 +91,9 @@ Route::middleware(["auth", "verified"])->group(function () {
             Route::get("/{project}/activity", [ViewProjectController::class, "detailActivity"])->name(
                 "detail.activity",
             )->middleware("permission:project.view.own|project.view.team|project.view.all");
+            Route::get("/{project}/trashed", [ViewProjectController::class, "detailTrashed"])->name(
+                "detail.trashed",
+            )->middleware("permission:project.view.own|project.view.team|project.view.all");
 
             Route::put("/{project}", UpdateProjectController::class)->name("update")->middleware("can:project.edit");
             Route::patch("/{project}/archive", ArchiveProjectController::class)->name(

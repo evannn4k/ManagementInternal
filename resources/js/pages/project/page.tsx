@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Download, Plus, View } from "lucide-react";
+import { Archive, Download, Plus, View } from "lucide-react";
 import { ProjectSectionCard } from "./components/project-section-card";
 import { ProjectToolbar } from "./components/project-toolbar";
 import { LaravelPagination } from "@/types/paginate";
@@ -12,6 +12,8 @@ import { index as projectIndex } from "@/routes/project";
 import { ProjectGrid } from "./components/project-grid";
 import ProjectForm from "./components/project-form";
 import { UserWithRole } from "@/types/data/user";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card } from "@/components/ui/card";
 
 export default function ProjectPage({
     data,
@@ -40,6 +42,10 @@ export default function ProjectPage({
             preserveScroll: true,
             replace: true,
         });
+    };
+
+    const handleChangeTab = (val: string) => {
+        updateQuery({ status: val });
     };
 
     return (
@@ -71,8 +77,22 @@ export default function ProjectPage({
                     </div>
                 </header>
                 <ProjectSectionCard cardData={cardData} />
-                <ProjectToolbar url={url} updateQuery={updateQuery} />
-                <ProjectGrid modal={modal} projects={data.data} />
+                <Tabs defaultValue="" onValueChange={handleChangeTab}>
+                    <TabsList className="bg-muted/50 p-2">
+                        <TabsTrigger value="">Semua</TabsTrigger>
+                        <TabsTrigger value="running">Berjalan</TabsTrigger>
+                        <TabsTrigger value="done">Selesai</TabsTrigger>
+                        <TabsTrigger value="hold">Ditahan</TabsTrigger>
+                        <TabsTrigger value="canceled">Dibatalklan</TabsTrigger>
+                        <TabsTrigger value="archived">
+                            <Archive /> Diarsipkan
+                        </TabsTrigger>
+                    </TabsList>
+                    <Card className="bg-muted/50 gap-4 pb-0">
+                        <ProjectToolbar url={url} updateQuery={updateQuery} />
+                        <ProjectGrid modal={modal} projects={data.data} />
+                    </Card>
+                </Tabs>
                 {data.data.length > 0 && (
                     <PaginationPage
                         updateQuery={updateQuery}
