@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Project;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Project\CreateProjectRequest;
+use App\Jobs\SendTelegramNotification;
 use App\Models\Project;
 use App\Models\Status;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -41,6 +43,21 @@ class CreateProjectController extends Controller
                     "new_data" => $project,
                     "ip_address" => $request->ip(),
                 ]);
+
+                $newTeamChatIds = User::select("telegram_chat_id")->whereIn("id", $teams)->get()->pluck("telegram_chat_id")->toArray();
+
+                if ($newTeamChatIds) {
+                    $projectUrl = route("project.detail", $project->id);
+
+                    $message = "Anda ditugaskan pada proyek : <b>" . $project->name . "</b>\n\n" .
+                        'Link : <a href="' . $projectUrl . '">Klik Disini</a>';
+
+                    foreach ($newTeamChatIds as $chatId) {
+                        if ($chatId) {
+                            SendTelegramNotification::dispatch($chatId, $message, ["parse_mode" => "HTML"]);
+                        }
+                    }
+                }
 
                 $project->teams()->sync($teams);
             });

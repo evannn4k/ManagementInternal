@@ -59,6 +59,10 @@ class UpdateTaskController extends Controller
                     $diffData["label"] = $credentials["label"];
                 }
 
+                $task->update($credentials);
+
+                $project = Status::find($task->status_id)->project->select("id")->first();
+
                 if ($addedAssigned || $removedAssigned) {
                     $diffData["assigned"] = $newAssigned;
                     $oldData["assigned"] = $oldAssigned;
@@ -78,10 +82,6 @@ class UpdateTaskController extends Controller
                         }
                     }
                 }
-
-                $task->update($credentials);
-
-                $project = Status::find($task->status_id)->project->select("id")->first();
 
                 $task->activities()->create([
                     "user_id" => Auth::user()->id,

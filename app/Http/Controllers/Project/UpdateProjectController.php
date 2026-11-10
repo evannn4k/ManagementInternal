@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Project;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Project\UpdateProjectRequest;
+use App\Jobs\SendTelegramNotification;
 use App\Models\Project;
 use App\Models\Status;
 use App\Models\User;
@@ -67,10 +68,12 @@ class UpdateProjectController extends Controller
 
                 $statusIds = $project->statuses->pluck("id")->toArray();
                 $oldTeams = $project->teams()->get()->pluck('id')->toArray();
-                $deletedTeamIds = array_diff($oldTeams, $teams);
 
-                if (!empty($deletedTeamIds)) {
-                    $hasTask = User::whereIn("id", $deletedTeamIds)->whereHas("tasks", function ($query) use ($statusIds) {
+                $removedTeams = array_diff($oldTeams, $teams);
+                $addedTeams = array_diff($teams, $oldTeams);
+
+                if (!empty($removedTeams)) {
+                    $hasTask = User::whereIn("id", $removedTeams)->whereHas("tasks", function ($query) use ($statusIds) {
                         return $query->whereIn("status_id", $statusIds);
                     })->exists();
 
@@ -81,8 +84,8 @@ class UpdateProjectController extends Controller
                     }
                 }
 
-                if ($deletedTeamIds) {
-                    $diffData["teams"] = $deletedTeamIds;
+                if ($removedTeams) {
+                    $diffData["teams"] = $removedTeams;
                     $oldData["teams"] = $oldTeams;
                 }
 
@@ -95,6 +98,21 @@ class UpdateProjectController extends Controller
                 ]);
 
                 $project->teams()->sync($teams);
+
+                $newTeamChatIds = User::select("telegram_chat_id")->whereIn("id", $addedTeams)->get()->pluck("telegram_chat_id")->toArray();
+
+                if ($newTeamChatIds) {
+                    $projectUrl = route("project.detail", $project->id);
+
+                    $message = "Anda ditugaskan pada proyek : <b>" . $project->name . "</b>\n\n" .
+                        'Link : <a href="' . $projectUrl . '">Klik Disini</a>';
+
+                    foreach ($newTeamChatIds as $chatId) {
+                        if ($chatId) {
+                            SendTelegramNotification::dispatch($chatId, $message, ["parse_mode" => "HTML"]);
+                        }
+                    }
+                }
             });
 
             return redirect()
