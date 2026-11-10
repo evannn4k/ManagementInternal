@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Task;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Task\CreateTaskRequest;
+use App\Jobs\SendTelegramNotification;
 use App\Models\Project;
 use App\Models\Status;
 use App\Models\Task;
+use App\Models\User;
 use App\Services\FileService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -47,6 +49,21 @@ class CreateTaskController extends Controller
                 }
 
                 $task = Task::create($credentials);
+
+                $newAssignedChatIds = User::select("telegram_chat_id")->whereIn("id", $assigned)->get()->pluck("telegram_chat_id")->toArray();
+
+                if ($newAssignedChatIds) {
+                    $taskUrl = route("task.detail", $task->id);
+
+                    $message = "Anda ditugaskan pada tugas : <b>" . $task->title . "</b>\n\n" .
+                        'Link : <a href="' . $taskUrl . '">Klik Disini</a>';
+
+                    foreach ($newAssignedChatIds as $chatId) {
+                        if ($chatId) {
+                            SendTelegramNotification::dispatch($chatId, $message, ["parse_mode" => "HTML"]);
+                        }
+                    }
+                }
 
                 $project = Status::find($credentials['status_id'])->project->select("id")->first();
 

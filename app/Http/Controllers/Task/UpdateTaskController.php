@@ -4,11 +4,11 @@ namespace App\Http\Controllers\Task;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Task\UpdateTaskRequest;
-use App\Models\Activity;
+use App\Jobs\SendTelegramNotification;
 use App\Models\Status;
 use App\Models\Task;
+use App\Models\User;
 use App\Services\FileService;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -18,6 +18,8 @@ class UpdateTaskController extends Controller
     /**
      * Handle the incoming request.
      */
+
+
     public function __invoke(UpdateTaskRequest $request, Task $task)
     {
         $credentials = $request->validated();
@@ -57,9 +59,24 @@ class UpdateTaskController extends Controller
                     $diffData["label"] = $credentials["label"];
                 }
 
-                if ($addedAssigned || ($removedAssigned && !empty($diffCredentials["assigned"]))) {
+                if ($addedAssigned || $removedAssigned) {
                     $diffData["assigned"] = $newAssigned;
                     $oldData["assigned"] = $oldAssigned;
+
+                    $newAssignedChatIds = User::select("telegram_chat_id")->whereIn("id", $addedAssigned)->get()->pluck("telegram_chat_id")->toArray();
+
+                    if ($newAssignedChatIds) {
+                        $taskUrl = route("task.detail", $task->id);
+
+                        $message = "Anda ditugaskan pada tugas : <b>" . $task->title . "</b>\n\n" .
+                            'Link : <a href="' . $taskUrl . '">Klik Disini</a>';
+
+                        foreach ($newAssignedChatIds as $chatId) {
+                            if ($chatId) {
+                                SendTelegramNotification::dispatch($chatId, $message, ["parse_mode" => "HTML"]);
+                            }
+                        }
+                    }
                 }
 
                 $task->update($credentials);

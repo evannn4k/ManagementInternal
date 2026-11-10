@@ -2,24 +2,39 @@
 
 namespace App\Services;
 
+use App\Models\User;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class TelegramService
 {
-    public function url($method)
+    public function url(string $method)
     {
         return 'https://api.telegram.org/bot' . config('services.telegram.bot_token') . '/' . $method;
     }
 
-    public function sendMassage($chatId, $text, $option = [])
+    public function sendMassage(string $chatId, string $text, array $option = []): bool
     {
-        $request = Http::post($this->url("sendMessage"), array_merge([
-            "chat_id" => $chatId,
-            "text" => $text,
-        ], $option));
+        $payload = array_merge([
+            'chat_id' => $chatId,
+            'text' => $text,
+        ], $option);
 
-        Log::info($request);
+        $request = Http::post($this->url("sendMessage"), $payload);
+
+        if ($request->failed()) {
+            Log::error("Failed to send message to Telegram", [
+                "chat_id" => $chatId,
+                "text" => $text,
+                "response" => $request->body(),
+            ]);
+        }
+
+        if ($request->status() == 403) {
+            User::class::where("telegram_chat_id", $chatId)->update(["telegram_chat_id" => null]);
+        }
+
+        return true;
     }
 
     public function getUpdates($offset = 0)
