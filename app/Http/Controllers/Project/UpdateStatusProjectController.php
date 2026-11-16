@@ -25,7 +25,7 @@ class UpdateStatusProjectController extends Controller
                 $status->activities()->create([
                     "user_id" => Auth::user()->id,
                     "type" => "update",
-                    "parent_type" => class_basename($project),
+                    "parent_type" => $project->getMorphClass(),
                     "parent_id" => $project->id,
                     "old_data" => $status->only(array_keys($diffData)),
                     "new_data" => $diffData,

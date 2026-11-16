@@ -84,10 +84,7 @@ export default function TaskPage({
                         <h1 className="font-semibold text-2xl md:text-3xl">
                             Daftar Tugas
                         </h1>
-                        <p>
-                            Lorem ipsum dolor sit amet, consectetur adipisicing
-                            elit. Alias deserunt doloribus architecto eligendi,
-                            voluptatem sint.
+                        <p>Pantau daftar tugas harian, tetapkan prioritas kerja, atur tenggat waktu, dan selesaikan target proyek.
                         </p>
                     </div>
                     {can("task.create") && (

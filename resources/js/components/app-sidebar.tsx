@@ -9,6 +9,7 @@ import {
     ShieldCheck,
     Settings,
     Activity,
+    FileText,
 } from "lucide-react";
 import AppLogo from "@/components/app-logo";
 import { NavFooter } from "@/components/nav-footer";
@@ -30,6 +31,7 @@ import { index as roleIndex } from "@/routes/role";
 import { index as projectIndex } from "@/routes/project";
 import { index as taskIndex } from "@/routes/task";
 import { index as activityIndex } from "@/routes/activity";
+import { index as documentIndex } from "@/routes/document";
 
 const navigationNavItems: NavItem[] = [
     {
@@ -48,6 +50,11 @@ const navigationNavItems: NavItem[] = [
         href: taskIndex(),
         icon: ClipboardCheck,
         permission: ["task.view.own", "task.view.all"],
+    },
+    {
+        title: "Dokumen",
+        href: documentIndex(),
+        icon: FileText,
     },
 ];
 

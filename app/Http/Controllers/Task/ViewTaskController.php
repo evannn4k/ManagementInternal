@@ -81,11 +81,14 @@ class ViewTaskController extends Controller
             "subTasks" => function ($subTask) {
                 $subTask->orderBy("created_at", "asc");
             },
+            "documents"
         ]);
+
+        $taskType = $task->getMorphClass();
 
         return Inertia::render(
             "task/detail",
-            compact("task"),
+            compact("task", "taskType"),
         );
     }
 }

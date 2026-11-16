@@ -1,3 +1,4 @@
+import { DocumentType } from "./document";
 import { ProjectStatusType } from "./project";
 import { UserWithRole } from "./user";
 
@@ -20,6 +21,7 @@ export type TaskType = {
     status: ProjectStatusType;
     assigned: UserWithRole[];
     sub_tasks: SubTasksType[];
+    documents: DocumentType[];
 };
 
 export type CardDataType = {

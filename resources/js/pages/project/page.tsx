@@ -58,10 +58,7 @@ export default function ProjectPage({
                         <h1 className="font-semibold text-2xl md:text-3xl">
                             Daftar Proyek
                         </h1>
-                        <p>
-                            Kelola dan pantau seluruh inisiatif rekayasa, status
-                            sprint, performa SLA, dan alokasi tim dalam
-                            repositori terpadu.
+                        <p>Pantau daftar tugas harian, tetapkan prioritas kerja, atur tenggat waktu, dan selesaikan target proyek.
                         </p>
                     </div>
                     <div className="flex items-center gap-2">
@@ -78,7 +75,7 @@ export default function ProjectPage({
                 </header>
                 <ProjectSectionCard cardData={cardData} />
                 <Tabs defaultValue="" onValueChange={handleChangeTab}>
-                    <TabsList className="bg-muted/50 p-2">
+                    <TabsList className="bg-muted/50 p-2 border">
                         <TabsTrigger value="">Semua</TabsTrigger>
                         <TabsTrigger value="running">Berjalan</TabsTrigger>
                         <TabsTrigger value="done">Selesai</TabsTrigger>

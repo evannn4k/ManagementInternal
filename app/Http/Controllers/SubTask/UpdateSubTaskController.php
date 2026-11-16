@@ -30,7 +30,7 @@ class UpdateSubTaskController extends Controller
                 $subTask->activities()->create([
                     "user_id" => Auth::user()->id,
                     "type" => "update",
-                    "parent_type" => class_basename($project),
+                    "parent_type" => $project->getMorphClass(),
                     "parent_id" => $project->id,
                     "old_data" => ["is_completed" => $oldIsComplete],
                     "new_data" => ["is_completed" => $subTask->is_completed],

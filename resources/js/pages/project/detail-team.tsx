@@ -61,7 +61,7 @@ export default function ProjectDetailTeam({
                         teams?.map((team) => (
                             <Item
                                 key={team.id}
-                                className="bg-background p-2"
+                                className="bg-background p-2 rounded-xl"
                                 variant="outline"
                                 asChild
                             >

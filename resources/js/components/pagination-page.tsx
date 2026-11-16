@@ -36,9 +36,6 @@ export function PaginationPage({
     links: LinkPagination;
     meta: MetaPagination;
 }) {
-    // console.log(links);
-    // console.log(meta);
-
     return (
         <Card className="p-2 bg-muted/50">
             <CardContent className="flex justify-between items-center gap-6 p-0">

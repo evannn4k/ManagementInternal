@@ -29,7 +29,7 @@ class DeleteTaskController extends Controller
                 $task->activities()->create([
                     "user_id" => Auth::user()->id,
                     "type" => "delete",
-                    "parent_type" => class_basename($project),
+                    "parent_type" => $project->getMorphClass(),
                     "parent_id" => $project->id,
                     "old_data" => $task,
                     "ip_address" => $request->ip(),

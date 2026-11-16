@@ -12,9 +12,10 @@ import {
 import TaskForm from "./components/task-form";
 import { useModal } from "@/hooks/use-modal";
 import { TaskDetailData } from "./components/task-detail-data";
-import { SubTask } from "./components/sub-task";
+import { TaskSubTask } from "./components/task-sub-task";
+import { TaskDocument } from "./components/task-document";
 
-export default function ProjectPage({ task }: { task: TaskType }) {
+export default function ProjectPage({ task, taskType }: { task: TaskType, taskType: string }) {
     const modal = useModal();
 
     return (
@@ -51,9 +52,10 @@ export default function ProjectPage({ task }: { task: TaskType }) {
                                 />
                             </CardContent>
                         </Card>
-                        <SubTask task={task}/>
+                        <TaskSubTask task={task} />
+                        <TaskDocument task={task} taskType={taskType} documents={task.documents} />
                     </div>
-                    <TaskDetailData task={task}/>
+                    <TaskDetailData task={task} />
                 </div>
             </div>
         </>

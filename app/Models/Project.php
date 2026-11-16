@@ -2,18 +2,24 @@
 
 namespace App\Models;
 
+use App\Models\Activity;
+use App\Models\Document;
+use App\Models\ProjectTeam;
+use App\Models\Status;
+use App\Models\Task;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Attributes\Guarded;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Override;
 
 #[Guarded([])]
 class Project extends Model
 {
     use HasUuids, SoftDeletes;
 
-    public function scopeArchived() {
+    public function scopeArchived()
+    {
         return $this->where("status", "archived");
     }
 
@@ -60,5 +66,10 @@ class Project extends Model
     public function childActivities()
     {
         return $this->morphMany(Activity::class, 'parent');
+    }
+
+    public function documents()
+    {
+        return $this->morphMany(Document::class, 'documentable');
     }
 }

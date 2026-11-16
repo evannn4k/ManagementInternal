@@ -1,4 +1,4 @@
-import { Activity, SquareKanban, Trash, Users } from "lucide-react";
+import { Activity, FileText, SquareKanban, Trash, Users } from "lucide-react";
 import { ProjectType } from "@/types/data/project";
 import { Head, router, usePage } from "@inertiajs/react";
 import { index as projectIndex } from "@/routes/project";
@@ -9,6 +9,7 @@ import AppLayout from "@/layouts/app-layout";
 import {
     team as detailTeam,
     activity as detailActivity,
+    document as detailDocument,
     trashed as detailTrashed,
 } from "@/routes/project/detail";
 import { detail as detailProject } from "@/routes/project";
@@ -29,6 +30,8 @@ export default function ProjectDetailLayout({
             url = detailTeam(project.id).url;
         } else if (val == "project/detail-activity") {
             url = detailActivity(project.id).url;
+        } else if (val == "project/detail-document") {
+            url = detailDocument(project.id).url;
         } else if (val == "project/detail-trashed") {
             url = detailTrashed(project.id).url;
         }
@@ -67,6 +70,9 @@ export default function ProjectDetailLayout({
                         </TabsTrigger>
                         <TabsTrigger value="project/detail-activity">
                             <Activity /> Aktivitas
+                        </TabsTrigger>
+                        <TabsTrigger value="project/detail-document">
+                            <FileText /> Lampiran Dokumen
                         </TabsTrigger>
                         <TabsTrigger
                             value="project/detail-trashed"

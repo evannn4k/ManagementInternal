@@ -137,10 +137,7 @@ export default function RolePage({
                         <h1 className="font-semibold text-2xl md:text-3xl">
                             Role & Permission Setting
                         </h1>
-                        <p>
-                            Kelola level otorisasi akses pengguna, matriks hak
-                            akses per resource, serta override pengecualian
-                            individu secara deterministik.
+                        <p>Kelola data pengguna, atur hak akses akun, aktifkan status staf, dan perbarui informasi profil.
                         </p>
                     </div>
                     <Button
@@ -180,15 +177,15 @@ export default function RolePage({
                                             const selectedRole:
                                                 | Role
                                                 | undefined = roles.data.find(
-                                                (r) => {
-                                                    return (
-                                                        r.id ==
-                                                        Number(
-                                                            selectedRoleRadio,
-                                                        )
-                                                    );
-                                                },
-                                            );
+                                                    (r) => {
+                                                        return (
+                                                            r.id ==
+                                                            Number(
+                                                                selectedRoleRadio,
+                                                            )
+                                                        );
+                                                    },
+                                                );
 
                                             if (selectedRole) {
                                                 setSelected(

@@ -1,7 +1,13 @@
 <?php
 
 use App\Http\Controllers\Activity\ViewActivityController;
+
 use App\Http\Controllers\DashboardController;
+
+use App\Http\Controllers\Telegram\ConnectTelegramController;
+
+use App\Http\Controllers\TestingController;
+
 use App\Http\Controllers\Project\ArchiveProjectController;
 use App\Http\Controllers\Project\CreateProjectController;
 use App\Http\Controllers\Project\DeleteProjectController;
@@ -10,25 +16,32 @@ use App\Http\Controllers\Project\UpdateProjectController;
 use App\Http\Controllers\Project\UpdateStatusProjectController;
 use App\Http\Controllers\Project\UpdateTeamProjectController;
 use App\Http\Controllers\Project\ViewProjectController;
+
 use App\Http\Controllers\Role\CreateRoleController;
 use App\Http\Controllers\Role\DeleteRoleController;
 use App\Http\Controllers\Role\SyncRolePermissionController;
 use App\Http\Controllers\Role\UpdateRoleController;
 use App\Http\Controllers\Role\ViewRoleController;
+
 use App\Http\Controllers\SubTask\CreateSubTaskController;
 use App\Http\Controllers\SubTask\DeleteSubTaskController;
 use App\Http\Controllers\SubTask\UpdateSubTaskController;
+
 use App\Http\Controllers\Task\ChangeStatusTaskController;
 use App\Http\Controllers\Task\CreateTaskController;
 use App\Http\Controllers\Task\DeleteTaskController;
 use App\Http\Controllers\Task\UpdateTaskController;
 use App\Http\Controllers\Task\ViewTaskController;
-use App\Http\Controllers\Telegram\ConnectTelegramController;
-use App\Http\Controllers\TestingController;
+
 use App\Http\Controllers\User\CreateUserController;
 use App\Http\Controllers\User\DeleteUserController;
 use App\Http\Controllers\User\UpdateUserController;
 use App\Http\Controllers\User\ViewUserController;
+
+use App\Http\Controllers\Document\CreateDocumentController;
+use App\Http\Controllers\Document\DeleteDocumentController;
+use App\Http\Controllers\Document\DownloadDocumentController;
+use App\Http\Controllers\Document\ViewDocumentController;
 use Illuminate\Support\Facades\Route;
 
 Route::inertia("/", "welcome")->name("home");
@@ -36,7 +49,7 @@ Route::inertia("/", "welcome")->name("home");
 Route::middleware(["auth", "verified"])->group(function () {
     Route::get("/dashboard", DashboardController::class)->name("dashboard")->middleware("permission:dashboard.view.personal|dashboard.view.project|dashboard.view.sistem");
     Route::delete("/act-del/{activity}", [TestingController::class, "deleteActivity"]);
-    
+
     Route::post("/telegram/connect", ConnectTelegramController::class)->name("telegram.connect")->middleware("auth");
 
     Route::prefix("/role")
@@ -91,6 +104,9 @@ Route::middleware(["auth", "verified"])->group(function () {
             Route::get("/{project}/activity", [ViewProjectController::class, "detailActivity"])->name(
                 "detail.activity",
             )->middleware("permission:project.view.own|project.view.team|project.view.all");
+            Route::get("/{project}/document", [ViewProjectController::class, "detailDocument"])->name(
+                "detail.document",
+            )->middleware("permission:project.view.own|project.view.team|project.view.all");
             Route::get("/{project}/trashed", [ViewProjectController::class, "detailTrashed"])->name(
                 "detail.trashed",
             )->middleware("permission:project.view.own|project.view.team|project.view.all");
@@ -130,6 +146,19 @@ Route::middleware(["auth", "verified"])->group(function () {
             Route::post("/sub-task/{task}", CreateSubTaskController::class)->name("sub-task.create")->middleware("can:task.create");
             Route::patch("/sub-task/{subTask}", UpdateSubTaskController::class)->name("sub-task.update");
             Route::delete("/sub-task/{subTask}", DeleteSubTaskController::class)->name("sub-task.delete");
+        });
+
+    Route::prefix("/document")
+        ->name("document.")
+        ->group(function () {
+            Route::get("/", [ViewDocumentController::class, "index"])->name("index");
+            Route::post("/", CreateDocumentController::class)->name("create");
+            Route::get("/{document}", DownloadDocumentController::class)->name(
+                "download",
+            );
+            Route::delete("/{document}", DeleteDocumentController::class)->name(
+                "delete",
+            );
         });
 
     Route::prefix("/activity")

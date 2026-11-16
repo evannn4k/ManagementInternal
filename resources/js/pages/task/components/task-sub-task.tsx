@@ -35,7 +35,7 @@ import { router, useForm } from "@inertiajs/react";
 import subTask from "@/routes/task/sub-task";
 import { toast } from "sonner";
 
-export function SubTask({ task }: { task: TaskType }) {
+export function TaskSubTask({ task }: { task: TaskType }) {
     const focusInput = useRef<HTMLInputElement>(null);
 
     const { post, processing, data, setData, reset } = useForm({

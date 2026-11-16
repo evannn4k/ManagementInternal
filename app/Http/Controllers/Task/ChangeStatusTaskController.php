@@ -28,7 +28,7 @@ class ChangeStatusTaskController extends Controller
                 $task->activities()->create([
                     "user_id" => Auth::user()->id,
                     "type" => "update",
-                    "parent_type" => class_basename($project),
+                    "parent_type" => $project->getMorphClass(),
                     "parent_id" => $project->id,
                     "old_data" => ["status_id" => $oldStatuId],
                     "new_data" => ["status_id" => $task->status_id],

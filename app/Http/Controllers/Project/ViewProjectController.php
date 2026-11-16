@@ -7,6 +7,7 @@ use App\Http\Resources\Activity\ActivityTableResource;
 use App\Http\Resources\Project\ProjectTableResource;
 use App\Http\Resources\Task\TaskTableResource;
 use App\Models\Activity;
+use App\Models\Document;
 use App\Models\Project;
 use App\Models\Status;
 use App\Models\SubTask;
@@ -222,6 +223,30 @@ class ViewProjectController extends Controller
         return Inertia::render(
             "project/detail-trashed",
             compact("project", "tasks"),
+        );
+    }
+
+    public function detailDocument(Request $request, Project $project)
+    {
+        $project->load(
+            [
+                "pic:id,name,position",
+                "pic.roles:id,name",
+                "teams:id,name,position",
+                "teams.roles:id,name",
+                "createdBy"
+            ]
+        );
+
+        $taskIds = $project->tasks()->get()->pluck("id")->toArray();
+
+        $documents = Document::where("documentable_id", $project->id)->orWhereIn("documentable_id", $taskIds)->with("uploadedBy:id,name")->orderBy("created_at", "desc")->get();
+
+        $projectType = $project->getMorphClass();
+
+        return Inertia::render(
+            "project/detail-document",
+            compact("project", "documents", "projectType"),
         );
     }
 }

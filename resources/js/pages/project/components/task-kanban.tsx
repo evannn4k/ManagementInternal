@@ -73,6 +73,7 @@ export function TaskKanban({
                         tasks: [...status.tasks, draggedTask],
                     };
                 }
+                
                 return status;
             });
         });

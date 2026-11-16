@@ -2,6 +2,12 @@
 
 namespace App\Models;
 
+use App\Models\Activity;
+use App\Models\AssignedTask;
+use App\Models\Document;
+use App\Models\Status;
+use App\Models\SubTask;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Attributes\Guarded;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
@@ -30,6 +36,11 @@ class Task extends Model
     public function subTasks()
     {
         return $this->hasMany(SubTask::class);
+    }
+
+    public function documents()
+    {
+        return $this->morphMany(Document::class, "documentable");
     }
 
     public function getProjectAttribute()

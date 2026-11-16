@@ -29,7 +29,7 @@ class DeleteStatusProjectController extends Controller
                 $status->activities()->create([
                     "user_id" => Auth::user()->id,
                     "type" => "delete",
-                    "parent_type" => class_basename($project),
+                    "parent_type" => $project->getMorphClass(),
                     "parent_id" => $project->id,
                     "subject_last_name" => $status->name,
                     "old_data" => $status,

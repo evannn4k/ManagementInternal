@@ -12,7 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('documents', function (Blueprint $table) {
-            $table->id();
+            $table->uuid("id")->primary();
+            $table->nullableUuidMorphs('documentable');
+            $table->string("file_name");
+            $table->string("file_path");
+            $table->string("file_size");
+            $table->string("mime_type");
+            $table->foreignId("uploaded_by")->constrained("users")->nullOnDelete();
             $table->timestamps();
         });
     }

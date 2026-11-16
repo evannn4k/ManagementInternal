@@ -98,4 +98,8 @@ class User extends Authenticatable implements PasskeyUser
     public function activity() {
         return $this->hasMany(Activity::class);
     }
+
+    public function documents() {
+        return $this->hasMany(Document::class);
+    }
 }

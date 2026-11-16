@@ -29,7 +29,7 @@ class CreateTaskController extends Controller
 
                 if ($credentials['file']) {
 
-                    $filename = FileService::save("task/", $request->file("file"));
+                    ["file_name" => $filename] = FileService::save("task/", $request->file("file"));
 
                     $credentials['file'] = $filename;
                 } else {
@@ -70,7 +70,7 @@ class CreateTaskController extends Controller
                 $task->activities()->create([
                     "user_id" => Auth::user()->id,
                     "type" => "create",
-                    "parent_type" => class_basename($project),
+                    "parent_type" => $project->getMorphClass(),
                     "parent_id" => $project->id,
                     "new_data" => $task,
                     "ip_address" => $request->ip(),

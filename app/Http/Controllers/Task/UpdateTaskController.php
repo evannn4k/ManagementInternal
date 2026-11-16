@@ -86,7 +86,7 @@ class UpdateTaskController extends Controller
                 $task->activities()->create([
                     "user_id" => Auth::user()->id,
                     "type" => "update",
-                    "parent_type" => class_basename($project),
+                    "parent_type" => $project->getMorphClass(),
                     "parent_id" => $project->id,
                     "old_data" => $oldData,
                     "new_data" => $diffData,

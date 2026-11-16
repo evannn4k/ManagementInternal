@@ -24,7 +24,7 @@ class DeleteSubTaskController extends Controller
                 $subTask->activities()->create([
                     "user_id" => Auth::user()->id,
                     "type" => "delete",
-                    "parent_type" => class_basename($project),
+                    "parent_type" => $project->getMorphClass(),
                     "parent_id" => $project->id,
                     "old_data" => $subTask,
                     "ip_address" => $request->ip(),
