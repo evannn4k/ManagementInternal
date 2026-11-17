@@ -38,6 +38,9 @@ export default function ProjectPage({
             replace: true,
         });
     };
+
+    console.log(data)
+    
     return (
         <>
             <Head title="Project" />

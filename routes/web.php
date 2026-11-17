@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\Activity\ViewActivityController;
-
+use App\Http\Controllers\Comment\CreateCommentController;
 use App\Http\Controllers\DashboardController;
 
 use App\Http\Controllers\Telegram\ConnectTelegramController;
@@ -52,6 +52,8 @@ Route::middleware(["auth", "verified"])->group(function () {
 
     Route::post("/telegram/connect", ConnectTelegramController::class)->name("telegram.connect")->middleware("auth");
 
+    Route::post("/comment", CreateCommentController::class)->name("comment.create");
+    
     Route::prefix("/role")
         ->name("role.")
         ->middleware("can:role.manage")

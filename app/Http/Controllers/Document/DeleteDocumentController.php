@@ -28,7 +28,7 @@ class DeleteDocumentController extends Controller
                     "parent_type" => $documentable->getMorphClass(),
                     "subject_last_name" => $document->file_name,
                     "type" => "delete",
-                    "old_data" => $document,
+                    "old_data" => $document->withoutRelations(),
                     "ip_address" => $request->ip(),
                 ]);
 
@@ -47,7 +47,7 @@ class DeleteDocumentController extends Controller
                 ->back()
                 ->with(
                     "error",
-                    "terjadi kesalahan sistem. Silahkan coba lagi.",
+                    "Terjadi kesalahan sistem. Silahkan coba lagi.",
                 );
         }
     }

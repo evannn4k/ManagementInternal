@@ -240,7 +240,7 @@ class ViewProjectController extends Controller
 
         $taskIds = $project->tasks()->get()->pluck("id")->toArray();
 
-        $documents = Document::where("documentable_id", $project->id)->orWhereIn("documentable_id", $taskIds)->with("uploadedBy:id,name")->orderBy("created_at", "desc")->get();
+        $documents = Document::where("documentable_id", $project->id)->orWhereIn("documentable_id", $taskIds)->with("uploader:id,name")->orderBy("created_at", "desc")->get();
 
         $projectType = $project->getMorphClass();
 

@@ -24,7 +24,7 @@ class DocumentResource extends JsonResource
             'documentable_type' => $this->documentable_type ?? null,
             'documentable_id' => $this->documentable_id ?? null,
 
-            'uploaded_by' => $this->whenLoaded('uploader', function () {
+            'uploader' => $this->whenLoaded('uploader', function () {
                 return [
                     'id' => $this->uploader->id,
                     'name' => $this->uploader->name ?? null,

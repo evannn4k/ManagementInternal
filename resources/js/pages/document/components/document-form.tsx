@@ -45,7 +45,7 @@ export default function DocumentForm({
     documentable_id?: string | number;
     documentable_type?: string;
 }) {
-    const { post, processing, reset, transform,  data } = useForm<{
+    const { post, processing, reset, transform, data } = useForm<{
         files: File[];
         documentable_id: string | number;
         documentable_type: string;
@@ -140,7 +140,7 @@ export default function DocumentForm({
                                                     <FileTextIcon />
                                                 </AttachmentMedia>
                                                 <AttachmentContent>
-                                                    <AttachmentTitle>
+                                                    <AttachmentTitle className="truncate !max-w-52">
                                                         {file?.name ||
                                                             "Unnamed File"}
                                                     </AttachmentTitle>

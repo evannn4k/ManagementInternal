@@ -20,7 +20,7 @@ class CreateUserController extends Controller
             $role = Role::findOrFail($credentials['role_id']);
 
             $user->assignRole($role);
-            
+
             return redirect()
                 ->back()
                 ->with("success", "Berhasil menambah user baru.");
@@ -31,7 +31,7 @@ class CreateUserController extends Controller
                 ->back()
                 ->with(
                     "error",
-                    "terjadi kesalahan sistem. Silahkan coba lagi.",
+                    "Terjadi kesalahan sistem. Silahkan coba lagi.",
                 );
         }
     }

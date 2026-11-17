@@ -12,7 +12,7 @@ class ViewDocumentController extends Controller
 {
     public function index()
     {
-        $documents = Document::orderBy("created_at", "desc")->paginate($request->per_page ?? 10)
+        $documents = Document::with("uploader:id,name")->orderBy("created_at", "desc")->paginate($request->per_page ?? 10)
             ->withQueryString();;
 
         $data = DocumentResource::collection($documents);

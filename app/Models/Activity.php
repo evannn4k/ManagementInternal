@@ -41,7 +41,7 @@ class Activity extends Model
 
     protected function getSubjectNameAttribute()
     {
-        return $this->subject->name ?? $this->subject->title ?? $this->subject->username ?? $this->subject_last_name ?? "Item " . $this->subject_id;
+        return $this->subject->name ?? $this->subject->title ?? $this->subject->username ?? $this->subject_last_name ?? $this->subject->file_name ?? "Item " . $this->subject_id;
     }
 
     protected $casts = [

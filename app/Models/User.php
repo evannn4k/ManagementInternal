@@ -30,27 +30,23 @@ use Spatie\Permission\Traits\HasRoles;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-#[
-    Fillable([
-        "name",
-        "email",
-        "password",
-        "is_active",
-        "last_login_at",
-        "position",
-        "avatar",
-        "telegram_chat_id",
-        "telegram_link_token",
-    ]),
-]
-#[
-    Hidden([
-        "password",
-        "two_factor_secret",
-        "two_factor_recovery_codes",
-        "remember_token",
-    ]),
-]
+#[Fillable([
+    "name",
+    "email",
+    "password",
+    "is_active",
+    "last_login_at",
+    "position",
+    "avatar",
+    "telegram_chat_id",
+    "telegram_link_token",
+])]
+#[Hidden([
+    "password",
+    "two_factor_secret",
+    "two_factor_recovery_codes",
+    "remember_token",
+])]
 class User extends Authenticatable implements PasskeyUser
 {
     /** @use HasFactory<UserFactory> */
@@ -87,19 +83,36 @@ class User extends Authenticatable implements PasskeyUser
 
     public function projects()
     {
-        return $this->belongsToMany(Project::class, "project_team", "user_id", "project_id")->using(ProjectTeam::class);
+        return $this->belongsToMany(
+            Project::class,
+            "project_team",
+            "user_id",
+            "project_id",
+        )->using(ProjectTeam::class);
     }
 
     public function tasks()
     {
-        return $this->belongsToMany(Task::class, "assigned_task", "user_id", "task_id")->using(AssignedTask::class);
+        return $this->belongsToMany(
+            Task::class,
+            "assigned_task",
+            "user_id",
+            "task_id",
+        )->using(AssignedTask::class);
     }
 
-    public function activity() {
+    public function activity()
+    {
         return $this->hasMany(Activity::class);
     }
 
-    public function documents() {
+    public function documents()
+    {
         return $this->hasMany(Document::class);
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
     }
 }

@@ -3,19 +3,24 @@ import { index as projectIndex } from "@/routes/project";
 import { TaskType } from "@/types/data/task";
 import { PenSquare, Text } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-    Card,
-    CardContent,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import TaskForm from "./components/task-form";
 import { useModal } from "@/hooks/use-modal";
 import { TaskDetailData } from "./components/task-detail-data";
 import { TaskSubTask } from "./components/task-sub-task";
 import { TaskDocument } from "./components/task-document";
+import { CommentResource } from "../comment/components/comment-resource";
+import { CommentType } from "@/types/data/comment";
 
-export default function ProjectPage({ task, taskType }: { task: TaskType, taskType: string }) {
+export default function ProjectPage({
+    task,
+    taskType,
+    comments,
+}: {
+    task: TaskType;
+    taskType: string;
+    comments: { data: CommentType[] };
+}) {
     const modal = useModal();
 
     return (
@@ -53,7 +58,16 @@ export default function ProjectPage({ task, taskType }: { task: TaskType, taskTy
                             </CardContent>
                         </Card>
                         <TaskSubTask task={task} />
-                        <TaskDocument task={task} taskType={taskType} documents={task.documents} />
+                        <TaskDocument
+                            task={task}
+                            taskType={taskType}
+                            documents={task.documents}
+                        />
+                        <CommentResource
+                            comments={comments.data}
+                            commentable_id={task.id}
+                            commentable_type={taskType}
+                        />
                     </div>
                     <TaskDetailData task={task} />
                 </div>

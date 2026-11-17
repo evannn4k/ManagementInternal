@@ -20,7 +20,12 @@ class Task extends Model
 
     public function assigned()
     {
-        return $this->belongsToMany(User::class, "assigned_task", "task_id", "user_id")->using(AssignedTask::class);
+        return $this->belongsToMany(
+            User::class,
+            "assigned_task",
+            "task_id",
+            "user_id",
+        )->using(AssignedTask::class);
     }
 
     public function status()
@@ -30,7 +35,7 @@ class Task extends Model
 
     public function activities()
     {
-        return $this->morphMany(Activity::class, 'subject');
+        return $this->morphMany(Activity::class, "subject");
     }
 
     public function subTasks()
@@ -50,11 +55,30 @@ class Task extends Model
 
     public function scopeOwn($query, User $user, $execution = true)
     {
-        if (!$execution) return $query;
+        if (!$execution) {
+            return $query;
+        }
 
         return $query->whereHas("assigned", function ($q) use ($user) {
             return $q->where("id", $user->id);
         });
+    }
+
+    public function project()
+    {
+        return $this->hasOneThrough(
+            Project::class,
+            Status::class,
+            "id",
+            "id",
+            "status_id",
+            "project_id",
+        );
+    }
+
+    public function comments()
+    {
+        return $this->morphMany(Comment::class, "commentable");
     }
 
     public function scopePermissionScopeData($query, User $user)
@@ -71,7 +95,7 @@ class Task extends Model
     protected function casts(): array
     {
         return [
-            'label' => 'array',
+            "label" => "array",
         ];
     }
 }

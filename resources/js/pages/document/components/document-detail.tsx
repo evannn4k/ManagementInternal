@@ -96,7 +96,7 @@ export function DocumentDetailDialog({ modal, handleDownloadDocument }: {
                         <span className="flex items-center gap-2 text-muted-foreground">
                             <User className="h-4 w-4" /> Diunggah Oleh
                         </span>
-                        <span className="col-span-2">{modal.data?.uploaded_by?.name ?? "-"}</span>
+                        <span className="col-span-2">{modal.data?.uploader?.name ?? "-"}</span>
                     </div>
 
                     <Separator />

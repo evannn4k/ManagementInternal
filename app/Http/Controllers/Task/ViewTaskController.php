@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Task;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Comment\CommentResource;
 use App\Http\Resources\Task\TaskTableResource;
 use App\Models\Project;
 use App\Models\Task;
@@ -22,35 +23,51 @@ class ViewTaskController extends Controller
 
     public function index(Request $request)
     {
-        $tasks = Task::permissionScopeData($this->user)->with(["status:id,name,project_id", "status.project:id,name"])
+        $tasks = Task::permissionScopeData($this->user)
+            ->with(["status:id,name,project_id", "status.project:id,name"])
             ->when($request->search, function ($query, $value) {
-                $query
-                    ->where("title", "ilike", "%$value%");
-            })->when($request->project, function ($query, $value) {
-                $query
-                    ->whereHas("status.project", function ($q) use ($value) {
-                        return $q->where("name", $value);
-                    });
-            })->when($request->tabs, function ($query, $value) {
+                $query->where("title", "ilike", "%$value%");
+            })
+            ->when($request->project, function ($query, $value) {
+                $query->whereHas("status.project", function ($q) use ($value) {
+                    return $q->where("name", $value);
+                });
+            })
+            ->when($request->tabs, function ($query, $value) {
                 if ($value == "trashed") {
                     return $query->onlyTrashed();
-                } else if ($value == "due") {
-                    return $query->where("due_date", "<=", now()->toDateString());
-                } else if ($value == "this_week") {
-                    return $query->where("due_date", "<=", now()->addWeek()->toDateString())->where("due_date", ">=", now()->toDateString());
+                } elseif ($value == "due") {
+                    return $query->where(
+                        "due_date",
+                        "<=",
+                        now()->toDateString(),
+                    );
+                } elseif ($value == "this_week") {
+                    return $query
+                        ->where(
+                            "due_date",
+                            "<=",
+                            now()->addWeek()->toDateString(),
+                        )
+                        ->where("due_date", ">=", now()->toDateString());
                 } else {
                     return $query;
                 }
-            })->when($request->priority, function ($query, $value) {
-                $query
-                    ->where("priority", $value);
-            })->when($request->task_view, function ($q, $value) {
-                if ($value != "own") return $q;
+            })
+            ->when($request->priority, function ($query, $value) {
+                $query->where("priority", $value);
+            })
+            ->when($request->task_view, function ($q, $value) {
+                if ($value != "own") {
+                    return $q;
+                }
 
                 return $q->own($this->user);
             });
 
-        $tasksPagination = $tasks->orderBy("created_at", "desc")->paginate($request->per_page ?? 10)
+        $tasksPagination = $tasks
+            ->orderBy("created_at", "desc")
+            ->paginate($request->per_page ?? 10)
             ->withQueryString();
 
         $data = TaskTableResource::collection($tasksPagination);
@@ -60,12 +77,28 @@ class ViewTaskController extends Controller
         $myTask = $request->task_view == "own";
 
         $cardData = [
-            "total_task" => $tasks->permissionScopeData($this->user)->own($this->user, $myTask)->count(),
-            "total_running" => $tasks->permissionScopeData($this->user)->own($this->user, $myTask)->whereHas("status", function ($query) {
-                return $query->where("type", "running");
-            })->count(),
-            "total_overdue" => $tasks->permissionScopeData($this->user)->own($this->user, $myTask)->where("due_date", "<", now())->count(),
-            "this_week" => $tasks->permissionScopeData($this->user)->own($this->user, $myTask)->where("due_date", "<=", now()->addWeek()->toDateString())->where("due_date", ">=", now()->toDateString())->count(),
+            "total_task" => $tasks
+                ->permissionScopeData($this->user)
+                ->own($this->user, $myTask)
+                ->count(),
+            "total_running" => $tasks
+                ->permissionScopeData($this->user)
+                ->own($this->user, $myTask)
+                ->whereHas("status", function ($query) {
+                    return $query->where("type", "running");
+                })
+                ->count(),
+            "total_overdue" => $tasks
+                ->permissionScopeData($this->user)
+                ->own($this->user, $myTask)
+                ->where("due_date", "<", now())
+                ->count(),
+            "this_week" => $tasks
+                ->permissionScopeData($this->user)
+                ->own($this->user, $myTask)
+                ->where("due_date", "<=", now()->addWeek()->toDateString())
+                ->where("due_date", ">=", now()->toDateString())
+                ->count(),
         ];
 
         return Inertia::render(
@@ -81,14 +114,22 @@ class ViewTaskController extends Controller
             "subTasks" => function ($subTask) {
                 $subTask->orderBy("created_at", "asc");
             },
-            "documents"
+            "documents.uploader:id,name",
         ]);
 
         $taskType = $task->getMorphClass();
 
+        $comments = CommentResource::collection(
+            $task
+                ->comments()
+                ->with("user:id,name,position")
+                ->select("id", "content", "user_id")
+                ->get(),
+        );
+
         return Inertia::render(
             "task/detail",
-            compact("task", "taskType"),
+            compact("task", "taskType", "comments"),
         );
     }
 }

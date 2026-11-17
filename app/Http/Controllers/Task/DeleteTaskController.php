@@ -48,7 +48,7 @@ class DeleteTaskController extends Controller
                 ->back()
                 ->with(
                     "error",
-                    "terjadi kesalahan sistem. Silahkan coba lagi.",
+                    "Terjadi kesalahan sistem. Silahkan coba lagi.",
                 );
         }
     }

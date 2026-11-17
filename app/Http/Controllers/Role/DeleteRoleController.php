@@ -15,7 +15,7 @@ class DeleteRoleController extends Controller
     public function __invoke(Request $request, Role $role)
     {
         try {
-            if($role->is_system == true) {
+            if ($role->is_system == true) {
 
                 return redirect()
                     ->back()
@@ -36,7 +36,7 @@ class DeleteRoleController extends Controller
                 ->back()
                 ->with(
                     "error",
-                    "terjadi kesalahan sistem. Silahkan coba lagi.",
+                    "Terjadi kesalahan sistem. Silahkan coba lagi.",
                 );
         }
     }

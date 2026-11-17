@@ -1,3 +1,4 @@
+import { CommentType } from "./comment";
 import { DocumentType } from "./document";
 import { ProjectStatusType } from "./project";
 import { UserWithRole } from "./user";
@@ -22,6 +23,7 @@ export type TaskType = {
     assigned: UserWithRole[];
     sub_tasks: SubTasksType[];
     documents: DocumentType[];
+    comments: CommentType[];
 };
 
 export type CardDataType = {
