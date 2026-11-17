@@ -47,13 +47,24 @@ use Illuminate\Support\Facades\Route;
 Route::inertia("/", "welcome")->name("home");
 
 Route::middleware(["auth", "verified"])->group(function () {
-    Route::get("/dashboard", DashboardController::class)->name("dashboard")->middleware("permission:dashboard.view.personal|dashboard.view.project|dashboard.view.sistem");
-    Route::delete("/act-del/{activity}", [TestingController::class, "deleteActivity"]);
+    Route::get("/dashboard", DashboardController::class)
+        ->name("dashboard")
+        ->middleware(
+            "permission:dashboard.view.personal|dashboard.view.project|dashboard.view.sistem",
+        );
+    Route::delete("/act-del/{activity}", [
+        TestingController::class,
+        "deleteActivity",
+    ]);
 
-    Route::post("/telegram/connect", ConnectTelegramController::class)->name("telegram.connect")->middleware("auth");
+    Route::post("/telegram/connect", ConnectTelegramController::class)
+        ->name("telegram.connect")
+        ->middleware("auth");
 
-    Route::post("/comment", CreateCommentController::class)->name("comment.create");
-    
+    Route::post("/comment", CreateCommentController::class)->name(
+        "comment.create",
+    );
+
     Route::prefix("/role")
         ->name("role.")
         ->middleware("can:role.manage")
@@ -67,93 +78,140 @@ Route::middleware(["auth", "verified"])->group(function () {
             Route::delete("/{role}", DeleteRoleController::class)->name(
                 "delete",
             );
-            Route::put("/sync/permission/{role}", SyncRolePermissionController::class)->name(
-                "sync",
-            );
+            Route::put(
+                "/sync/permission/{role}",
+                SyncRolePermissionController::class,
+            )->name("sync");
         });
 
     Route::prefix("/user")
         ->name("user.")
         ->group(function () {
-            Route::get("/", [ViewUserController::class, "index"])->name(
-                "index",
-            )->middleware("can:user.view");
-            Route::post("/", CreateUserController::class)->name("create")->middleware("can:user.create");
+            Route::get("/", [ViewUserController::class, "index"])
+                ->name("index")
+                ->middleware("can:user.view");
+            Route::post("/", CreateUserController::class)
+                ->name("create")
+                ->middleware("can:user.create");
 
-            Route::get("/{user}", [ViewUserController::class, "detail"])->name(
-                "detail",
-            )->middleware("can:user.view");
-            Route::put("/{user}", UpdateUserController::class)->name("update")->middleware("can:user.edit");
-            Route::delete("/{user}", DeleteUserController::class)->name(
-                "delete",
-            )->middleware("can:user.delete");
+            Route::get("/{user}", [ViewUserController::class, "detail"])
+                ->name("detail")
+                ->middleware("can:user.view");
+            Route::put("/{user}", UpdateUserController::class)
+                ->name("update")
+                ->middleware("can:user.edit");
+            Route::delete("/{user}", DeleteUserController::class)
+                ->name("delete")
+                ->middleware("can:user.delete");
         });
 
     Route::prefix("/project")
         ->name("project.")
         ->group(function () {
-            Route::get("/", [ViewProjectController::class, "index"])->name(
-                "index",
-            )->middleware("permission:project.view.own|project.view.all");
-            Route::post("/", CreateProjectController::class)->name("create")->middleware("can:project.create");
+            Route::post("/", CreateProjectController::class)
+                ->name("create")
+                ->middleware("can:project.create");
 
-            Route::get("/{project}", [ViewProjectController::class, "detail"])->name(
-                "detail",
-            )->middleware("permission:project.view.own|project.view.team|project.view.all");
-            Route::get("/{project}/team", [ViewProjectController::class, "detailTeam"])->name(
-                "detail.team",
-            )->middleware("permission:project.view.own|project.view.team|project.view.all");
-            Route::get("/{project}/activity", [ViewProjectController::class, "detailActivity"])->name(
-                "detail.activity",
-            )->middleware("permission:project.view.own|project.view.team|project.view.all");
-            Route::get("/{project}/document", [ViewProjectController::class, "detailDocument"])->name(
-                "detail.document",
-            )->middleware("permission:project.view.own|project.view.team|project.view.all");
-            Route::get("/{project}/trashed", [ViewProjectController::class, "detailTrashed"])->name(
-                "detail.trashed",
-            )->middleware("permission:project.view.own|project.view.team|project.view.all");
+            Route::middleware(
+                "permission:project.view.own|project.view.all",
+            )->group(function () {
+                Route::get("/", [ViewProjectController::class, "index"])->name(
+                    "index",
+                );
+                Route::get("/{project}", [
+                    ViewProjectController::class,
+                    "detail",
+                ])->name("detail");
+                Route::get("/{project}/team", [
+                    ViewProjectController::class,
+                    "detailTeam",
+                ])->name("detail.team");
+                Route::get("/{project}/activity", [
+                    ViewProjectController::class,
+                    "detailActivity",
+                ])->name("detail.activity");
+                Route::get("/{project}/document", [
+                    ViewProjectController::class,
+                    "detailDocument",   
+                ])->name("detail.document");
+                Route::get("/{project}/comment", [
+                    ViewProjectController::class,
+                    "detailComment",
+                ])->name("detail.comment");
+                Route::get("/{project}/trashed", [
+                    ViewProjectController::class,
+                    "detailTrashed",
+                ])->name("detail.trashed");
+            });
 
-            Route::put("/{project}", UpdateProjectController::class)->name("update")->middleware("can:project.edit");
-            Route::patch("/{project}/archive", ArchiveProjectController::class)->name(
-                "archive",
-            )->middleware("can:project.edit");
-            Route::delete("/{project}", DeleteProjectController::class)->name(
-                "delete",
-            )->middleware("can:project.delete");
+            Route::put("/{project}", UpdateProjectController::class)
+                ->name("update")
+                ->middleware("can:project.edit");
+            Route::patch("/{project}/archive", ArchiveProjectController::class)
+                ->name("archive")
+                ->middleware("can:project.edit");
+            Route::delete("/{project}", DeleteProjectController::class)
+                ->name("delete")
+                ->middleware("can:project.delete");
 
-            Route::put("/team/{project}", UpdateTeamProjectController::class)->name("team.update")->middleware("can:project.edit");
-            Route::put("/status/{status}", UpdateStatusProjectController::class)->name("status.update")->middleware("can:project.edit");
-            Route::delete("/status/{status}", DeleteStatusProjectController::class)->name("status.delete")->middleware("can:project.edit");
+            Route::put("/team/{project}", UpdateTeamProjectController::class)
+                ->name("team.update")
+                ->middleware("can:project.edit");
+            Route::put("/status/{status}", UpdateStatusProjectController::class)
+                ->name("status.update")
+                ->middleware("can:project.edit");
+            Route::delete(
+                "/status/{status}",
+                DeleteStatusProjectController::class,
+            )
+                ->name("status.delete")
+                ->middleware("can:project.edit");
         });
 
     Route::prefix("/task")
         ->name("task.")
         ->group(function () {
+            Route::get("/", [ViewTaskController::class, "index"])
+                ->name("index")
+                ->middleware("permission:task.view.all|task.view.own");
 
-            Route::get("/", [ViewTaskController::class, "index"])->name(
-                "index",
-            )->middleware("permission:task.view.all|task.view.own");
+            Route::post("/", CreateTaskController::class)
+                ->name("create")
+                ->middleware("can:task.create");
+            Route::patch(
+                "/{task}/change-status",
+                ChangeStatusTaskController::class,
+            )->name("change.status");
 
-            Route::post("/", CreateTaskController::class)->name("create")->middleware("can:task.create");
-            Route::patch("/{task}/change-status", ChangeStatusTaskController::class)->name("change.status");
+            Route::get("/{task}", [ViewTaskController::class, "detail"])
+                ->name("detail")
+                ->middleware("permission:task.view.all|task.view.own");
+            Route::put("/{task}", UpdateTaskController::class)
+                ->name("update")
+                ->middleware("can:task.edit");
+            Route::delete("/{task}", DeleteTaskController::class)
+                ->name("delete")
+                ->middleware("can:task.delete");
 
-            Route::get("/{task}", [ViewTaskController::class, "detail"])->name(
-                "detail",
-            )->middleware("permission:task.view.all|task.view.own");
-            Route::put("/{task}", UpdateTaskController::class)->name("update")->middleware("can:task.edit");
-            Route::delete("/{task}", DeleteTaskController::class)->name(
-                "delete",
-            )->middleware("can:task.delete");
-
-            Route::post("/sub-task/{task}", CreateSubTaskController::class)->name("sub-task.create")->middleware("can:task.create");
-            Route::patch("/sub-task/{subTask}", UpdateSubTaskController::class)->name("sub-task.update");
-            Route::delete("/sub-task/{subTask}", DeleteSubTaskController::class)->name("sub-task.delete");
+            Route::post("/sub-task/{task}", CreateSubTaskController::class)
+                ->name("sub-task.create")
+                ->middleware("can:task.create");
+            Route::patch(
+                "/sub-task/{subTask}",
+                UpdateSubTaskController::class,
+            )->name("sub-task.update");
+            Route::delete(
+                "/sub-task/{subTask}",
+                DeleteSubTaskController::class,
+            )->name("sub-task.delete");
         });
 
     Route::prefix("/document")
         ->name("document.")
         ->group(function () {
-            Route::get("/", [ViewDocumentController::class, "index"])->name("index");
+            Route::get("/", [ViewDocumentController::class, "index"])->name(
+                "index",
+            );
             Route::post("/", CreateDocumentController::class)->name("create");
             Route::get("/{document}", DownloadDocumentController::class)->name(
                 "download",

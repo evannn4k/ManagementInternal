@@ -18,8 +18,8 @@ export function TaskDocument(
 ) {
     return (
         <ResourceDocument
-            documentableId={task.id}
-            documentableType={taskType}
+            documentable_id={task.id}
+            documentable_type={taskType}
             documents={documents}
             title={(
                 <span className="flex gap-2 items-center">

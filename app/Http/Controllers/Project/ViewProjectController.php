@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Project;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Activity\ActivityTableResource;
+use App\Http\Resources\Comment\CommentResource;
 use App\Http\Resources\Project\ProjectTableResource;
 use App\Http\Resources\Task\TaskTableResource;
 use App\Models\Activity;
@@ -29,34 +30,47 @@ class ViewProjectController extends Controller
     function index(Request $request)
     {
         $projects = Project::with([
-            "statuses" => fn($q) => $q->orderBy('position', 'asc')->withCount('tasks as total_task'),
+            "statuses" => fn($q) => $q
+                ->orderBy("position", "asc")
+                ->withCount("tasks as total_task"),
             "teams:id,name,position",
             "pic:id,name",
-            "createdBy:id,name"
+            "createdBy:id,name",
         ])
-            ->withCount('tasks as total_task')
+            ->withCount("tasks as total_task")
             ->when($request->search, function ($query, $value) {
-                $query
-                    ->where("name", "ilike", "%$value%");
-            })->when($request->status, function ($query, $value) {
-                $query->where("status", $value);
-            }, function ($query) {
-                $query->where("status", "!=", "archived");
-            })->when($request->priority, function ($query, $value) {
-                $query
-                    ->where("priority", $value);
+                $query->where("name", "ilike", "%$value%");
+            })
+            ->when(
+                $request->status,
+                function ($query, $value) {
+                    $query->where("status", $value);
+                },
+                function ($query) {
+                    $query->where("status", "!=", "archived");
+                },
+            )
+            ->when($request->priority, function ($query, $value) {
+                $query->where("priority", $value);
             });
 
-        $projectsPagination = $projects->orderBy("created_at", "desc")->paginate($request->per_page ?? 10)
+        $projectsPagination = $projects
+            ->orderBy("created_at", "desc")
+            ->paginate($request->per_page ?? 10)
             ->withQueryString();
 
         $data = ProjectTableResource::collection($projectsPagination);
-        $users =  User::select("id", "name", "position")->with('roles:id,name')->where("is_active", true)->get();
+        $users = User::select("id", "name", "position")
+            ->with("roles:id,name")
+            ->where("is_active", true)
+            ->get();
 
         $cardData = [
             "total_total" => $projects->count(),
             "total_running" => $projects->where("status", "running")->count(),
-            "total_overdue" => $projects->where("end_date", "<", now())->count(),
+            "total_overdue" => $projects
+                ->where("end_date", "<", now())
+                ->count(),
             "total_completed" => $projects->where("status", "done")->count(),
         ];
 
@@ -68,77 +82,86 @@ class ViewProjectController extends Controller
 
     public function detail(Request $request, Project $project)
     {
-        $project->load(
-            [
-                "pic:id,name,position",
-                "pic.roles:id,name",
-                "teams:id,name,position",
-                "teams.roles:id,name",
-                "statuses" => function ($query) {
-                    return $query->orderBy('position', 'asc');
-                },
-                "statuses.tasks" => function ($query) use ($request) {
-                    return $query->when($request->search, function ($q, $value) {
+        $project->load([
+            "pic:id,name,position",
+            "pic.roles:id,name",
+            "teams:id,name,position",
+            "teams.roles:id,name",
+            "statuses" => function ($query) {
+                return $query->orderBy("position", "asc");
+            },
+            "statuses.tasks" => function ($query) use ($request) {
+                return $query
+                    ->when($request->search, function ($q, $value) {
                         return $q->where("title", "ilike", "%$value%");
-                    })->when($request->priority, function ($q, $value) {
+                    })
+                    ->when($request->priority, function ($q, $value) {
                         return $q->where("priority", $value);
-                    })->when($request->team, function ($q, $value) {
-                        return $q->whereHas("assigned", function ($t) use ($value) {
+                    })
+                    ->when($request->team, function ($q, $value) {
+                        return $q->whereHas("assigned", function ($t) use (
+                            $value,
+                        ) {
                             return $t->where("name", "ilike", "%$value%");
                         });
-                    })->when($request->task_view, function ($q, $value) {
-                        if ($value != "own") return $q;
+                    })
+                    ->when($request->task_view, function ($q, $value) {
+                        if ($value != "own") {
+                            return $q;
+                        }
 
                         return $q->whereHas("assigned", function ($t) {
                             $id = $this->user->id;
                             return $t->where("id", $id);
                         });
                     });
-                },
-                "statuses.tasks.assigned:id,name,position",
-                "createdBy"
-            ]
-        );
+            },
+            "statuses.tasks.assigned:id,name,position",
+            "createdBy",
+        ]);
 
-        return Inertia::render(
-            "project/detail",
-            compact("project"),
-        );
+        return Inertia::render("project/detail", compact("project"));
     }
 
     public function detailTeam(Request $request, Project $project)
     {
-        $project->load(
-            [
-                "pic:id,name,position",
-                "pic.roles:id,name",
-                "teams:id,name,position",
-                "teams.roles:id,name",
-                "statuses" => function ($query) {
-                    return $query->orderBy('position', 'asc');
-                },
-                "statuses.tasks" => function ($query) use ($request) {
-                    return $query->when($request->search, function ($q, $value) {
+        $project->load([
+            "pic:id,name,position",
+            "pic.roles:id,name",
+            "teams:id,name,position",
+            "teams.roles:id,name",
+            "statuses" => function ($query) {
+                return $query->orderBy("position", "asc");
+            },
+            "statuses.tasks" => function ($query) use ($request) {
+                return $query
+                    ->when($request->search, function ($q, $value) {
                         return $q->where("title", "ilike", "%$value%");
-                    })->when($request->priority, function ($q, $value) {
+                    })
+                    ->when($request->priority, function ($q, $value) {
                         return $q->where("priority", $value);
-                    })->when($request->team, function ($q, $value) {
-                        return $q->whereHas("assigned", function ($t) use ($value) {
+                    })
+                    ->when($request->team, function ($q, $value) {
+                        return $q->whereHas("assigned", function ($t) use (
+                            $value,
+                        ) {
                             return $t->where("name", "ilike", "%$value%");
                         });
-                    })->when($request->task_view, function ($q, $value) {
-                        if ($value != "own") return $q;
+                    })
+                    ->when($request->task_view, function ($q, $value) {
+                        if ($value != "own") {
+                            return $q;
+                        }
 
                         return $q->whereHas("assigned", function ($t) {
                             $id = $this->user->id;
                             return $t->where("id", $id);
                         });
                     });
-                },
-                "statuses.tasks.assigned:id,name,position",
-                "createdBy"
-            ]
-        );
+            },
+            "statuses.tasks.assigned:id,name,position",
+            "createdBy",
+        ]);
 
         $users = User::select("id", "name", "position")->get();
 
@@ -150,36 +173,36 @@ class ViewProjectController extends Controller
 
     public function detailActivity(Request $request, Project $project)
     {
-        $project->load(
-            [
-                "pic:id,name,position",
-                "pic.roles:id,name",
-                "teams:id,name,position",
-                "teams.roles:id,name",
-                "createdBy"
-            ]
-        );
+        $project->load([
+            "pic:id,name,position",
+            "pic.roles:id,name",
+            "teams:id,name,position",
+            "teams.roles:id,name",
+            "createdBy",
+        ]);
 
-        $activities = Activity::with([
-            "user:id,name",
-            "subject"
-        ])->where(function ($query) use ($project) {
-            $query->where("subject_id", $project->id)->orWhere("parent_id", $project->id);
-        })
+        $activities = Activity::with(["user:id,name", "subject"])
+            ->where(function ($query) use ($project) {
+                $query
+                    ->where("subject_id", $project->id)
+                    ->orWhere("parent_id", $project->id);
+            })
             ->when($request->search, function ($query, $value) {
                 $query->whereHas("user", function ($q) use ($value) {
                     return $q->where("name", "ilike", "%$value%");
                 });
-            })->when($request->type, function ($query, $value) {
-                $query
-                    ->where("type", $value);
-            })->when($request->date_from, function ($query, $value) {
-                $query
-                    ->where("created_at", ">=", $value);
-            })->when($request->date_to, function ($query, $value) {
-                $query
-                    ->where("created_at", "<=", $value);
-            })->orderBy("created_at", "desc")->paginate($request->per_page ?? 10)
+            })
+            ->when($request->type, function ($query, $value) {
+                $query->where("type", $value);
+            })
+            ->when($request->date_from, function ($query, $value) {
+                $query->where("created_at", ">=", $value);
+            })
+            ->when($request->date_to, function ($query, $value) {
+                $query->where("created_at", "<=", $value);
+            })
+            ->orderBy("created_at", "desc")
+            ->paginate($request->per_page ?? 10)
             ->withQueryString();
 
         $data = ActivityTableResource::collection($activities);
@@ -192,33 +215,36 @@ class ViewProjectController extends Controller
 
     public function detailTrashed(Request $request, Project $project)
     {
-        $project->load(
-            [
-                "pic:id,name,position",
-                "pic.roles:id,name",
-                "teams:id,name,position",
-                "teams.roles:id,name",
-                "createdBy"
-            ]
+        $project->load([
+            "pic:id,name,position",
+            "pic.roles:id,name",
+            "teams:id,name,position",
+            "teams.roles:id,name",
+            "createdBy",
+        ]);
+
+        $tasks = TaskTableResource::collection(
+            $project
+                ->tasks()
+                ->with("status:id,name,project_id")
+                ->onlyTrashed()
+                ->when($request->search, function ($query, $value) {
+                    $query->where("title", "ilike", "%$value%");
+                })
+                ->when($request->priority, function ($query, $value) {
+                    $query->where("priority", $value);
+                })
+                ->when($request->task_view, function ($q, $value) {
+                    if ($value != "own") {
+                        return $q;
+                    }
+
+                    return $q->own($this->user);
+                })
+                ->orderBy("created_at", "desc")
+                ->paginate($request->per_page ?? 10)
+                ->withQueryString(),
         );
-
-        $tasks = TaskTableResource::collection($project
-            ->tasks()
-            ->with(
-                "status:id,name,project_id",
-            )->onlyTrashed()
-            ->when($request->search, function ($query, $value) {
-                $query
-                    ->where("title", "ilike", "%$value%");
-            })->when($request->priority, function ($query, $value) {
-                $query
-                    ->where("priority", $value);
-            })->when($request->task_view, function ($q, $value) {
-                if ($value != "own") return $q;
-
-                return $q->own($this->user);
-            })->orderBy("created_at", "desc")->paginate($request->per_page ?? 10)
-            ->withQueryString());
 
         return Inertia::render(
             "project/detail-trashed",
@@ -228,25 +254,53 @@ class ViewProjectController extends Controller
 
     public function detailDocument(Request $request, Project $project)
     {
-        $project->load(
-            [
-                "pic:id,name,position",
-                "pic.roles:id,name",
-                "teams:id,name,position",
-                "teams.roles:id,name",
-                "createdBy"
-            ]
-        );
+        $project->load([
+            "pic:id,name,position",
+            "pic.roles:id,name",
+            "teams:id,name,position",
+            "teams.roles:id,name",
+            "createdBy",
+        ]);
 
         $taskIds = $project->tasks()->get()->pluck("id")->toArray();
 
-        $documents = Document::where("documentable_id", $project->id)->orWhereIn("documentable_id", $taskIds)->with("uploader:id,name")->orderBy("created_at", "desc")->get();
+        $documents = Document::where("documentable_id", $project->id)
+            ->orWhereIn("documentable_id", $taskIds)
+            ->with("uploader:id,name")
+            ->orderBy("created_at", "desc")
+            ->get();
 
         $projectType = $project->getMorphClass();
 
         return Inertia::render(
             "project/detail-document",
             compact("project", "documents", "projectType"),
+        );
+    }
+
+    public function detailComment(Request $request, Project $project)
+    {
+        $project->load([
+            "pic:id,name,position",
+            "pic.roles:id,name",
+            "teams:id,name,position",
+            "teams.roles:id,name",
+            "createdBy",
+        ]);
+
+        $projectType = $project->getMorphClass();
+
+        $comments = CommentResource::collection(
+            $project
+                ->comments()
+                ->with("user:id,name,position")
+                ->select("id", "content", "user_id")
+                ->get(),
+        );
+
+        return Inertia::render(
+            "project/detail-comment",
+            compact("project", "projectType", "comments"),
         );
     }
 }

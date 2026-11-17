@@ -15,8 +15,8 @@ export default function ProjectDetailDocumentPage(
     }) {
     return (
         <ResourceDocument
-            documentableId={project.id}
-            documentableType={projectType}
+            documentable_id={project.id}
+            documentable_type={projectType}
             documents={documents}
             title="Dokumen Project"
         />

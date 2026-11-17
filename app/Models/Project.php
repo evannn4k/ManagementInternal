@@ -30,7 +30,12 @@ class Project extends Model
 
     public function teams()
     {
-        return $this->belongsToMany(User::class, "project_team", "project_id", "user_id")->using(ProjectTeam::class);
+        return $this->belongsToMany(
+            User::class,
+            "project_team",
+            "project_id",
+            "user_id",
+        )->using(ProjectTeam::class);
     }
 
     public function statuses()
@@ -60,16 +65,21 @@ class Project extends Model
 
     public function activities()
     {
-        return $this->morphMany(Activity::class, 'subject');
+        return $this->morphMany(Activity::class, "subject");
     }
 
     public function childActivities()
     {
-        return $this->morphMany(Activity::class, 'parent');
+        return $this->morphMany(Activity::class, "parent");
     }
 
     public function documents()
     {
-        return $this->morphMany(Document::class, 'documentable');
+        return $this->morphMany(Document::class, "documentable");
+    }
+
+    public function comments()
+    {
+        return $this->morphMany(Comment::class, "commentable");
     }
 }

@@ -27,16 +27,16 @@ import { DocumentType } from "@/types/data/document";
 import React from "react";
 
 interface ResourceDocumentProps {
-    documentableId?: string | number;
-    documentableType?: string;
+    documentable_id?: string | number;
+    documentable_type?: string;
     documents: DocumentType[];
     title?: string | React.ReactNode;
     column?: number
 }
 
 export default function ResourceDocument({
-    documentableId,
-    documentableType,
+    documentable_id,
+    documentable_type,
     documents,
     title = "Dokumen",
     column = 5,
@@ -63,8 +63,8 @@ export default function ResourceDocument({
         <>
             <DocumentForm
                 modal={modal}
-                documentable_id={documentableId}
-                documentable_type={documentableType}
+                documentable_id={documentable_id}
+                documentable_type={documentable_type}
             />
             <DeleteAlert
                 modal={modal}

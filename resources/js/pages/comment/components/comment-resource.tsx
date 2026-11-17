@@ -7,7 +7,7 @@ import {
     MessageContent,
     MessageHeader,
 } from "@/components/ui/message";
-import { MessagesSquare, Send } from "lucide-react";
+import { MessagesSquare, Send, UserRound } from "lucide-react";
 import {
     Field,
     FieldDescription,
@@ -28,6 +28,7 @@ import { Empty, EmptyHeader, EmptyDescription } from "@/components/ui/empty";
 import { Form, useForm, usePage } from "@inertiajs/react";
 import { create } from "@/routes/comment";
 import { Spinner } from "@/components/ui/spinner";
+import { getInitials } from "@/lib/utils";
 
 interface ResourceCommentProps {
     comments: CommentType[];
@@ -81,12 +82,14 @@ export function CommentResource({
                         comments.map((comment) => (
                             <Message key={comment.id}>
                                 <MessageAvatar>
-                                    <Avatar>
-                                        <AvatarImage
-                                            src="https://github.com/shadcn.png"
-                                            alt="@shadcn"
-                                        />
-                                        <AvatarFallback>CN</AvatarFallback>
+                                    <Avatar className="size-11 border">
+                                        <AvatarFallback className="bg-primary/10 font-semibold text-primary">
+                                            {comment?.user ? (
+                                                getInitials(comment?.user.name)
+                                            ) : (
+                                                <UserRound className="size-5" />
+                                            )}
+                                        </AvatarFallback>
                                     </Avatar>
                                 </MessageAvatar>
                                 <MessageContent>
@@ -147,12 +150,14 @@ export function CommentResource({
                             />
                             <InputGroupAddon align="block-end">
                                 <div className="flex items-center gap-2">
-                                    <Avatar size="sm">
-                                        <AvatarImage
-                                            src="https://github.com/shadcn.png"
-                                            alt="@shadcn"
-                                        />
-                                        <AvatarFallback>CN</AvatarFallback>
+                                    <Avatar className="size-sm border">
+                                        <AvatarFallback className="bg-primary/10 font-semibold text-primary">
+                                            {auth.user ? (
+                                                getInitials(auth.user.name)
+                                            ) : (
+                                                <UserRound className="size-5" />
+                                            )}
+                                        </AvatarFallback>
                                     </Avatar>
                                     <FieldDescription>
                                         {auth.user.name ?? "-"}{" "}

@@ -5,7 +5,7 @@ export type GetInitialsFn = (fullName: string) => string;
 function getInitial(name: string): string {
     return Array.from(name)[0] ?? '';
 }
-
+    
 export function useInitials(): GetInitialsFn {
     return useCallback((fullName: string): string => {
         const names = fullName.trim().split(/\s+/u).filter(Boolean);
