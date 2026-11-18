@@ -22,7 +22,6 @@ class DatabaseSeeder extends Seeder
 
         // $role = Role::firstOrCreate(["name" => "admin", "description" => "Akses menyeluruh terhadap kofigurasi server dan sistem.", "is_system" => true]);
 
-
         $permissions = [
             [
                 "name" => "role.manage",
@@ -30,15 +29,18 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 "name" => "dashboard.view.personal",
-                "description" => "Melihat dashboard yang menampilkan ringkasan tugas dan aktivitas pribadi",
+                "description" =>
+                    "Melihat dashboard yang menampilkan ringkasan tugas dan aktivitas pribadi",
             ],
             [
                 "name" => "dashboard.view.project",
-                "description" => "Melihat dashboard yang menampilkan ringkasan dan progres proyek",
+                "description" =>
+                    "Melihat dashboard yang menampilkan ringkasan dan progres proyek",
             ],
             [
                 "name" => "dashboard.view.sistem",
-                "description" => "Melihat dashboard yang menampilkan ringkasan aktivitas dan statistik sistem",
+                "description" =>
+                    "Melihat dashboard yang menampilkan ringkasan aktivitas dan statistik sistem",
             ],
             [
                 "name" => "user.view",
@@ -58,11 +60,13 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 "name" => "project.view.all",
-                "description" => "Melihat seluruh proyek yang tersedia dalam sistem",
+                "description" =>
+                    "Melihat seluruh proyek yang tersedia dalam sistem",
             ],
             [
                 "name" => "project.view.own",
-                "description" => "Melihat proyek yang dimiliki atau ditugaskan kepada pengguna",
+                "description" =>
+                    "Melihat proyek yang dimiliki atau ditugaskan kepada pengguna",
             ],
             [
                 "name" => "project.create",
@@ -70,7 +74,8 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 "name" => "project.edit",
-                "description" => "Mengubah informasi, konfigurasi, dan data proyek",
+                "description" =>
+                    "Mengubah informasi, konfigurasi, dan data proyek",
             ],
             [
                 "name" => "project.delete",
@@ -78,11 +83,13 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 "name" => "task.view.all",
-                "description" => "Melihat seluruh tugas dari berbagai proyek yang tersedia",
+                "description" =>
+                    "Melihat seluruh tugas dari berbagai proyek yang tersedia",
             ],
             [
                 "name" => "task.view.own",
-                "description" => "Melihat tugas yang ditugaskan kepada pengguna",
+                "description" =>
+                    "Melihat tugas yang ditugaskan kepada pengguna",
             ],
             [
                 "name" => "task.create",
@@ -90,14 +97,15 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 "name" => "task.edit",
-                "description" => "Mengubah informasi, status, dan penugasan tugas",
+                "description" =>
+                    "Mengubah informasi, status, dan penugasan tugas",
             ],
             [
                 "name" => "task.delete",
                 "description" => "Menghapus tugas dari suatu proyek",
             ],
+           
         ];
-
 
         foreach ($permissions as $permission) {
             $parts = explode(".", $permission["name"]);
@@ -109,7 +117,7 @@ class DatabaseSeeder extends Seeder
                     "resource" => $parts[0] ?? null,
                     "action" => $parts[1] ?? null,
                     "scope" => $parts[2] ?? null,
-                ]
+                ],
             );
         }
 

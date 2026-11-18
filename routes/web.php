@@ -42,6 +42,7 @@ use App\Http\Controllers\Document\CreateDocumentController;
 use App\Http\Controllers\Document\DeleteDocumentController;
 use App\Http\Controllers\Document\DownloadDocumentController;
 use App\Http\Controllers\Document\ViewDocumentController;
+use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
 Route::inertia("/", "welcome")->name("home");

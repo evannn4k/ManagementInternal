@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/card";
 import { TaskType } from "@/types/data/task";
 import { DashboardTaskCard } from "./dashboard-task-card";
+import { Empty, EmptyContent, EmptyDescription } from "@/components/ui/empty";
 
 export function DashboardSectionTask({
     overdue,
@@ -30,7 +31,9 @@ export function DashboardSectionTask({
                         </span>
                         <span>Tugas Terlambat</span>
                     </CardTitle>
-                    <CardDescription className="text-xs">4 Tugas teratas</CardDescription>
+                    <CardDescription className="text-xs">
+                        4 Tugas teratas
+                    </CardDescription>
                     <CardAction>
                         <Badge variant="destructive">
                             {overdue.length ?? 0}
@@ -38,14 +41,18 @@ export function DashboardSectionTask({
                     </CardAction>
                 </CardHeader>
                 <CardContent className="flex-1 flex flex-col gap-3 w-full">
-                    {overdue ? (
+                    {overdue.length > 1 ? (
                         overdue.map((task) => (
                             <DashboardTaskCard key={task.id} task={task} />
                         ))
                     ) : (
-                        <div className="flex-1 flex items-center justify-center">
-                            <CardDescription>Belum ada tugas</CardDescription>
-                        </div>
+                        <Empty>
+                            <EmptyContent>
+                                <EmptyDescription>
+                                    Belum ada tugas
+                                </EmptyDescription>
+                            </EmptyContent>
+                        </Empty>
                     )}
                 </CardContent>
             </Card>
@@ -54,20 +61,26 @@ export function DashboardSectionTask({
                     <CardTitle className="text-xl flex items-center gap-2">
                         <span>Tenggat Minggu Ini</span>
                     </CardTitle>
-                    <CardDescription className="text-xs">4 Tugas teratas</CardDescription>
+                    <CardDescription className="text-xs">
+                        4 Tugas teratas
+                    </CardDescription>
                     <CardAction>
                         <Badge variant="outline">{thisWeek.length ?? 0}</Badge>
                     </CardAction>
                 </CardHeader>
                 <CardContent className="flex-1 flex flex-col gap-3 w-full">
-                    {thisWeek ? (
+                    {thisWeek.length > 1 ? (
                         thisWeek.map((task) => (
                             <DashboardTaskCard key={task.id} task={task} />
                         ))
                     ) : (
-                        <div className="flex-1 flex items-center justify-center">
-                            <CardDescription>Belum ada tugas</CardDescription>
-                        </div>
+                        <Empty>
+                            <EmptyContent>
+                                <EmptyDescription>
+                                    Belum ada tugas
+                                </EmptyDescription>
+                            </EmptyContent>
+                        </Empty>
                     )}
                 </CardContent>
             </Card>
@@ -76,20 +89,26 @@ export function DashboardSectionTask({
                     <CardTitle className="text-xl flex items-center gap-2">
                         <span>Direncanakan Nanti</span>
                     </CardTitle>
-                    <CardDescription className="text-xs">4 Tugas teratas</CardDescription>
+                    <CardDescription className="text-xs">
+                        4 Tugas teratas
+                    </CardDescription>
                     <CardAction>
                         <Badge variant="outline">{pending.length ?? 0}</Badge>
                     </CardAction>
                 </CardHeader>
                 <CardContent className="flex-1 flex flex-col gap-3 w-full">
-                    {pending ? (
+                    {pending.length > 1 ? (
                         pending.map((task) => (
                             <DashboardTaskCard key={task.id} task={task} />
                         ))
                     ) : (
-                        <div className="flex-1 flex items-center justify-center">
-                            <CardDescription>Belum ada tugas</CardDescription>
-                        </div>
+                        <Empty>
+                            <EmptyContent>
+                                <EmptyDescription>
+                                    Belum ada tugas
+                                </EmptyDescription>
+                            </EmptyContent>
+                        </Empty>
                     )}
                 </CardContent>
             </Card>

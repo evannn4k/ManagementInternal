@@ -5,6 +5,13 @@ export type CardData = {
     total_completed: number;
 };
 
+export type CardMasterData = {
+    total_active_user: number;
+    total_running_task: number;
+    total_running_project: number;
+    total_due_project: number;
+};
+
 export type StatusDistributionType = {
     pending: string;
     running: string;

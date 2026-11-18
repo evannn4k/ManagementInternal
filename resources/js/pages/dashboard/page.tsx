@@ -6,6 +6,7 @@ import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import {
     AssignedDistributionType,
     CardData,
+    CardMasterData,
     StatusDistributionType,
 } from "@/types/data/dashboard";
 import { DashboardSectionTask } from "./components/dashboard-section-task";
@@ -15,6 +16,7 @@ import { LaravelPagination } from "@/types/paginate";
 import { useState } from "react";
 import { dashboard as DashboardIndex } from "@/routes";
 import { can } from "@/lib/middleware";
+import { DashboardSectionMasterCard } from "./components/dashboard-section-master-card";
 
 type SummaryTaskType = {
     overdue: TaskType[];
@@ -30,10 +32,12 @@ type SummaryDataType = {
 
 export default function Dashboard({
     cardData,
+    cardMasterData,
     summaryTask,
     summaryData,
 }: {
     cardData: CardData;
+    cardMasterData: CardMasterData;
     summaryTask: SummaryTaskType;
     summaryData: SummaryDataType;
 }) {
@@ -86,9 +90,19 @@ export default function Dashboard({
                     </CardContent>
                 </Card>
                 <div className="flex flex-col gap-4">
+                    <CardTitle>Ringaksan Data</CardTitle>
+                    <div className="flex flex-col gap-4 p-0">
+                        {can("dashboard.view.system") && (
+                            <DashboardSectionMasterCard
+                                cardMasterData={cardMasterData}
+                            />
+                        )}
+                        <DashboardSectionCard cardData={cardData} />
+                    </div>
+                </div>
+                <div className="flex flex-col gap-4">
                     <CardTitle>Personal Data</CardTitle>
                     <div className="flex flex-col gap-4 p-0">
-                        <DashboardSectionCard cardData={cardData} />
                         <DashboardSectionTask
                             overdue={summaryTask.overdue}
                             thisWeek={summaryTask.thisWeek}
