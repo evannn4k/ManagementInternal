@@ -10,15 +10,24 @@ class TelegramService
 {
     public function url(string $method)
     {
-        return 'https://api.telegram.org/bot' . config('services.telegram.bot_token') . '/' . $method;
+        return "https://api.telegram.org/bot" .
+            config("services.telegram.bot_token") .
+            "/" .
+            $method;
     }
 
-    public function sendMassage(string $chatId, string $text, array $option = []): bool
-    {
-        $payload = array_merge([
-            'chat_id' => $chatId,
-            'text' => $text,
-        ], $option);
+    public function sendMassage(
+        string $chatId,
+        string $text,
+        array $option = [],
+    ): bool {
+        $payload = array_merge(
+            [
+                "chat_id" => $chatId,
+                "text" => $text,
+            ],
+            $option,
+        );
 
         $request = Http::post($this->url("sendMessage"), $payload);
 
@@ -31,18 +40,29 @@ class TelegramService
         }
 
         if ($request->status() == 403) {
-            User::class::where("telegram_chat_id", $chatId)->update(["telegram_chat_id" => null]);
+            User::class
+                ::where("telegram_chat_id", $chatId)
+                ->update(["telegram_chat_id" => null]);
         }
+
+        Log::info($request);
 
         return true;
     }
 
     public function getUpdates($offset = 0)
     {
-        $response = Http::get($this->url("getUpdates"), array_filter(["offset" => $offset]));
+        $response = Http::get(
+            $this->url("getUpdates"),
+            array_filter(["offset" => $offset]),
+        );
 
-        if ($response->successful() && isset($response['ok']) && $response['ok'] === true) {
-            return $response['result'];
+        if (
+            $response->successful() &&
+            isset($response["ok"]) &&
+            $response["ok"] === true
+        ) {
+            return $response["result"];
         }
 
         return null;

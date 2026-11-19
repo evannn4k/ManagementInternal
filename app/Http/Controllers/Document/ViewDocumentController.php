@@ -6,14 +6,18 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Document\DocumentResource;
 use App\Models\Document;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class ViewDocumentController extends Controller
 {
     public function index()
     {
-        $documents = Document::with("uploader:id,name")->orderBy("created_at", "desc")->paginate($request->per_page ?? 10)
-            ->withQueryString();;
+        $documents = Document::with("uploader:id,name")
+            ->accessibleData(Auth::user())
+            ->orderBy("created_at", "desc")
+            ->paginate($request->per_page ?? 10)
+            ->withQueryString();
 
         $data = DocumentResource::collection($documents);
 

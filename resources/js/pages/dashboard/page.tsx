@@ -92,7 +92,7 @@ export default function Dashboard({
                 <div className="flex flex-col gap-4">
                     <CardTitle>Ringaksan Data</CardTitle>
                     <div className="flex flex-col gap-4 p-0">
-                        {can("dashboard.view.system") && (
+                        {can("dashboard.view.sistem") && (
                             <DashboardSectionMasterCard
                                 cardMasterData={cardMasterData}
                             />
@@ -110,7 +110,7 @@ export default function Dashboard({
                         />
                     </div>
                 </div>
-                {can("dashboard.view.project") && (
+                {can(["dashboard.view.project", "dashboard.view.sistem"]) && (
                     <div className="flex flex-col gap-4">
                         <CardTitle>Ringkasan Data</CardTitle>
                         <DashboardSummaryData

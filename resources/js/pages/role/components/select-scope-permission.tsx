@@ -21,7 +21,7 @@ export const SelectScopePermission = ({
 
     return (
         <FieldLabel key={scopes[0].id} className="p-0 m-0">
-            <Field orientation="horizontal">
+            <Field orientation="responsive">
                 <FieldContent className="flex flex-col gap-1">
                     <FieldTitle className="text-xs capitalize">
                         {scopes[0].action} {scopes[0].resource}
@@ -44,7 +44,11 @@ export const SelectScopePermission = ({
                     }
                 >
                     {scopes.map((s: Permission) => (
-                        <ToggleGroupItem className="capitalize" key={s.id} value={s.id.toString()}>
+                        <ToggleGroupItem
+                            className="capitalize"
+                            key={s.id}
+                            value={s.id.toString()}
+                        >
                             {s.scope}
                         </ToggleGroupItem>
                     ))}

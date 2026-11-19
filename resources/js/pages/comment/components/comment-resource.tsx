@@ -29,6 +29,7 @@ import { Form, useForm, usePage } from "@inertiajs/react";
 import { create } from "@/routes/comment";
 import { Spinner } from "@/components/ui/spinner";
 import { getInitials } from "@/lib/utils";
+import { can } from "@/lib/middleware";
 
 interface ResourceCommentProps {
     comments: CommentType[];
@@ -128,65 +129,68 @@ export function CommentResource({
                         </Empty>
                     )}
                 </div>
-                <form onSubmit={handleSubmit}>
-                    <Field data-invalid={Boolean(errors.content)}>
-                        <InputGroup>
-                            <InputGroupTextarea
-                                value={data.content}
-                                onChange={(
-                                    e: React.ChangeEvent<
-                                        | HTMLInputElement
-                                        | HTMLTextAreaElement
-                                        | HTMLSelectElement
-                                    >,
-                                ) =>
-                                    setData({
-                                        ...data,
-                                        content: e.target.value,
-                                    })
-                                }
-                                aria-invalid={Boolean(errors.content)}
-                                placeholder="Tulis komentar..."
-                            />
-                            <InputGroupAddon align="block-end">
-                                <div className="flex items-center gap-2">
-                                    <Avatar className="size-sm border">
-                                        <AvatarFallback className="bg-primary/10 font-semibold text-primary">
-                                            {auth.user ? (
-                                                getInitials(auth.user.name)
-                                            ) : (
-                                                <UserRound className="size-5" />
-                                            )}
-                                        </AvatarFallback>
-                                    </Avatar>
-                                    <FieldDescription>
-                                        {auth.user.name ?? "-"}{" "}
-                                        {auth.user.position && (
-                                            <Badge
-                                                className="text-xs rounded-sm"
-                                                variant="secondary"
-                                            >
-                                                {auth.user.position}
-                                            </Badge>
-                                        )}
-                                    </FieldDescription>
-                                </div>
-                                <InputGroupButton
-                                    disabled={
-                                        processing || data.content.length < 1
+                {can("comment.create") && (
+                    <form onSubmit={handleSubmit}>
+                        <Field data-invalid={Boolean(errors.content)}>
+                            <InputGroup>
+                                <InputGroupTextarea
+                                    value={data.content}
+                                    onChange={(
+                                        e: React.ChangeEvent<
+                                            | HTMLInputElement
+                                            | HTMLTextAreaElement
+                                            | HTMLSelectElement
+                                        >,
+                                    ) =>
+                                        setData({
+                                            ...data,
+                                            content: e.target.value,
+                                        })
                                     }
-                                    variant="default"
-                                    size="sm"
-                                    className="ml-auto"
-                                    type="submit"
-                                >
-                                    {processing ? <Spinner /> : <Send />}
-                                    Kirim Komentar
-                                </InputGroupButton>
-                            </InputGroupAddon>
-                        </InputGroup>
-                    </Field>
-                </form>
+                                    aria-invalid={Boolean(errors.content)}
+                                    placeholder="Tulis komentar..."
+                                />
+                                <InputGroupAddon align="block-end">
+                                    <div className="flex items-center gap-2">
+                                        <Avatar className="size-sm border">
+                                            <AvatarFallback className="bg-primary/10 font-semibold text-primary">
+                                                {auth.user ? (
+                                                    getInitials(auth.user.name)
+                                                ) : (
+                                                    <UserRound className="size-5" />
+                                                )}
+                                            </AvatarFallback>
+                                        </Avatar>
+                                        <FieldDescription>
+                                            {auth.user.name ?? "-"}{" "}
+                                            {auth.user.position && (
+                                                <Badge
+                                                    className="text-xs rounded-sm"
+                                                    variant="secondary"
+                                                >
+                                                    {auth.user.position}
+                                                </Badge>
+                                            )}
+                                        </FieldDescription>
+                                    </div>
+                                    <InputGroupButton
+                                        disabled={
+                                            processing ||
+                                            data.content.length < 1
+                                        }
+                                        variant="default"
+                                        size="sm"
+                                        className="ml-auto"
+                                        type="submit"
+                                    >
+                                        {processing ? <Spinner /> : <Send />}
+                                        Kirim Komentar
+                                    </InputGroupButton>
+                                </InputGroupAddon>
+                            </InputGroup>
+                        </Field>
+                    </form>
+                )}
             </CardContent>
         </Card>
     );

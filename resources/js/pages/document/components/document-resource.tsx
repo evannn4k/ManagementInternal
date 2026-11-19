@@ -6,7 +6,15 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { Download, Eye, File, FileXCorner, MoreVertical, FileUp, Trash2 } from "lucide-react";
+import {
+    Download,
+    Eye,
+    File,
+    FileXCorner,
+    MoreVertical,
+    FileUp,
+    Trash2,
+} from "lucide-react";
 import { useModal } from "@/hooks/use-modal";
 import { Button } from "@/components/ui/button";
 import { DeleteAlert } from "@/components/delete-alert";
@@ -18,20 +26,27 @@ import {
     EmptyMedia,
     EmptyTitle,
 } from "@/components/ui/empty";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { deleteMethod, download } from "@/routes/document";
 import { router } from "@inertiajs/react";
 import DocumentForm from "./document-form";
 import { DocumentDetailDialog } from "./document-detail";
 import { DocumentType } from "@/types/data/document";
 import React from "react";
+import { can } from "@/lib/middleware";
 
 interface ResourceDocumentProps {
     documentable_id?: string | number;
     documentable_type?: string;
     documents: DocumentType[];
     title?: string | React.ReactNode;
-    column?: number
+    column?: number;
 }
 
 export default function ResourceDocument({
@@ -48,16 +63,19 @@ export default function ResourceDocument({
     };
 
     const handleDeleteDocument = (id: string | number) => {
-        router.delete(deleteMethod(String(id)), { preserveScroll: true, preserveState: true });
+        router.delete(deleteMethod(String(id)), {
+            preserveScroll: true,
+            preserveState: true,
+        });
     };
 
     const gridCols: Record<number, string> = {
-        1: 'md:grid-cols-1',
-        2: 'md:grid-cols-2',
-        3: 'md:grid-cols-3',
-        4: 'md:grid-cols-4',
-        5: 'md:grid-cols-5',
-    }
+        1: "md:grid-cols-1",
+        2: "md:grid-cols-2",
+        3: "md:grid-cols-3",
+        4: "md:grid-cols-4",
+        5: "md:grid-cols-5",
+    };
 
     return (
         <>
@@ -72,25 +90,39 @@ export default function ResourceDocument({
                 description="Dokumen yang telah dihapus tidak dapat dikembalikan."
                 handleDelete={handleDeleteDocument}
             />
-            <DocumentDetailDialog modal={modal} handleDownloadDocument={handleDownloadDocument} />
+            <DocumentDetailDialog
+                modal={modal}
+                handleDownloadDocument={handleDownloadDocument}
+            />
 
             <Card className="bg-muted/50">
                 <CardHeader>
                     <CardTitle>{title}</CardTitle>
                     <CardAction>
-                        <Button size="sm" variant="secondary" className="text-primary" onClick={() => modal.openCreate()}>
-                            <FileUp /> Unggah Dokumen
-                        </Button>
+                        {can("document.create") && (
+                            <Button
+                                size="sm"
+                                variant="secondary"
+                                className="text-primary"
+                                onClick={() => modal.openCreate()}
+                            >
+                                <FileUp /> Unggah Dokumen
+                            </Button>
+                        )}
                     </CardAction>
                 </CardHeader>
                 <CardContent>
                     {documents?.length > 0 ? (
-                        <div className={`grid grid-cols-1 ${gridCols[column]} gap-4`}>
+                        <div
+                            className={`grid grid-cols-1 ${gridCols[column]} gap-4`}
+                        >
                             {documents.map((document) => (
                                 <Card
                                     className="rounded-2xl cursor-pointer hover:border-primary/50 transition-colors"
                                     key={document.id}
-                                    onClick={() => modal.openModal("detail", document)}
+                                    onClick={() =>
+                                        modal.openModal("detail", document)
+                                    }
                                 >
                                     <CardHeader>
                                         <div className="flex">
@@ -107,49 +139,86 @@ export default function ResourceDocument({
                                                         className="size-8"
                                                     >
                                                         <MoreVertical className="size-4" />
-                                                        <span className="sr-only">Open menu</span>
+                                                        <span className="sr-only">
+                                                            Open menu
+                                                        </span>
                                                     </Button>
                                                 </DropdownMenuTrigger>
                                                 <DropdownMenuContent align="end">
-                                                    <DropdownMenuItem
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            handleDownloadDocument(document);
-                                                        }}
-                                                    >
-                                                        <Download />
-                                                        Download
-                                                    </DropdownMenuItem>
-                                                    <DropdownMenuItem
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            modal.openModal("detail", document);
-                                                        }}
-                                                    >
-                                                        <Eye />
-                                                        Lihat
-                                                    </DropdownMenuItem>
-                                                    <DropdownMenuSeparator />
-                                                    <DropdownMenuItem
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            modal.openDelete(document.id);
-                                                        }}
-                                                        variant="destructive"
-                                                    >
-                                                        <Trash2 />
-                                                        Delete
-                                                    </DropdownMenuItem>
+                                                    {can([
+                                                        "document.view.all",
+                                                        "document.view.own",
+                                                    ]) && (
+                                                        <>
+                                                            <DropdownMenuItem
+                                                                onClick={(
+                                                                    e,
+                                                                ) => {
+                                                                    e.stopPropagation();
+                                                                    handleDownloadDocument(
+                                                                        document,
+                                                                    );
+                                                                }}
+                                                            >
+                                                                <Download />
+                                                                Download
+                                                            </DropdownMenuItem>
+                                                            <DropdownMenuItem
+                                                                onClick={(
+                                                                    e,
+                                                                ) => {
+                                                                    e.stopPropagation();
+                                                                    modal.openModal(
+                                                                        "detail",
+                                                                        document,
+                                                                    );
+                                                                }}
+                                                            >
+                                                                <Eye />
+                                                                Lihat
+                                                            </DropdownMenuItem>
+                                                        </>
+                                                    )}
+                                                    {can([
+                                                        "document.view.all",
+                                                        "document.view.own",
+                                                    ]) &&
+                                                    can("document.delete") ? (
+                                                        <DropdownMenuSeparator />
+                                                    ) : null}
+                                                    {can("document.delete") && (
+                                                        <DropdownMenuItem
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                modal.openDelete(
+                                                                    document.id,
+                                                                );
+                                                            }}
+                                                            variant="destructive"
+                                                        >
+                                                            <Trash2 />
+                                                            Delete
+                                                        </DropdownMenuItem>
+                                                    )}
                                                 </DropdownMenuContent>
                                             </DropdownMenu>
                                         </CardAction>
                                     </CardHeader>
 
                                     <CardContent>
-                                        <CardTitle className="text-sm line-clamp-1">{document.file_name}</CardTitle>
+                                        <CardTitle className="text-sm line-clamp-1">
+                                            {document.file_name}
+                                        </CardTitle>
                                         <CardDescription className="text-xs">
-                                            <span className="uppercase">{document.mime_type}</span> {" - "}
-                                            {(document.file_size / (1024 * 1024)).toFixed(1)} MB
+                                            <span className="uppercase">
+                                                {document.mime_type}
+                                            </span>{" "}
+                                            {" - "}
+                                            {(
+                                                document.file_size /
+                                                (1024 * 1024)
+                                            ).toFixed(1)}{" "}
+                                            MB
                                         </CardDescription>
                                     </CardContent>
                                 </Card>
@@ -167,7 +236,10 @@ export default function ResourceDocument({
                                 </EmptyDescription>
                             </EmptyHeader>
                             <EmptyContent>
-                                <Button onClick={() => modal.openCreate()} size="sm">
+                                <Button
+                                    onClick={() => modal.openCreate()}
+                                    size="sm"
+                                >
                                     <FileUp className="size-4" /> Unggah Dokumen
                                 </Button>
                             </EmptyContent>

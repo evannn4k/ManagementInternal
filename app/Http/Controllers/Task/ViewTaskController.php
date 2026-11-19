@@ -114,18 +114,31 @@ class ViewTaskController extends Controller
             "subTasks" => function ($subTask) {
                 $subTask->orderBy("created_at", "asc");
             },
-            "documents.uploader:id,name",
         ]);
+
+        /** @var User $user */
+        $user = Auth::user();
+
+        if (
+            $user->can("document.view.all") ||
+            $user->can("document.view.own")
+        ) {
+            $task->load("documents.uploader:id,name");
+        }
 
         $taskType = $task->getMorphClass();
 
-        $comments = CommentResource::collection(
-            $task
-                ->comments()
-                ->with("user:id,name,position")
-                ->select("id", "content", "user_id")
-                ->get(),
-        );
+        $comments = [];
+
+        if ($user->can("comment.view")) {
+            $comments = CommentResource::collection(
+                $task
+                    ->comments()
+                    ->with("user:id,name,position")
+                    ->select("id", "content", "user_id")
+                    ->get(),
+            );
+        }
 
         return Inertia::render(
             "task/detail",

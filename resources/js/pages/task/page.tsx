@@ -84,7 +84,10 @@ export default function TaskPage({
                         <h1 className="font-semibold text-2xl md:text-3xl">
                             Daftar Tugas
                         </h1>
-                        <p>Pantau daftar tugas harian, tetapkan prioritas kerja, atur tenggat waktu, dan selesaikan target proyek.
+                        <p>
+                            Pantau daftar tugas harian, tetapkan prioritas
+                            kerja, atur tenggat waktu, dan selesaikan target
+                            proyek.
                         </p>
                     </div>
                     {can("task.create") && (
@@ -96,27 +99,27 @@ export default function TaskPage({
                 <TaskSectionCard cardData={cardData} />
 
                 <Tabs defaultValue="all" onValueChange={handleChangeTab}>
-                    <TabsList className="bg-muted/50 p-2">
-                        <TabsTrigger value="all">Semua</TabsTrigger>
-                        <TabsTrigger value="due">Terlambat</TabsTrigger>
-                        <TabsTrigger value="this_week">Minggu Ini</TabsTrigger>
-                        <TabsTrigger value="trashed" className="!text-red-500">
+                    <TabsList className="bg-muted/50 p-2 w-full flex justify-start sm:justify-center overflow-x-auto no-scrollbar">
+                        <TabsTrigger className="whitespace-nowrap flex-shrink-0" value="all">Semua</TabsTrigger>
+                        <TabsTrigger className="whitespace-nowrap flex-shrink-0" value="due">Terlambat</TabsTrigger>
+                        <TabsTrigger className="whitespace-nowrap flex-shrink-0" value="this_week">Minggu Ini</TabsTrigger>
+                        <TabsTrigger className="whitespace-nowrap flex-shrink-0 !text-red-500" value="trashed">
                             <Trash /> Tugas dihapus
                         </TabsTrigger>
                     </TabsList>
-                    <Card className="bg-muted/50 gap-4 pb-0">
-                        <TaskToolbar
-                            url={url}
-                            updateQuery={updateQuery}
-                            projects={projects}
-                        />
-                        <TaskTable
-                            tableHead={tableHead}
-                            data={data.data}
-                            modal={modal}
-                        />
-                    </Card>
                 </Tabs>
+                <Card className="bg-muted/50 gap-4 pb-0">
+                    <TaskToolbar
+                        url={url}
+                        updateQuery={updateQuery}
+                        projects={projects}
+                    />
+                    <TaskTable
+                        tableHead={tableHead}
+                        data={data.data}
+                        modal={modal}
+                    />
+                </Card>
                 {data.data.length > 0 && (
                     <PaginationPage
                         updateQuery={updateQuery}

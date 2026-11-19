@@ -75,13 +75,13 @@ export default function ProjectPage({
                 </header>
                 <ProjectSectionCard cardData={cardData} />
                 <Tabs defaultValue="" onValueChange={handleChangeTab}>
-                    <TabsList className="bg-muted/50 p-2 border">
-                        <TabsTrigger value="">Semua</TabsTrigger>
-                        <TabsTrigger value="running">Berjalan</TabsTrigger>
-                        <TabsTrigger value="done">Selesai</TabsTrigger>
-                        <TabsTrigger value="hold">Ditahan</TabsTrigger>
-                        <TabsTrigger value="canceled">Dibatalklan</TabsTrigger>
-                        <TabsTrigger value="archived">
+                    <TabsList className="bg-muted/50 p-2 w-full flex justify-start sm:justify-center overflow-x-auto no-scrollbar">
+                        <TabsTrigger className="whitespace-nowrap flex-shrink-0" value="">Semua</TabsTrigger>
+                        <TabsTrigger className="whitespace-nowrap flex-shrink-0" value="running">Berjalan</TabsTrigger>
+                        <TabsTrigger className="whitespace-nowrap flex-shrink-0" value="done">Selesai</TabsTrigger>
+                        <TabsTrigger className="whitespace-nowrap flex-shrink-0" value="hold">Ditahan</TabsTrigger>
+                        <TabsTrigger className="whitespace-nowrap flex-shrink-0" value="canceled">Dibatalklan</TabsTrigger>
+                        <TabsTrigger className="whitespace-nowrap flex-shrink-0" value="archived">
                             <Archive /> Diarsipkan
                         </TabsTrigger>
                     </TabsList>

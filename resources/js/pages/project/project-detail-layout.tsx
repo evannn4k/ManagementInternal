@@ -21,6 +21,7 @@ import {
     trashed as detailTrashed,
 } from "@/routes/project/detail";
 import { detail as detailProject } from "@/routes/project";
+import { can } from "@/lib/middleware";
 
 export default function ProjectDetailLayout({
     children,
@@ -31,16 +32,36 @@ export default function ProjectDetailLayout({
 }) {
     const { component } = usePage();
 
+    const canViewDocument: boolean = can([
+        "document.view.all",
+        "document.view.own",
+    ]);
+
+    const canViewComment: boolean = can("comment.view");
+    const canViewActivity: boolean = can("activity.view");
+
     const handleChangeTab = (val: string) => {
         let url = detailProject(project.id).url;
 
         if (val == "project/detail-team") {
             url = detailTeam(project.id).url;
         } else if (val == "project/detail-activity") {
+            if (!canViewActivity) {
+                return;
+            }
+
             url = detailActivity(project.id).url;
         } else if (val == "project/detail-document") {
+            if (!canViewDocument) {
+                return;
+            }
+
             url = detailDocument(project.id).url;
         } else if (val == "project/detail-comment") {
+            if (!canViewComment) {
+                return;
+            }
+
             url = detailComment(project.id).url;
         } else if (val == "project/detail-trashed") {
             url = detailTrashed(project.id).url;
@@ -71,22 +92,43 @@ export default function ProjectDetailLayout({
                 </header>
                 <ProjectDetailData project={project} />
                 <Tabs value={component} onValueChange={handleChangeTab}>
-                    <TabsList className="bg-muted/50 p-2 border">
-                        <TabsTrigger value="project/detail">
+                    <TabsList className="bg-muted/50 p-2 w-full flex justify-start sm:justify-center overflow-x-auto no-scrollbar">
+                        <TabsTrigger
+                            className="whitespace-nowrap flex-shrink-0"
+                            value="project/detail"
+                        >
                             <SquareKanban /> Kanban Board
                         </TabsTrigger>
-                        <TabsTrigger value="project/detail-team">
+                        <TabsTrigger
+                            className="whitespace-nowrap flex-shrink-0"
+                            value="project/detail-team"
+                        >
                             <Users /> Anggota & Team
                         </TabsTrigger>
-                        <TabsTrigger value="project/detail-activity">
-                            <Activity /> Aktivitas
-                        </TabsTrigger>
-                        <TabsTrigger value="project/detail-document">
-                            <FileText /> Lampiran Dokumen
-                        </TabsTrigger>
-                        <TabsTrigger value="project/detail-comment">
-                            <MessagesSquare /> Komentar
-                        </TabsTrigger>
+                        {canViewActivity && (
+                            <TabsTrigger
+                                className="whitespace-nowrap flex-shrink-0"
+                                value="project/detail-activity"
+                            >
+                                <Activity /> Aktivitas
+                            </TabsTrigger>
+                        )}
+                        {canViewDocument && (
+                            <TabsTrigger
+                                className="whitespace-nowrap flex-shrink-0"
+                                value="project/detail-document"
+                            >
+                                <FileText /> Lampiran Dokumen
+                            </TabsTrigger>
+                        )}
+                        {canViewComment && (
+                            <TabsTrigger
+                                className="whitespace-nowrap flex-shrink-0"
+                                value="project/detail-comment"
+                            >
+                                <MessagesSquare /> Komentar
+                            </TabsTrigger>
+                        )}
                         <TabsTrigger
                             value="project/detail-trashed"
                             className="!text-red-500"
@@ -94,8 +136,8 @@ export default function ProjectDetailLayout({
                             <Trash /> Tugas dihapus
                         </TabsTrigger>
                     </TabsList>
-                    {children}
                 </Tabs>
+                {children}
             </div>
         </AppLayout>
     );

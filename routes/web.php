@@ -62,9 +62,9 @@ Route::middleware(["auth", "verified"])->group(function () {
         ->name("telegram.connect")
         ->middleware("auth");
 
-    Route::post("/comment", CreateCommentController::class)->name(
-        "comment.create",
-    );
+    Route::post("/comment", CreateCommentController::class)
+        ->name("comment.create")
+        ->middleware("can:comment.create");
 
     Route::prefix("/role")
         ->name("role.")
@@ -130,15 +130,19 @@ Route::middleware(["auth", "verified"])->group(function () {
                 Route::get("/{project}/activity", [
                     ViewProjectController::class,
                     "detailActivity",
-                ])->name("detail.activity");
+                ])
+                    ->name("detail.activity")
+                    ->middleware("can:activity.view");
                 Route::get("/{project}/document", [
                     ViewProjectController::class,
-                    "detailDocument",   
+                    "detailDocument",
                 ])->name("detail.document");
                 Route::get("/{project}/comment", [
                     ViewProjectController::class,
                     "detailComment",
-                ])->name("detail.comment");
+                ])
+                    ->name("detail.comment")
+                    ->middleware("can:comment.view");
                 Route::get("/{project}/trashed", [
                     ViewProjectController::class,
                     "detailTrashed",
@@ -210,24 +214,26 @@ Route::middleware(["auth", "verified"])->group(function () {
     Route::prefix("/document")
         ->name("document.")
         ->group(function () {
-            Route::get("/", [ViewDocumentController::class, "index"])->name(
-                "index",
-            );
-            Route::post("/", CreateDocumentController::class)->name("create");
-            Route::get("/{document}", DownloadDocumentController::class)->name(
-                "download",
-            );
-            Route::delete("/{document}", DeleteDocumentController::class)->name(
-                "delete",
-            );
+            Route::get("/", [ViewDocumentController::class, "index"])
+                ->name("index")
+                ->middleware("permission:document.view.all|document.view.own");
+            Route::post("/", CreateDocumentController::class)
+                ->name("create")
+                ->middleware("can:document.create");
+            Route::get("/{document}", DownloadDocumentController::class)
+                ->name("download")
+                ->middleware("permission:document.view.all|document.view.own");
+            Route::delete("/{document}", DeleteDocumentController::class)
+                ->name("delete")
+                ->middleware("can:document.delete");
         });
 
     Route::prefix("/activity")
         ->name("activity.")
         ->group(function () {
-            Route::get("/", [ViewActivityController::class, "index"])->name(
-                "index",
-            );
+            Route::get("/", [ViewActivityController::class, "index"])
+                ->name("index")
+                ->middleware("can:activity.view");
         });
 });
 

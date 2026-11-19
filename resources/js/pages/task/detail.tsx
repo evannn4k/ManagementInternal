@@ -11,6 +11,7 @@ import { TaskSubTask } from "./components/task-sub-task";
 import { TaskDocument } from "./components/task-document";
 import { CommentResource } from "../comment/components/comment-resource";
 import { CommentType } from "@/types/data/comment";
+import { can } from "@/lib/middleware";
 
 export default function ProjectPage({
     task,
@@ -58,16 +59,20 @@ export default function ProjectPage({
                             </CardContent>
                         </Card>
                         <TaskSubTask task={task} />
-                        <TaskDocument
-                            task={task}
-                            taskType={taskType}
-                            documents={task.documents}
-                        />
-                        <CommentResource
-                            comments={comments.data}
-                            commentable_id={task.id}
-                            commentable_type={taskType}
-                        />
+                        {can(["document.view.all", "document.view.own"]) && (
+                            <TaskDocument
+                                task={task}
+                                taskType={taskType}
+                                documents={task.documents}
+                            />
+                        )}
+                        {can("comment.view") && (
+                            <CommentResource
+                                comments={comments.data}
+                                commentable_id={task.id}
+                                commentable_type={taskType}
+                            />
+                        )}
                     </div>
                     <TaskDetailData task={task} />
                 </div>

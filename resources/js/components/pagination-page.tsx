@@ -38,8 +38,8 @@ export function PaginationPage({
 }) {
     return (
         <Card className="p-2 bg-muted/50">
-            <CardContent className="flex justify-between items-center gap-6 p-0">
-                <Field orientation="horizontal" className="w-fit">
+            <CardContent className="flex flex-col md:flex-row md:justify-between items-center gap-6 p-0">
+                <Field orientation="horizontal" className="me-auto">
                     <Select
                         defaultValue="10"
                         onValueChange={(value) =>
@@ -65,8 +65,8 @@ export function PaginationPage({
                         Baris per halaman
                     </FieldLabel>
                 </Field>
-                <div className="flex gap-4 md:gap-6 items-center">
-                    <FieldLabel>
+                <div className="flex justify-between w-full gap-4 md:gap-6 items-center">
+                    <FieldLabel className="ms-2">
                         Halaman {meta.current_page} dari {meta.last_page}
                     </FieldLabel>
                     <Pagination>

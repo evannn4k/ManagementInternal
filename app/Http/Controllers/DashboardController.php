@@ -93,7 +93,10 @@ class DashboardController extends Controller
             "overdueTasks" => [],
         ];
 
-        if ($user->can("dashboard.view.project")) {
+        if (
+            $user->can("dashboard.view.project") ||
+            $user->can("dashboard.view.sistem")
+        ) {
             $statusDistribution = [
                 "pending" => 0,
                 "running" => 0,
@@ -133,7 +136,7 @@ class DashboardController extends Controller
                 "status",
                 fn($query) => $query->where("type", "running"),
             )->count();
-            
+
             $projectData = Project::selectRaw(
                 "
                     COUNT(CASE WHEN status = 'running' THEN 1 END) as total_running_project,

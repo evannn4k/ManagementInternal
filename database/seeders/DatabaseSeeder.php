@@ -104,7 +104,42 @@ class DatabaseSeeder extends Seeder
                 "name" => "task.delete",
                 "description" => "Menghapus tugas dari suatu proyek",
             ],
-           
+            [
+                "name" => "document.view.all",
+                "description" => "Melihat semua data dokumen",
+            ],
+            [
+                "name" => "document.view.own",
+                "description" => "Melihat data dokumen milik sendiri",
+            ],
+            [
+                "name" => "document.create",
+                "description" => "Membuat dokumen baru",
+            ],
+            [
+                "name" => "document.delete",
+                "description" => "Menghapus dokumen",
+            ],
+            [
+                "name" => "activity.view",
+                "description" => "Melihat riwayat aktivitas dokumen",
+            ],
+            [
+                "name" => "comment.view",
+                "description" => "Melihat komentar",
+            ],
+            [
+                "name" => "comment.create",
+                "description" => "Menambahkan komentar",
+            ],
+            [
+                "name" => "comment.delete",
+                "description" => "Menghapus komentar",
+            ],
+            [
+                "name" => "activity.view",
+                "description" => "Melihat riwayat aktivitas",
+            ],
         ];
 
         foreach ($permissions as $permission) {

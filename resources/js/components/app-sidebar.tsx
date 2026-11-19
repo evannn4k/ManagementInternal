@@ -55,6 +55,7 @@ const navigationNavItems: NavItem[] = [
         title: "Dokumen",
         href: documentIndex(),
         icon: FileText,
+        permission: ["document.view.own", "document.view.all"],
     },
 ];
 
@@ -75,6 +76,7 @@ const administrationNavItems: NavItem[] = [
         title: "Aktivitas",
         href: activityIndex(),
         icon: Activity,
+        permission: "activity.view",
     },
     {
         title: "Setelan",

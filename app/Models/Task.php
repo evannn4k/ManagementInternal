@@ -9,6 +9,7 @@ use App\Models\Status;
 use App\Models\SubTask;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Attributes\Guarded;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -53,7 +54,7 @@ class Task extends Model
         return $this->status->project;
     }
 
-    public function scopeOwn($query, User $user, $execution = true)
+    public function scopeOwn(Builder $query, User $user, $execution = true)
     {
         if (!$execution) {
             return $query;
