@@ -27,5 +27,6 @@ export interface FormFieldProps {
     disabled?: boolean;
     setData?: null | any;
     orientation?: string;
+    input?: any;
     className?: string;
 }

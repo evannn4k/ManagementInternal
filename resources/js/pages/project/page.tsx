@@ -58,7 +58,10 @@ export default function ProjectPage({
                         <h1 className="font-semibold text-2xl md:text-3xl">
                             Daftar Proyek
                         </h1>
-                        <p>Pantau daftar tugas harian, tetapkan prioritas kerja, atur tenggat waktu, dan selesaikan target proyek.
+                        <p>
+                            Pantau daftar tugas harian, tetapkan prioritas
+                            kerja, atur tenggat waktu, dan selesaikan target
+                            proyek.
                         </p>
                     </div>
                     <div className="flex items-center gap-2">
@@ -74,22 +77,56 @@ export default function ProjectPage({
                     </div>
                 </header>
                 <ProjectSectionCard cardData={cardData} />
-                <Tabs defaultValue="" onValueChange={handleChangeTab}>
-                    <TabsList className="bg-muted/50 p-2 w-full flex justify-start sm:justify-center overflow-x-auto no-scrollbar">
-                        <TabsTrigger className="whitespace-nowrap flex-shrink-0" value="">Semua</TabsTrigger>
-                        <TabsTrigger className="whitespace-nowrap flex-shrink-0" value="running">Berjalan</TabsTrigger>
-                        <TabsTrigger className="whitespace-nowrap flex-shrink-0" value="done">Selesai</TabsTrigger>
-                        <TabsTrigger className="whitespace-nowrap flex-shrink-0" value="hold">Ditahan</TabsTrigger>
-                        <TabsTrigger className="whitespace-nowrap flex-shrink-0" value="canceled">Dibatalklan</TabsTrigger>
-                        <TabsTrigger className="whitespace-nowrap flex-shrink-0" value="archived">
+                <Tabs
+                    className="rounded-xl overflow-hidden border w-full min-w-0"
+                    onValueChange={handleChangeTab}
+                >
+                    <TabsList
+                        variant="line"
+                        className="bg-muted/50 p-2 w-full max-w-full min-w-0 flex items-center justify-start overflow-x-auto no-scrollbar"
+                    >
+                        <TabsTrigger
+                            className="whitespace-nowrap flex-shrink-0"
+                            value=""
+                        >
+                            Semua
+                        </TabsTrigger>
+                        <TabsTrigger
+                            className="whitespace-nowrap flex-shrink-0"
+                            value="running"
+                        >
+                            Berjalan
+                        </TabsTrigger>
+                        <TabsTrigger
+                            className="whitespace-nowrap flex-shrink-0"
+                            value="done"
+                        >
+                            Selesai
+                        </TabsTrigger>
+                        <TabsTrigger
+                            className="whitespace-nowrap flex-shrink-0"
+                            value="hold"
+                        >
+                            Ditahan
+                        </TabsTrigger>
+                        <TabsTrigger
+                            className="whitespace-nowrap flex-shrink-0"
+                            value="canceled"
+                        >
+                            Dibatalklan
+                        </TabsTrigger>
+                        <TabsTrigger
+                            className="whitespace-nowrap flex-shrink-0"
+                            value="archived"
+                        >
                             <Archive /> Diarsipkan
                         </TabsTrigger>
                     </TabsList>
-                    <Card className="bg-muted/50 gap-4 pb-0">
-                        <ProjectToolbar url={url} updateQuery={updateQuery} />
-                        <ProjectGrid modal={modal} projects={data.data} />
-                    </Card>
                 </Tabs>
+                <Card className="bg-muted/50 gap-4 pb-0">
+                    <ProjectToolbar url={url} updateQuery={updateQuery} />
+                    <ProjectGrid modal={modal} projects={data.data} />
+                </Card>
                 {data.data.length > 0 && (
                     <PaginationPage
                         updateQuery={updateQuery}

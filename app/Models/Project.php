@@ -82,4 +82,9 @@ class Project extends Model
     {
         return $this->morphMany(Comment::class, "commentable");
     }
+
+    public function sprints()
+    {
+        return $this->hasMany(Sprint::class);
+    }
 }

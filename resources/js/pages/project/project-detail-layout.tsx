@@ -2,6 +2,8 @@ import {
     Activity,
     FileText,
     MessagesSquare,
+    RefreshCw,
+    RotateCcw,
     SquareKanban,
     Trash,
     Users,
@@ -20,6 +22,7 @@ import {
     comment as detailComment,
     trashed as detailTrashed,
 } from "@/routes/project/detail";
+import { index as detailSprint } from "@/routes/project/sprint";
 import { detail as detailProject } from "@/routes/project";
 import { can } from "@/lib/middleware";
 
@@ -45,6 +48,8 @@ export default function ProjectDetailLayout({
 
         if (val == "project/detail-team") {
             url = detailTeam(project.id).url;
+        } else if (val == "project/detail-sprint") {
+            url = detailSprint(project.id).url;
         } else if (val == "project/detail-activity") {
             if (!canViewActivity) {
                 return;
@@ -91,13 +96,26 @@ export default function ProjectDetailLayout({
                     </h1>
                 </header>
                 <ProjectDetailData project={project} />
-                <Tabs value={component} onValueChange={handleChangeTab}>
-                    <TabsList className="bg-muted/50 p-2 w-full flex justify-start sm:justify-center overflow-x-auto no-scrollbar">
+                <Tabs
+                    value={component}
+                    onValueChange={handleChangeTab}
+                    className="rounded-xl overflow-hidden border w-full min-w-0"
+                >
+                    <TabsList
+                        variant="line"
+                        className="bg-muted/50 p-2 w-full max-w-full min-w-0 flex items-center justify-start overflow-x-auto no-scrollbar"
+                    >
                         <TabsTrigger
                             className="whitespace-nowrap flex-shrink-0"
                             value="project/detail"
                         >
                             <SquareKanban /> Kanban Board
+                        </TabsTrigger>
+                        <TabsTrigger
+                            className="whitespace-nowrap flex-shrink-0"
+                            value="project/detail-sprint"
+                        >
+                            <RefreshCw /> Sprint
                         </TabsTrigger>
                         <TabsTrigger
                             className="whitespace-nowrap flex-shrink-0"

@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        // $role = Role::firstOrCreate(["name" => "admin", "description" => "Akses menyeluruh terhadap kofigurasi server dan sistem.", "is_system" => true]);
+        $role = Role::firstOrCreate(["name" => "admin", "description" => "Akses menyeluruh terhadap kofigurasi server dan sistem.", "is_system" => true]);
 
         $permissions = [
             [
@@ -156,18 +156,18 @@ class DatabaseSeeder extends Seeder
             );
         }
 
-        // $role->givePermissionTo(Permission::all());
+        $role->givePermissionTo(["role.manage", "dashboard.view.sistem"]);
 
-        // $admin = User::firstOrCreate([
-        //     "name" => "SUPER ADMIN",
-        //     "email" => "yahyaevan8@gmail.com",
-        //     "password" => Hash::make("123123123"),
-        //     "email_verified_at" => now(),
-        //     "is_active" => true,
-        // ]);
+        $admin = User::firstOrCreate([
+            "name" => "SUPER ADMIN",
+            "email" => "yahyaevan8@gmail.com",
+            "password" => Hash::make("123123123"),
+            "email_verified_at" => now(),
+            "is_active" => true,
+        ]);
 
-        // $admin = User::where("email", "yahyaevan8@gmail.com")->first();
+        $admin = User::where("email", "yahyaevan8@gmail.com")->first();
 
-        // $admin->assignRole("admin");
+        $admin->assignRole("admin");
     }
 }

@@ -76,7 +76,7 @@ export function TaskToolbar({
                 <div className="flex gap-2">
                     {can("task.view.all") && (
                         <div className="flex items-center space-x-2">
-                            <Label htmlFor="my-task">Tugas Saya Saja</Label>
+                            <Label htmlFor="my-task">Tugas Saya</Label>
                             <Switch
                                 id="my-task"
                                 onCheckedChange={(val: boolean) =>

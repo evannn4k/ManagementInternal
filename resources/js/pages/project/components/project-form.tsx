@@ -53,8 +53,6 @@ interface ProjectFormType {
     end_date: string;
     description: string;
     priority: string;
-    repo_url: string;
-    branch: string;
     status: string;
     statuses: { name: string; type: string }[];
     teams: number[];
@@ -93,8 +91,6 @@ export default function ProjectForm({
         end_date: "",
         description: "",
         priority: "",
-        repo_url: "",
-        branch: "",
         status: "",
         statuses: [],
         teams: [],
@@ -110,8 +106,6 @@ export default function ProjectForm({
                 end_date: isEdit ? modal.data.end_date : "",
                 description: isEdit ? modal.data.description : "",
                 priority: isEdit ? modal.data.priority : "",
-                repo_url: isEdit ? modal.data.repo_url : "",
-                branch: isEdit ? modal.data.branch : "",
                 status: isEdit ? modal.data.status : "",
             }));
             setStatus(modal.data?.statuses);
@@ -235,7 +229,7 @@ export default function ProjectForm({
             type: "radio-group",
             orientation: "horizontal",
             setData: setData,
-            cols: 3,
+            cols: 4,
             required: true,
             options: [
                 {
@@ -252,6 +246,11 @@ export default function ProjectForm({
                     label: "High",
                     value: "high",
                     className: "text-red-700",
+                },
+                {
+                    label: "Urgent",
+                    value: "urgent",
+                    className: "text-foreground",
                 },
             ],
             col: 2,
@@ -345,30 +344,6 @@ export default function ProjectForm({
                                             {...field}
                                         />
                                     ))}
-                                    <Card className="col-span-1 md:col-span-2 bg-muted/50 p-2">
-                                        <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4 p-2">
-                                            <FormField
-                                                col={2}
-                                                icon={CodeXml}
-                                                label="Git Repository URL"
-                                                name="repo_url"
-                                                error={errors.repo_url}
-                                                value={data.repo_url}
-                                                placeholder="acme-corp/identity-gateway"
-                                                onChange={handleChange}
-                                            />
-                                            <FormField
-                                                col={1}
-                                                icon={GitBranch}
-                                                label="Branch"
-                                                name="branch"
-                                                error={errors.branch}
-                                                value={data.branch}
-                                                placeholder="main"
-                                                onChange={handleChange}
-                                            />
-                                        </CardContent>
-                                    </Card>
                                 </FormSection>
                             </FieldSet>
                             <div className="col-span-1 md:col-span-2 flex flex-col gap-4">

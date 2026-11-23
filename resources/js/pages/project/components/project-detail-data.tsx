@@ -65,8 +65,8 @@ export function ProjectDetailData({ project }: { project: ProjectType }) {
             <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-0 lg:divide-x">
                     <div className="flex items-center gap-3 lg:pr-6">
-                        <Avatar className="size-11 border">
-                            <AvatarFallback className="bg-primary/10 font-semibold text-primary">
+                        <Avatar className="size-11 border border-black/30 bg-muted">
+                            <AvatarFallback className="font-semibold text-primary">
                                 {project.pic?.name ? (
                                     getInitials(project.pic.name)
                                 ) : (
@@ -159,17 +159,10 @@ export function ProjectDetailData({ project }: { project: ProjectType }) {
                             <div className="flex -space-x-2">
                                 {visibleTeams.map((member, index) => (
                                     <Avatar
+                                        className="size-8 border border-black/30 bg-muted"
                                         key={member.id}
-                                        className="size-8 border-2 border-background"
-                                        title={member.name}
                                     >
-                                        <AvatarFallback
-                                            className={`text-xs font-semibold ${
-                                                avatarColor[
-                                                    index % avatarColor.length
-                                                ]
-                                            }`}
-                                        >
+                                        <AvatarFallback className="font-semibold text-primary">
                                             {getInitials(member.name)}
                                         </AvatarFallback>
                                     </Avatar>

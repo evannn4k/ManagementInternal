@@ -123,6 +123,18 @@ class ViewProjectController extends Controller
         return Inertia::render("project/detail", compact("project"));
     }
 
+    public function detailSprint(Project $project)
+    {
+        $project->load([
+            "pic:id,name,position",
+            "pic.roles:id,name",
+            "teams:id,name,position",
+            "teams.roles:id,name",
+        ]);
+
+        return Inertia::render("project/detail-sprint", compact("project"));
+    }
+
     public function detailTeam(Request $request, Project $project)
     {
         $project->load([

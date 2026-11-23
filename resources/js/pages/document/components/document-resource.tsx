@@ -14,6 +14,7 @@ import {
     MoreVertical,
     FileUp,
     Trash2,
+    Paperclip,
 } from "lucide-react";
 import { useModal } from "@/hooks/use-modal";
 import { Button } from "@/components/ui/button";
@@ -97,7 +98,14 @@ export default function ResourceDocument({
 
             <Card className="bg-muted/50">
                 <CardHeader>
-                    <CardTitle>{title}</CardTitle>
+                    <CardTitle className="flex items-center gap-2">
+                        <Paperclip className="size-4" />
+                        <span>{title}</span>
+                    </CardTitle>
+                    <CardDescription>
+                        Pusat penyimpanan berkas, panduan, dan dokumen pendukung
+                        untuk kebutuhan kolaborasi tim
+                    </CardDescription>
                     <CardAction>
                         {can("document.create") && (
                             <Button

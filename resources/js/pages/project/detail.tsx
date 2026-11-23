@@ -2,6 +2,7 @@ import { ProjectType } from "@/types/data/project";
 import ProjectDetailLayout from "./project-detail-layout";
 import { useState } from "react";
 import { router } from "@inertiajs/react";
+import { ProjectDetailSprint } from "./components/project-detail-sprint";
 import { ProjectDetailToolbar } from "./components/project-detail-toolbar";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -77,7 +78,7 @@ export default function ProjectDetail({ project }: { project: ProjectType }) {
                     project={project}
                     updateQuery={updateQuery}
                 />
-                <Separator />
+                <ProjectDetailSprint updateQuery={updateQuery} />
                 <TaskKanban
                     statuses={project.statuses}
                     taskModal={taskModal}

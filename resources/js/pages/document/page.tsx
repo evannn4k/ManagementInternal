@@ -1,14 +1,7 @@
-import { Button } from "@/components/ui/button";
-import { Archive, Download, Paperclip, Plus, ShieldCheck, View } from "lucide-react";
 import { LaravelPagination } from "@/types/paginate";
-import { CardData, ProjectGridType } from "@/types/data/project";
 import { PaginationPage } from "@/components/pagination-page";
 import { useState } from "react";
 import { Head, router } from "@inertiajs/react";
-import { useModal } from "@/hooks/use-modal";
-import { UserWithRole } from "@/types/data/user";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card } from "@/components/ui/card";
 import ResourceDocument from "./components/document-resource";
 import { DocumentType } from "@/types/data/document";
 import { index as documentIndex } from "@/routes/document";
@@ -39,8 +32,6 @@ export default function ProjectPage({
         });
     };
 
-    console.log(data)
-    
     return (
         <>
             <Head title="Project" />
@@ -50,20 +41,16 @@ export default function ProjectPage({
                         <h1 className="font-semibold text-2xl md:text-3xl">
                             Lampiran Dokuumemn & Assets
                         </h1>
-                        <p>Arsipkan, kelola, dan unduh seluruh file serta lampiran penting yang terhubung ke berbagai modul sistem.
+                        <p>
+                            Arsipkan, kelola, dan unduh seluruh file serta
+                            lampiran penting yang terhubung ke berbagai modul
+                            sistem.
                         </p>
                     </div>
                 </header>
                 <ResourceDocument
                     documents={data.data}
-                    title={(
-                        <span className="flex gap-2 items-center">
-                            <Paperclip />
-                            <span>
-                                Lampiran Dokumen & Assets
-                            </span>
-                        </span>
-                    )}
+                    title="Lampiran Dokumen & Assets"
                     column={5}
                 />
                 <PaginationPage

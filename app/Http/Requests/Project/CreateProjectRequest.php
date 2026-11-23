@@ -29,8 +29,6 @@ class CreateProjectRequest extends FormRequest
             "end_date" => "required|date|after_or_equal:start_date",
             "description" => "required|string",
             "priority" => "required|string|in:low,medium,high",
-            "repo_url" => "required|string|max:255",
-            "branch" => "required|string|max:255",
             "status" => "required|string|max:255|in:running,done,hold,canceled,archived",
             "statuses" => "required|array",
             "statuses.*.name" => "required|string|max:255",

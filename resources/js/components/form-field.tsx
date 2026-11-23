@@ -49,11 +49,12 @@ export default function FormField({
     min,
     cols = 2,
     col = 1,
-    step = 1,
+    step = 1,   
     hidden = false,
     disabled = false,
     setData = null,
     orientation = "vertical",
+    input,
     className,
 }: FormFieldProps) {
     if (hidden) return null;
@@ -61,6 +62,8 @@ export default function FormField({
 
     const renderInput = () => {
         switch (type) {
+            case "custom":
+                return input;
             case "text":
             case "time":
             case "datetime-local":

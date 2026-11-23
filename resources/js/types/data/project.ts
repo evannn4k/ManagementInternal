@@ -29,8 +29,6 @@ export type ProjectType = {
     start_date: string;
     end_date: string;
     priority: string;
-    repo_url: string;
-    branch: string;
     status: string;
     createdBy: UserWithRole;
     pic: UserWithRole;

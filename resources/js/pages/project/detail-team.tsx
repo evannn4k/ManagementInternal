@@ -2,6 +2,7 @@ import {
     Card,
     CardAction,
     CardContent,
+    CardDescription,
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
@@ -23,7 +24,12 @@ import { detail as userDetail } from "@/routes/user";
 import ProjectTeamForm from "./components/project-team-form";
 import ProjectDetailLayout from "./project-detail-layout";
 import { ProjectType } from "@/types/data/project";
-import { Empty, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
+import {
+    Empty,
+    EmptyHeader,
+    EmptyMedia,
+    EmptyTitle,
+} from "@/components/ui/empty";
 
 export default function ProjectDetailTeam({
     project,
@@ -47,6 +53,7 @@ export default function ProjectDetailTeam({
             <Card className="bg-muted/50">
                 <CardHeader>
                     <CardTitle>Anggota & Tim</CardTitle>
+                    <CardDescription>Kelola, pantau progres, dan atur alur pengerjaan seluruh task dalam proyek ini.</CardDescription>
                     <CardAction>
                         <Button
                             size="sm"
@@ -67,8 +74,8 @@ export default function ProjectDetailTeam({
                             >
                                 <Link href={userDetail(team.id).url}>
                                     <ItemMedia>
-                                        <Avatar>
-                                            <AvatarFallback>
+                                        <Avatar className="border-black/30 bg-muted">
+                                            <AvatarFallback className="font-semibold text-primary">
                                                 {getInitials(team.name)}
                                             </AvatarFallback>
                                         </Avatar>
@@ -95,7 +102,9 @@ export default function ProjectDetailTeam({
                                     <EmptyMedia variant="icon">
                                         <UserRoundX />
                                     </EmptyMedia>
-                                    <EmptyTitle>Belum ada team tertugas.</EmptyTitle>
+                                    <EmptyTitle>
+                                        Belum ada team tertugas.
+                                    </EmptyTitle>
                                 </EmptyHeader>
                             </Empty>
                         </div>

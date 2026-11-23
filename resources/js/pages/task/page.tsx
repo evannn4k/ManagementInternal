@@ -97,13 +97,37 @@ export default function TaskPage({
                     )}
                 </header>
                 <TaskSectionCard cardData={cardData} />
-
-                <Tabs defaultValue="all" onValueChange={handleChangeTab}>
-                    <TabsList className="bg-muted/50 p-2 w-full flex justify-start sm:justify-center overflow-x-auto no-scrollbar">
-                        <TabsTrigger className="whitespace-nowrap flex-shrink-0" value="all">Semua</TabsTrigger>
-                        <TabsTrigger className="whitespace-nowrap flex-shrink-0" value="due">Terlambat</TabsTrigger>
-                        <TabsTrigger className="whitespace-nowrap flex-shrink-0" value="this_week">Minggu Ini</TabsTrigger>
-                        <TabsTrigger className="whitespace-nowrap flex-shrink-0 !text-red-500" value="trashed">
+                <Tabs
+                    defaultValue="all"
+                    onValueChange={handleChangeTab}
+                    className="rounded-xl overflow-hidden border w-full min-w-0"
+                >
+                    <TabsList
+                        variant="line"
+                        className="bg-muted/50 p-2 w-full max-w-full min-w-0 flex items-center justify-start overflow-x-auto no-scrollbar"
+                    >
+                        <TabsTrigger
+                            className="whitespace-nowrap flex-shrink-0"
+                            value="all"
+                        >
+                            Semua
+                        </TabsTrigger>
+                        <TabsTrigger
+                            className="whitespace-nowrap flex-shrink-0"
+                            value="due"
+                        >
+                            Terlambat
+                        </TabsTrigger>
+                        <TabsTrigger
+                            className="whitespace-nowrap flex-shrink-0"
+                            value="this_week"
+                        >
+                            Minggu Ini
+                        </TabsTrigger>
+                        <TabsTrigger
+                            className="whitespace-nowrap flex-shrink-0 !text-red-500"
+                            value="trashed"
+                        >
                             <Trash /> Tugas dihapus
                         </TabsTrigger>
                     </TabsList>

@@ -83,8 +83,8 @@ export function CommentResource({
                         comments.map((comment) => (
                             <Message key={comment.id}>
                                 <MessageAvatar>
-                                    <Avatar className="size-11 border">
-                                        <AvatarFallback className="bg-primary/10 font-semibold text-primary">
+                                    <Avatar className="size-11 border-black/30 bg-muted">
+                                        <AvatarFallback className="font-semibold text-primary">
                                             {comment?.user ? (
                                                 getInitials(comment?.user.name)
                                             ) : (

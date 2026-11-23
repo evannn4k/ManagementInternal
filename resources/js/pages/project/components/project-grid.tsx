@@ -12,8 +12,10 @@ import {
     CalendarDays,
     FileText,
     FolderGit2,
+    FolderX,
     MoreVertical,
     PackageOpen,
+    Plus,
     SquarePen,
     Trash2,
     Users,
@@ -32,6 +34,14 @@ import { ProjectGridType } from "@/types/data/project";
 import { UseModalReturn } from "@/types/modal";
 import { detail as detailProject } from "@/routes/project";
 import { archive as archiveProject } from "@/routes/project";
+import {
+    Empty,
+    EmptyContent,
+    EmptyDescription,
+    EmptyHeader,
+    EmptyMedia,
+    EmptyTitle,
+} from "@/components/ui/empty";
 
 import { Item, ItemContent, ItemDescription } from "@/components/ui/item";
 import { cn } from "@/lib/utils";
@@ -227,16 +237,23 @@ export function ProjectGrid({
                     })}
                 </div>
             ) : (
-                <Item className="w-full flex justify-center rounded-xl">
-                    <ItemContent>
-                        <div className="text-center flex flex-col items-center justify-center gap-2 py-4">
-                            <PackageOpen />
-                            <ItemDescription>
-                                Tidak ada data proyek.
-                            </ItemDescription>
-                        </div>
-                    </ItemContent>
-                </Item>
+                <Empty>
+                    <EmptyHeader>
+                        <EmptyMedia variant="icon">
+                            <FolderX />
+                        </EmptyMedia>
+                        <EmptyTitle>Belum Ada Proyek</EmptyTitle>
+                        <EmptyDescription>
+                            Buat proyek baru untuk mulai mengelola data dan
+                            progres tim di sini.
+                        </EmptyDescription>
+                    </EmptyHeader>
+                    <EmptyContent>
+                        <Button size="sm" onClick={() => modal.openCreate()}>
+                            <Plus /> Proyek Baru
+                        </Button>
+                    </EmptyContent>
+                </Empty>
             )}
         </>
     );

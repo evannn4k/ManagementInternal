@@ -22,9 +22,11 @@ import { UseModalReturn } from "@/types/modal";
 import { TableHeadType } from "@/types/table";
 import { Link } from "@inertiajs/react";
 import {
+    ClipboardX,
     FileText,
     MoreVertical,
     PackageOpen,
+    Plus,
     SquarePen,
     Trash2,
 } from "lucide-react";
@@ -32,6 +34,14 @@ import { detail as detailTask } from "@/routes/task";
 import { detail as detailProject } from "@/routes/project";
 import { TaskType } from "@/types/data/task";
 import { ProjectType } from "@/types/data/project";
+import {
+    Empty,
+    EmptyContent,
+    EmptyDescription,
+    EmptyHeader,
+    EmptyMedia,
+    EmptyTitle,
+} from "@/components/ui/empty";
 
 export function TaskTable({
     data,
@@ -146,14 +156,32 @@ export function TaskTable({
                         <TableRow>
                             <TableCell
                                 colSpan={tableHead.length}
-                                className="h-24 text-center"
+                                className="text-center"
                             >
-                                <div className="col-span-1 md:col-span-3 text-center flex flex-col items-center justify-center gap-2 py-4">
-                                    <PackageOpen />
-                                    <CardDescription>
-                                        Belum ada tugas.
-                                    </CardDescription>
-                                </div>
+                                <Empty>
+                                    <EmptyHeader>
+                                        <EmptyMedia variant="icon">
+                                            <ClipboardX />
+                                        </EmptyMedia>
+                                        <EmptyTitle>Belum Ada Tugas</EmptyTitle>
+                                        <EmptyDescription>
+                                            Mulai tambahkan tugas baru untuk
+                                            memantau progres pekerjaan tim.{" "}
+                                        </EmptyDescription>
+                                    </EmptyHeader>
+                                    {modal && (
+                                        <EmptyContent>
+                                            <Button
+                                                size="sm"
+                                                onClick={() =>
+                                                    modal.openCreate()
+                                                }
+                                            >
+                                                <Plus /> Proyek Baru
+                                            </Button>
+                                        </EmptyContent>
+                                    )}
+                                </Empty>
                             </TableCell>
                         </TableRow>
                     )}

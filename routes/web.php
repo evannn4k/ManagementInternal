@@ -43,6 +43,7 @@ use App\Http\Controllers\Document\DeleteDocumentController;
 use App\Http\Controllers\Document\DownloadDocumentController;
 use App\Http\Controllers\Document\ViewDocumentController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\Project\Sprint\CreateSprintController;
 use Illuminate\Support\Facades\Route;
 
 Route::inertia("/", "welcome")->name("home");
@@ -123,26 +124,31 @@ Route::middleware(["auth", "verified"])->group(function () {
                     ViewProjectController::class,
                     "detail",
                 ])->name("detail");
+
                 Route::get("/{project}/team", [
                     ViewProjectController::class,
                     "detailTeam",
                 ])->name("detail.team");
+
                 Route::get("/{project}/activity", [
                     ViewProjectController::class,
                     "detailActivity",
                 ])
                     ->name("detail.activity")
                     ->middleware("can:activity.view");
+
                 Route::get("/{project}/document", [
                     ViewProjectController::class,
                     "detailDocument",
                 ])->name("detail.document");
+
                 Route::get("/{project}/comment", [
                     ViewProjectController::class,
                     "detailComment",
                 ])
                     ->name("detail.comment")
                     ->middleware("can:comment.view");
+
                 Route::get("/{project}/trashed", [
                     ViewProjectController::class,
                     "detailTrashed",
@@ -158,6 +164,16 @@ Route::middleware(["auth", "verified"])->group(function () {
             Route::delete("/{project}", DeleteProjectController::class)
                 ->name("delete")
                 ->middleware("can:project.delete");
+
+            Route::prefix("/{project}/sprint")
+                ->name("sprint.")
+                ->group(function () {
+                    Route::get("/", [
+                        ViewProjectController::class,
+                        "detailSprint",
+                    ])->name("index");
+                    Route::post("/", CreateSprintController::class)->name("create");
+                });
 
             Route::put("/team/{project}", UpdateTeamProjectController::class)
                 ->name("team.update")
