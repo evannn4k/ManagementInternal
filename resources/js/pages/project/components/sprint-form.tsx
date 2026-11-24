@@ -19,7 +19,8 @@ import { IconBox } from "@/components/icon";
 import { ProjectType } from "@/types/data/project";
 import { DatePickerRange } from "@/components/date-picker-range";
 import { DateRange } from "react-day-picker";
-import { create } from "@/routes/project/sprint";
+import { create, update } from "@/routes/project/sprint";
+import dayjs from "dayjs";
 
 interface SprintFormData {
     project_id: string;
@@ -72,6 +73,11 @@ export default function SprintForm({
                     start_date: modal.data.start_date ?? "",
                     end_date: modal.data.end_date ?? "",
                 }));
+
+                setDate({
+                    from: modal.data.start_date ?? "",
+                    to: modal.data.end_date ?? "",
+                });
             } else {
                 setData((prevData) => ({
                     ...prevData,
@@ -145,12 +151,12 @@ export default function SprintForm({
 
         transform((prev) => ({
             ...prev,
-            start_date: date?.from,
-            end_date: date?.to,
+            start_date: dayjs(date?.from).format("YYYY-MM-DD"),
+            end_date: dayjs(date?.to).format("YYYY-MM-DD"),
         }));
 
         if (isEdit) {
-            put("/sprint/" + modal.data?.id, {
+            put(update.url({ project: project.id, sprint: modal.data?.id }), {
                 onSuccess: () => {
                     modal.closeModal();
                     reset();

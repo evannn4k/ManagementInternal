@@ -25,13 +25,12 @@ class CreateTaskRequest extends FormRequest
         return [
             "title" => "required|string|max:255",
             "description" => "nullable|string",
-            "status_id" => "required_without:project_status_id|nullable|uuid|exists:statuses,id",
-            "project_status_id" => "required_without:status_id|nullable|uuid|exists:statuses,id",
+            "status_id" => "required|uuid|exists:statuses,id",
+            "sprint_id" => "nullable|uuid|exists:sprints,id",
             "priority" => "required|in:urgent,high,medium,low",
             "due_date" => "nullable|date",
             "label" => "nullable|array",
             "label.*" => "nullable|string",
-            "file" => "nullable|file|max:10240",
             "assigned" => "nullable|array",
             "assigned.*" => "nullable|integer",
         ];

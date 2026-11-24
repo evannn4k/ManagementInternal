@@ -10,3 +10,10 @@ interface SprintType {
     tasks_done?: number;
     tasks_total?: number;
 }
+
+interface SprintListType {
+    id: string;
+    number?: number;
+    name: string;
+}
+

@@ -16,7 +16,7 @@ import {
 import { UserWithRole } from "@/types/data/user";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { getInitials } from "@/lib/utils";
-import { PackageOpen, PenSquare, UserRoundX } from "lucide-react";
+import { PackageOpen, PenSquare, UserRoundX, Users } from "lucide-react";
 import { useModal } from "@/hooks/use-modal";
 import { Button } from "@/components/ui/button";
 import { Link } from "@inertiajs/react";
@@ -52,8 +52,14 @@ export default function ProjectDetailTeam({
             />
             <Card className="bg-muted/50">
                 <CardHeader>
-                    <CardTitle>Anggota & Tim</CardTitle>
-                    <CardDescription>Kelola, pantau progres, dan atur alur pengerjaan seluruh task dalam proyek ini.</CardDescription>
+                    <CardTitle className="flex items-center gap-2">
+                        <Users className="size-4"/>
+                        Anggota & Tim
+                    </CardTitle>
+                    <CardDescription>
+                        Kelola, pantau progres, dan atur alur pengerjaan seluruh
+                        task dalam proyek ini.
+                    </CardDescription>
                     <CardAction>
                         <Button
                             size="sm"

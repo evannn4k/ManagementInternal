@@ -37,14 +37,6 @@ class UpdateTaskController extends Controller
                 unset($credentials['assigned']);
                 unset($diffCredentials['label'], $diffCredentials['assigned']);
 
-                if ($request->hasFile('file')) {
-                    $filename = FileService::save("task/", $request->file("file"), $task->file);
-
-                    $credentials['file'] = $filename;
-                } else {
-                    unset($credentials['file']);
-                }
-
                 // pengecekan perubahan
                 $addedLabel = array_values(array_diff($newLabel, $oldLabel));
                 $removedLabel = array_values(array_diff($oldLabel, $newLabel));

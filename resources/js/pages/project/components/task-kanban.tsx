@@ -13,7 +13,7 @@ import { router } from "@inertiajs/react";
 import { UseModalReturn } from "@/types/modal";
 import { status as changeStatus } from "@/routes/task/change/index";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Plus, SquareKanban } from "lucide-react";
 
 export function TaskKanban({
     statuses: initialStatus,
@@ -73,7 +73,7 @@ export function TaskKanban({
                         tasks: [...status.tasks, draggedTask],
                     };
                 }
-                
+
                 return status;
             });
         });
@@ -89,7 +89,10 @@ export function TaskKanban({
         <>
             <DragDropProvider onDragEnd={handleDragEnd}>
                 <CardHeader>
-                    <CardTitle className="my-auto">Kanban Tugas</CardTitle>
+                    <CardTitle className="my-auto flex items-center gap-2">
+                        <SquareKanban className="size-6"/>
+                        Kanban Tugas
+                    </CardTitle>
                     <CardAction>
                         <Button
                             size="sm"

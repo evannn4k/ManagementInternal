@@ -15,7 +15,13 @@ import TaskForm from "../task/components/task-form";
 import { DeleteAlert } from "@/components/delete-alert";
 import ProjectFormStatusEdit from "./components/project-form-status-edit";
 
-export default function ProjectDetail({ project }: { project: ProjectType }) {
+export default function ProjectDetail({
+    project,
+    sprintsList,
+}: {
+    project: ProjectType;
+    sprintsList: SprintListType[];
+}) {
     const taskModal = useModal();
     const projectStatusModal = useModal();
     const [query, setQuery] = useState<{
@@ -58,7 +64,11 @@ export default function ProjectDetail({ project }: { project: ProjectType }) {
 
     return (
         <>
-            <TaskForm modal={taskModal} project={project} />
+            <TaskForm
+                modal={taskModal}
+                project={project}
+                sprintsList={sprintsList}
+            />
             <ProjectFormStatusEdit modal={projectStatusModal} />
             <DeleteAlert
                 modal={taskModal}

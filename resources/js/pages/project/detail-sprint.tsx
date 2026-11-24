@@ -13,11 +13,12 @@ import {
     Check,
     ChevronDown,
     CircleCheck,
-    Columns3,
+    SquareKanban,
     InfoIcon,
     Pencil,
     Play,
     Plus,
+    RefreshCw,
     RefreshCwOff,
     Search,
     SearchIcon,
@@ -52,6 +53,8 @@ import {
     AlertDescription,
     AlertTitle,
 } from "@/components/ui/alert";
+import { router } from "@inertiajs/react";
+import { changeStatus } from "@/routes/project/sprint";
 
 export default function ProjectDetailSprint({
     project,
@@ -62,7 +65,15 @@ export default function ProjectDetailSprint({
 }) {
     const modal = useModal();
 
-    console.log(sprints);
+    const activeSprint = sprints.filter((s) => s.status == "active");
+
+    const handleChangeStatus = (id: string, status: string) => {
+        router.patch(
+            changeStatus.url({ project: project.id, sprint: id }),
+            { status: status },
+            { preserveScroll: true, preserveState: true },
+        );
+    };
 
     return (
         <>
@@ -72,9 +83,10 @@ export default function ProjectDetailSprint({
                     {/* Header */}
                     <div className="flex items-center justify-between">
                         <div>
-                            <h1 className="text-2xl font-semibold tracking-tight">
+                            <CardTitle className="flex items-center gap-2">
+                                <RefreshCw className="size-4" />
                                 Sprint
-                            </h1>
+                            </CardTitle>
                             <p className="text-muted-foreground mt-1 text-sm">
                                 Kelola siklus kerja tim · Aplikasi Internal PM
                             </p>
@@ -108,78 +120,114 @@ export default function ProjectDetailSprint({
                         </InputGroup>
                     </div>
 
-                    {/* Sprint Aktif */}
-                    {/*<section className="space-y-3">
-                        <h2 className="text-sm font-semibold">Sprint Aktif</h2>
+                    {activeSprint.length > 0 ? (
+                        activeSprint.map((sprint) => {
+                            const completeTaskPercentation =
+                                sprint.tasks_done &&
+                                sprint.tasks_total &&
+                                sprint.tasks_total > 0
+                                    ? Math.round(
+                                          (sprint.tasks_done /
+                                              sprint.tasks_total) *
+                                              100,
+                                      )
+                                    : 0;
 
-                        <Card className="gap-5 rounded-xl py-6 shadow-sm">
-                            <CardHeader className="gap-1.5">
-                                <div className="flex items-start justify-between gap-3">
-                                    <CardTitle className="text-xl leading-snug">
-                                        Sprint 12 · Revamp Checkout
-                                    </CardTitle>
-                                    <Badge className="rounded-full px-2.5">
-                                        Active
-                                    </Badge>
-                                </div>
-                                <CardDescription className="leading-relaxed">
-                                    Menyederhanakan alur checkout dari 5 langkah
-                                    menjadi 3 langkah.
-                                </CardDescription>
-                            </CardHeader>
+                            return (
+                                <section className="space-y-3">
+                                    <h2 className="text-sm font-semibold">
+                                        Sprint Aktif
+                                    </h2>
 
-                            <CardContent className="space-y-4">
-                                <div className="text-muted-foreground flex items-center gap-1.5 text-sm">
-                                    <CalendarDays className="size-4" />
-                                    <span>11 Nov 2026 – 25 Nov 2026</span>
-                                </div>
+                                    <Card className="gap-5 rounded-xl py-6 shadow-sm">
+                                        <CardHeader className="gap-1.5">
+                                            <div className="flex items-start justify-between gap-3">
+                                                <CardTitle className="text-xl leading-snug">
+                                                    Sprint {sprint.number}
+                                                    {" · "}
+                                                    {sprint.name}{" "}
+                                                </CardTitle>
+                                                <Badge className="rounded-full px-2.5">
+                                                    {sprint.status}
+                                                </Badge>
+                                            </div>
+                                            <CardDescription className="leading-relaxed">
+                                                {sprint.description}
+                                            </CardDescription>
+                                        </CardHeader>
 
-                                <div className="space-y-2">
-                                    <div className="text-muted-foreground flex items-center justify-between text-xs">
-                                        <span>18/26 task selesai</span>
-                                        <span className="text-foreground font-semibold">
-                                            69%
-                                        </span>
-                                    </div>
-                                    <Progress value={69} className="h-1.5" />
-                                </div>
-                            </CardContent>
+                                        <CardContent className="space-y-4">
+                                            <div className="text-muted-foreground flex items-center gap-1.5 text-sm">
+                                                <CalendarDays className="size-4" />
+                                                <span>
+                                                    {sprint.start_date} –{" "}
+                                                    {sprint.end_date}{" "}
+                                                </span>
+                                            </div>
 
-                            <CardFooter className="gap-2">
-                                <Button variant="outline" size="sm">
-                                    <Columns3 />
-                                    Buka Kanban
-                                </Button>
-                                <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    className="size-8"
-                                    aria-label="Edit sprint"
-                                >
-                                    <Pencil />
-                                </Button>
-                                <Button size="sm" className="ml-auto">
-                                    <Check />
-                                    Selesaikan
-                                </Button>
-                            </CardFooter>
-                        </Card>
-                    </section>*/}
+                                            <div className="space-y-2">
+                                                <div className="text-muted-foreground flex items-center justify-between text-xs">
+                                                    <span>
+                                                        {sprint.tasks_done ?? 0}
+                                                        /
+                                                        {sprint.tasks_total ??
+                                                            0}{" "}
+                                                        task selesai{" "}
+                                                    </span>
+                                                    <span className="text-foreground font-semibold">
+                                                        {
+                                                            completeTaskPercentation
+                                                        }
+                                                        %{" "}
+                                                    </span>
+                                                </div>
+                                                <Progress
+                                                    value={
+                                                        completeTaskPercentation
+                                                    }
+                                                    className="h-1.5"
+                                                />
+                                            </div>
+                                        </CardContent>
 
-                    <Alert>
-                        <InfoIcon />
-                        <AlertTitle>
-                            Tidak ada sprint yang sedang berjalan!
-                        </AlertTitle>
-                        <AlertDescription className="text-xs flex">
-                            Pilih salah satu sprint di bawah lalu klik
-                            <span className="font-semibold">Mulai</span>
-                            untuk memulai siklus kerja baru.
-                        </AlertDescription>
-                        {/*<AlertAction>
-                            <Button variant="outline">Tambahkan</Button>
-                        </AlertAction>*/}
-                    </Alert>
+                                        <CardFooter className="gap-2">
+                                            <Button variant="outline" size="sm">
+                                                <SquareKanban />
+                                                Buka Kanban
+                                            </Button>
+                                            <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                className="size-8"
+                                                aria-label="Edit sprint"
+                                            >
+                                                <Pencil />
+                                            </Button>
+                                            <Button
+                                                size="sm"
+                                                className="ml-auto"
+                                            >
+                                                <Check />
+                                                Selesaikan
+                                            </Button>
+                                        </CardFooter>
+                                    </Card>
+                                </section>
+                            );
+                        })
+                    ) : (
+                        <Alert>
+                            <InfoIcon />
+                            <AlertTitle>
+                                Tidak ada sprint yang sedang berjalan!
+                            </AlertTitle>
+                            <AlertDescription className="text-xs flex">
+                                Pilih salah satu sprint di bawah lalu klik
+                                <span className="font-semibold">Mulai</span>
+                                untuk memulai siklus kerja baru.
+                            </AlertDescription>
+                        </Alert>
+                    )}
 
                     <section className="space-y-3">
                         <div className="flex items-center justify-between">
@@ -212,7 +260,8 @@ export default function ProjectDetailSprint({
                                         <CardHeader className="gap-1.5">
                                             <div className="flex items-start justify-between gap-3">
                                                 <CardTitle className="text-base leading-snug">
-                                                    Sprint {sprint.number} -
+                                                    Sprint {sprint.number}
+                                                    {" · "}
                                                     {sprint.name}
                                                 </CardTitle>
                                                 <Badge
@@ -239,8 +288,7 @@ export default function ProjectDetailSprint({
                                             <div className="space-y-2">
                                                 <div className="text-muted-foreground flex items-center justify-between text-xs">
                                                     <span>
-                                                        {sprint.tasks_total ??
-                                                            0}
+                                                        {sprint.tasks_done ?? 0}
                                                         /
                                                         {sprint.tasks_total ??
                                                             0}{" "}
@@ -264,26 +312,55 @@ export default function ProjectDetailSprint({
 
                                         <CardFooter className="gap-2">
                                             <Button variant="outline" size="sm">
-                                                <Columns3 />
+                                                <SquareKanban />
                                                 Buka Kanban
                                             </Button>
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                className="size-8"
-                                                aria-label="Edit sprint"
-                                            >
-                                                <Pencil />
-                                            </Button>
-                                            <Button
-                                                variant="outline"
-                                                size="sm"
-                                                className="ml-auto"
-                                                disabled
-                                            >
-                                                <Play />
-                                                Mulai
-                                            </Button>
+                                            {sprint.status != "completed" && (
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="size-8"
+                                                    aria-label="Edit sprint"
+                                                    onClick={() =>
+                                                        modal.openEdit(sprint)
+                                                    }
+                                                >
+                                                    <Pencil />
+                                                </Button>
+                                            )}
+                                            {sprint.status == "active" ? (
+                                                <Button
+                                                    size="sm"
+                                                    className="ml-auto"
+                                                    onClick={() =>
+                                                        handleChangeStatus(
+                                                            sprint.id,
+                                                            "completed",
+                                                        )
+                                                    }
+                                                >
+                                                    <Check />
+                                                    Selesaikan
+                                                </Button>
+                                            ) : sprint.status == "planned" ? (
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    className="ml-auto"
+                                                    disabled={Boolean(
+                                                        activeSprint.length > 0,
+                                                    )}
+                                                    onClick={() =>
+                                                        handleChangeStatus(
+                                                            sprint.id,
+                                                            "active",
+                                                        )
+                                                    }
+                                                >
+                                                    <Play />
+                                                    Mulai
+                                                </Button>
+                                            ) : null}
                                         </CardFooter>
                                     </Card>
                                 );

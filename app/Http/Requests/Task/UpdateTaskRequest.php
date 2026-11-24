@@ -29,7 +29,7 @@ class UpdateTaskRequest extends FormRequest
             "due_date" => "nullable|date",
             "label" => "nullable|array",
             "label.*" => "nullable|string",
-            "file" => "nullable|file|max:10240",
+            "sprint_id" => "nullable|uuid|exists:sprints,id",
             "assigned" => "nullable|array",
             "assigned.*" => "nullable|integer",
         ];

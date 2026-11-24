@@ -56,9 +56,9 @@ interface TaskFormData {
     title: string;
     description: string;
     status_id: string;
+    sprint_id: string;
     priority: string;
     due_date: string;
-    file: string;
     label: string[];
     assigned: number[];
 }
@@ -67,10 +67,12 @@ export default function TaskForm({
     modal,
     project,
     projects,
+    sprintsList,
 }: {
     modal: UseModalReturn;
     project?: ProjectType;
     projects?: any[];
+    sprintsList?: SprintListType[];
 }) {
     const isEdit = modal.isOpen("edit");
     const isOpenModal = modal.isOpen("create") || isEdit;
@@ -95,9 +97,9 @@ export default function TaskForm({
         title: "",
         description: "",
         status_id: "",
+        sprint_id: "",
         priority: "",
         due_date: "",
-        file: "",
         label: [],
         assigned: [],
     });
@@ -119,6 +121,7 @@ export default function TaskForm({
                 title: isEdit ? modal.data.title : "",
                 description: isEdit ? modal.data.description : "",
                 status_id: isEdit ? modal.data.status_id : "",
+                sprint_id: isEdit ? modal.data.sprint_id : "",
                 priority: isEdit ? modal.data.priority : "",
                 due_date: isEdit ? modal.data.due_date : "",
             }));
@@ -135,14 +138,11 @@ export default function TaskForm({
             HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
         >,
     ) => {
-        const { id, type, value } = e.target;
-
-        const files =
-            type === "file" ? (e.target as HTMLInputElement).files : null;
+        const { id, value } = e.target;
 
         setData({
             ...data,
-            [id]: files ? (files && files[0] ? files[0] : "") : value,
+            [id]: value,
         });
     };
 
@@ -157,7 +157,25 @@ export default function TaskForm({
             placeholder: "Authentication",
             col: 2,
         },
-
+        {
+            label: "Sprint",
+            name: "sprint_id",
+            error: errors.sprint_id,
+            value: data.sprint_id,
+            type: "select",
+            options: sprintsList
+                ? sprintsList.map((sprint) => ({
+                      label: "Sprint " + sprint.number + " - " + sprint.name,
+                      value: sprint.id,
+                  }))
+                : [],
+            onChange: handleChange,
+            required: false,
+            placeholder: "Masukan ke sprint",
+            hidden: Boolean(!sprintsList),
+            description: "Default status tugas",
+            col: 2,
+        },
         {
             label: "Tenggat Waktu",
             name: "due_date",
@@ -202,15 +220,6 @@ export default function TaskForm({
             placeholder: "Pilih project tugas",
             hidden: Boolean(project && !projects) || isEdit,
             description: "Default status tugas",
-        },
-        {
-            label: isEdit ? "File" : "Ganti File",
-            name: "file",
-            onChange: handleChange,
-            error: errors.file,
-            type: "file",
-            col: isEdit ? 1 : 2,
-            description: "Maksimal 10MB",
         },
         {
             label: "Prioritas",
@@ -335,8 +344,8 @@ export default function TaskForm({
                             <FieldDescription>
                                 Digunakan untuk membuat atau memperbarui detail
                                 tugas—termasuk judul, status, prioritas, tenggat
-                                waktu, deskripsi, lampiran file, label, serta
-                                penetapan anggota tim (PIC).
+                                waktu, deskripsi, label, serta penetapan anggota
+                                tim (PIC).
                             </FieldDescription>
                         </AlertDialogHeader>
                     </div>

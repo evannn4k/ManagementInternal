@@ -42,8 +42,10 @@ use App\Http\Controllers\Document\CreateDocumentController;
 use App\Http\Controllers\Document\DeleteDocumentController;
 use App\Http\Controllers\Document\DownloadDocumentController;
 use App\Http\Controllers\Document\ViewDocumentController;
-use App\Http\Controllers\ProductController;
+
+use App\Http\Controllers\Project\Sprint\ChangeStatusSprintController;
 use App\Http\Controllers\Project\Sprint\CreateSprintController;
+use App\Http\Controllers\Project\Sprint\UpdateSprintController;
 use Illuminate\Support\Facades\Route;
 
 Route::inertia("/", "welcome")->name("home");
@@ -172,7 +174,17 @@ Route::middleware(["auth", "verified"])->group(function () {
                         ViewProjectController::class,
                         "detailSprint",
                     ])->name("index");
-                    Route::post("/", CreateSprintController::class)->name("create");
+                    Route::post("/", CreateSprintController::class)->name(
+                        "create",
+                    );
+                    Route::put(
+                        "/{sprint}",
+                        UpdateSprintController::class,
+                    )->name("update");
+                    Route::patch(
+                        "/{sprint}",
+                        ChangeStatusSprintController::class,
+                    )->name("change-status");
                 });
 
             Route::put("/team/{project}", UpdateTeamProjectController::class)

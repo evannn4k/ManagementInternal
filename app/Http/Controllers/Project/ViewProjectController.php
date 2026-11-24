@@ -120,7 +120,15 @@ class ViewProjectController extends Controller
             "createdBy",
         ]);
 
-        return Inertia::render("project/detail", compact("project"));
+        $sprintsList = $project
+            ->sprints()
+            ->select(["id", "name", "number"])
+            ->get();
+
+        return Inertia::render(
+            "project/detail",
+            compact("project", "sprintsList"),
+        );
     }
 
     public function detailSprint(Project $project)
@@ -132,9 +140,23 @@ class ViewProjectController extends Controller
             "teams.roles:id,name",
         ]);
 
-        $sprints = $project->sprints()->with("tasks")->get();
+        $sprints = $project
+            ->sprints()
+            ->withCount([
+                "tasks as tasks_total",
+                "tasks as tasks_done" => function ($query) {
+                    $query->whereHas("status", function ($q) {
+                        $q->where("type", "completed");
+                    });
+                },
+            ])
+            ->get()
+            ->toArray();
         
-        return Inertia::render("project/detail-sprint", compact("project", "sprints"));
+        return Inertia::render(
+            "project/detail-sprint",
+            compact("project", "sprints"),
+        );
     }
 
     public function detailTeam(Request $request, Project $project)
