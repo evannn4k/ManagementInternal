@@ -27,14 +27,6 @@ class CreateTaskController extends Controller
 
                 unset($credentials['assigned']);
 
-                if ($credentials['file']) {
-
-                    ["file_name" => $filename] = FileService::save("task/", $request->file("file"));
-
-                    $credentials['file'] = $filename;
-                } else {
-                    unset($credentials['file']);
-                }
 
                 $teamIds = Project::whereHas("statuses", function ($query) use ($credentials) {
                     return $query->where("id", $credentials['status_id']);

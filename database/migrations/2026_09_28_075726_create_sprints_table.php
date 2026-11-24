@@ -13,11 +13,14 @@ return new class extends Migration {
         Schema::create("sprints", function (Blueprint $table) {
             $table->uuid("id")->primary();
             $table->foreignUuid("project_id")->constrained()->cascadeOnDelete();
+            $table->unsignedSmallInteger("number");
             $table->string("name");
             $table->text("description")->nullable();
             $table->date("start_date");
             $table->date("end_date");
-            $table->enum("status", ["planned", "active", "completed"]);
+            $table
+                ->enum("status", ["planned", "active", "completed"])
+                ->default("planned");
             $table->timestamps();
         });
     }

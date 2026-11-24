@@ -132,7 +132,9 @@ class ViewProjectController extends Controller
             "teams.roles:id,name",
         ]);
 
-        return Inertia::render("project/detail-sprint", compact("project"));
+        $sprints = $project->sprints()->with("tasks")->get();
+        
+        return Inertia::render("project/detail-sprint", compact("project", "sprints"));
     }
 
     public function detailTeam(Request $request, Project $project)

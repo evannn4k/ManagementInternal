@@ -36,6 +36,7 @@ export type ProjectType = {
     statuses: ProjectStatusType[];
     total_task?: number;
     tasks?: TaskType[];
+    sprints?: SprintType[];
 };
 
 export type ProjectStatusType = {

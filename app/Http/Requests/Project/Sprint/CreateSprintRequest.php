@@ -27,7 +27,6 @@ class CreateSprintRequest extends FormRequest
             "description" => "nullable|string",
             "start_date" => "nullable|date",
             "end_date" => "nullable|date|after_or_equal:start_date",
-            "status" => "required|in:planned,active,completed",
         ];
     }
 }

@@ -21,8 +21,19 @@ class CreateSprintController extends Controller
 
         try {
             DB::transaction(function () use ($credentials, $request, $project) {
+                $lastNumber = $project
+                    ->sprints()
+                    ->select("number")
+                    ->orderBy("number", "asc")
+                    ->first();
+
+                $number = $lastNumber ? $lastNumber++ : 1;
+
                 Sprint::create(
-                    array_merge($credentials, ["project_id" => $project->id]),
+                    array_merge($credentials, [
+                        "project_id" => $project->id,
+                        "number" => $number,
+                    ]),
                 );
             });
 

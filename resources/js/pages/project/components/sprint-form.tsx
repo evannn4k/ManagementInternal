@@ -27,7 +27,6 @@ interface SprintFormData {
     description: string;
     start_date: string;
     end_date: string;
-    status: "planned" | "active" | "completed" | "";
 }
 
 export default function SprintForm({
@@ -60,7 +59,6 @@ export default function SprintForm({
         description: "",
         start_date: "",
         end_date: "",
-        status: "",
     });
 
     useEffect(() => {
@@ -73,7 +71,6 @@ export default function SprintForm({
                     description: modal.data.description ?? "",
                     start_date: modal.data.start_date ?? "",
                     end_date: modal.data.end_date ?? "",
-                    status: modal.data.status ?? "",
                 }));
             } else {
                 setData((prevData) => ({
@@ -83,7 +80,6 @@ export default function SprintForm({
                     description: "",
                     start_date: "",
                     end_date: "",
-                    status: "planned",
                 }));
             }
         } else {
@@ -131,36 +127,6 @@ export default function SprintForm({
                 </>
             ),
             required: true,
-        },
-        {
-            label: "Status Sprint",
-            name: "status",
-            onChange: handleChange,
-            error: errors.status,
-            value: data.status,
-            type: "radio-group",
-            orientation: "horizontal",
-            setData: setData,
-            cols: 3,
-            required: true,
-            options: [
-                {
-                    label: "Planned",
-                    value: "planned",
-                    className: "text-blue-700 dark:text-blue-500",
-                },
-                {
-                    label: "Active",
-                    value: "active",
-                    className: "text-emerald-700 dark:text-emerald-500",
-                },
-                {
-                    label: "Completed",
-                    value: "completed",
-                    className: "text-muted-foreground",
-                },
-            ],
-            col: 2,
         },
         {
             label: "Deskripsi",
