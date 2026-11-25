@@ -14,6 +14,7 @@ import { deleteMethod as deleteStatusProject } from "@/routes/project/status";
 import TaskForm from "../task/components/task-form";
 import { DeleteAlert } from "@/components/delete-alert";
 import ProjectFormStatusEdit from "./components/project-form-status-edit";
+import { SelectSprint } from "./components/select-sprin";
 
 export default function ProjectDetail({
     project,
@@ -22,6 +23,7 @@ export default function ProjectDetail({
     project: ProjectType;
     sprintsList: SprintListType[];
 }) {
+    const sprintModal = useModal();
     const taskModal = useModal();
     const projectStatusModal = useModal();
     const [query, setQuery] = useState<{
@@ -82,17 +84,22 @@ export default function ProjectDetail({
                 description="Data status yang telah dihapus dapat dikembalikan."
                 handleDelete={handleDeleteProjectStatus}
             />
+            <SelectSprint modal={sprintModal} sprintsList={sprintsList} />
             <Card className="bg-muted/50 gap-4 pb-0">
                 <ProjectDetailToolbar
                     url={url}
                     project={project}
                     updateQuery={updateQuery}
                 />
-                <ProjectDetailSprint updateQuery={updateQuery} />
+                <ProjectDetailSprint
+                    sprintsList={sprintsList}
+                    updateQuery={updateQuery}
+                />
                 <TaskKanban
                     statuses={project.statuses}
                     taskModal={taskModal}
                     projectStatusModal={projectStatusModal}
+                    sprintModal={sprintModal}
                 />
             </Card>
         </>

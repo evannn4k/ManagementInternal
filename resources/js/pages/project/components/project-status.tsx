@@ -32,10 +32,12 @@ export function ProjectStatus({
     status,
     taskModal,
     projectStatusModal,
+    sprintModal,
 }: {
     status: ProjectStatusType;
     taskModal: UseModalReturn;
     projectStatusModal: UseModalReturn;
+    sprintModal: UseModalReturn;
 }) {
     const { ref } = useDroppable({
         id: status.id,
@@ -102,7 +104,12 @@ export function ProjectStatus({
             <ItemContent className="p-0 flex-1 flex flex-col gap-3 w-full">
                 {status.tasks.length > 0 ? (
                     status.tasks.map((task) => (
-                        <TaskCard key={task.id} task={task} modal={taskModal} />
+                        <TaskCard
+                            key={task.id}
+                            task={task}
+                            modal={taskModal}
+                            sprintModal={sprintModal}
+                        />
                     ))
                 ) : (
                     <Empty>
@@ -110,7 +117,9 @@ export function ProjectStatus({
                             <EmptyMedia>
                                 <ClipboardX />
                             </EmptyMedia>
-                            <EmptyDescription className="text-xs/4">Belum ada tugas</EmptyDescription>
+                            <EmptyDescription className="text-xs/4">
+                                Belum ada tugas
+                            </EmptyDescription>
                         </EmptyHeader>
                     </Empty>
                 )}

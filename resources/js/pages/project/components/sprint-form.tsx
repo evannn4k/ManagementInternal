@@ -33,9 +33,14 @@ interface SprintFormData {
 export default function SprintForm({
     modal,
     project,
+    conflictDate,
 }: {
     modal: UseModalReturn;
     project: ProjectType;
+    conflictDate: {
+        from: Date | undefined;
+        to: Date | undefined;
+    }[];
 }) {
     const isEdit = modal.isOpen("edit");
     const isOpenModal = modal.isOpen("create") || isEdit;
@@ -129,6 +134,7 @@ export default function SprintForm({
                         project={project}
                         date={date}
                         setDate={setDate}
+                        conflictDate={conflictDate}
                     />
                 </>
             ),

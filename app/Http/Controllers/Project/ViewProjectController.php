@@ -20,7 +20,7 @@ use Inertia\Inertia;
 
 class ViewProjectController extends Controller
 {
-    protected $user;
+    protected User $user;
 
     public function __construct()
     {
@@ -95,6 +95,13 @@ class ViewProjectController extends Controller
                     ->when($request->search, function ($q, $value) {
                         return $q->where("title", "ilike", "%$value%");
                     })
+                    ->when($request->sprint, function ($q, $value) {
+                        return $q->whereHas("sprint", function ($s) use (
+                            $value,
+                        ) {
+                            $s->where("id", $value);
+                        });
+                    })
                     ->when($request->priority, function ($q, $value) {
                         return $q->where("priority", $value);
                     })
@@ -150,9 +157,10 @@ class ViewProjectController extends Controller
                     });
                 },
             ])
+            ->orderBy("number", "asc")
             ->get()
             ->toArray();
-        
+
         return Inertia::render(
             "project/detail-sprint",
             compact("project", "sprints"),

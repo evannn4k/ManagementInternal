@@ -49,7 +49,7 @@ export default function FormField({
     min,
     cols = 2,
     col = 1,
-    step = 1,   
+    step = 1,
     hidden = false,
     disabled = false,
     setData = null,
@@ -176,42 +176,47 @@ export default function FormField({
                         </Popover>
                     </>
                 );
-            case "radio-group":
+            case "radio-group": {
                 const stringValue =
                     value !== undefined && value !== null ? String(value) : "";
 
+                const handleValueChange = (selectedVal: string) => {
+                    const matchedOption = options.find(
+                        (opt) => String(opt.value) === selectedVal,
+                    );
+                    
+                    const parsedValue = matchedOption
+                        ? matchedOption.value
+                        : selectedVal;
+
+                    setData((data: any) => ({
+                        ...data,
+                        [name]: parsedValue,
+                    }));
+                };
+
+                const groupClassName =
+                    orientation === "horizontal"
+                        ? `grid gap-4 ${gridCols[cols]}`
+                        : "flex flex-col gap-2";
+
                 return (
                     <RadioGroup
-                        aria-invalid={Boolean(error)}
                         id={name}
-                        onValueChange={(selectedVal) => {
-                            const matchedOption = options.find(
-                                (opt) => String(opt.value) === selectedVal,
-                            );
-
-                            const parsedValue = matchedOption
-                                ? matchedOption.value
-                                : selectedVal;
-
-                            setData((data: any) => ({
-                                ...data,
-                                [name]: parsedValue,
-                            }));
-                        }}
                         value={stringValue}
                         disabled={disabled}
-                        className={
-                            orientation === "horizontal"
-                                ? `grid gap-4 ${gridCols[cols]}`
-                                : "flex flex-col gap-2"
-                        }
+                        aria-invalid={Boolean(error)}
+                        onValueChange={handleValueChange}
+                        className={groupClassName}
                     >
                         {options.map((option) => {
                             const optionValStr = String(option.value);
+                            const itemId = `${name}-${optionValStr}`;
+
                             return (
                                 <FieldLabel
-                                    htmlFor={optionValStr}
                                     key={optionValStr}
+                                    htmlFor={itemId}
                                     className={cn(
                                         option.className,
                                         "bg-muted/50 bg-background dark:bg-input/30",
@@ -227,9 +232,9 @@ export default function FormField({
                                             </FieldTitle>
                                         </FieldContent>
                                         <RadioGroupItem
-                                            className="hidden"
+                                            id={itemId}
                                             value={optionValStr}
-                                            id={optionValStr}
+                                            className="hidden"
                                         />
                                     </Field>
                                 </FieldLabel>
@@ -237,6 +242,8 @@ export default function FormField({
                         })}
                     </RadioGroup>
                 );
+            }
+
             case "rich-editor":
                 const editor = useEditor({
                     extensions: [

@@ -16,14 +16,20 @@ export function DatePickerRange({
     project,
     date,
     setDate,
+    conflictDate,
 }: {
     project: ProjectType;
     date: DateRange | undefined;
     setDate: (date: DateRange | undefined) => void;
+    conflictDate: {
+        from: Date | undefined;
+        to: Date | undefined;
+    }[];
 }) {
     const disabled: Matcher[] = [
         { before: parseISO(project.start_date ?? "") },
         { after: parseISO(project.end_date ?? "") },
+        ...conflictDate,
     ];
 
     const now = new Date();
@@ -59,6 +65,10 @@ export function DatePickerRange({
                         onSelect={setDate}
                         numberOfMonths={2}
                         disabled={disabled}
+                        modifiers={{ conflict: conflictDate }}
+                        modifiersClassNames={{
+                            conflict: "text-red-600 line-through opacity-100",
+                        }}
                     />
                 </PopoverContent>
             </Popover>

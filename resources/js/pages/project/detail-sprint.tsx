@@ -53,8 +53,10 @@ import {
     AlertDescription,
     AlertTitle,
 } from "@/components/ui/alert";
-import { router } from "@inertiajs/react";
+import { Link, router } from "@inertiajs/react";
 import { changeStatus } from "@/routes/project/sprint";
+import { detail } from "@/routes/project";
+import { parseISO } from "date-fns";
 
 export default function ProjectDetailSprint({
     project,
@@ -75,9 +77,24 @@ export default function ProjectDetailSprint({
         );
     };
 
+    const openKanban = (id: string) => {
+        router.get(detail.url(project.id), { sprint: id });
+    };
+
+    const conflictDate = sprints.map((sprint) => ({
+        from: sprint.start_date
+            ? (parseISO(sprint.start_date) as Date)
+            : undefined,
+        to: sprint.end_date ? (parseISO(sprint.end_date) as Date) : undefined,
+    }));
+
     return (
         <>
-            <SprintForm project={project} modal={modal} />
+            <SprintForm
+                project={project}
+                modal={modal}
+                conflictDate={conflictDate}
+            />
             <Card className="bg-muted/50">
                 <CardContent className="flex w-full flex-col gap-6 pb-4">
                     {/* Header */}
@@ -134,7 +151,7 @@ export default function ProjectDetailSprint({
                                     : 0;
 
                             return (
-                                <section className="space-y-3">
+                                <section className="space-y-3" key={sprint.id}>
                                     <h2 className="text-sm font-semibold">
                                         Sprint Aktif
                                     </h2>
@@ -191,7 +208,13 @@ export default function ProjectDetailSprint({
                                         </CardContent>
 
                                         <CardFooter className="gap-2">
-                                            <Button variant="outline" size="sm">
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={() =>
+                                                    openKanban(sprint.id)
+                                                }
+                                            >
                                                 <SquareKanban />
                                                 Buka Kanban
                                             </Button>
@@ -200,12 +223,21 @@ export default function ProjectDetailSprint({
                                                 size="icon"
                                                 className="size-8"
                                                 aria-label="Edit sprint"
+                                                onClick={() =>
+                                                    modal.openEdit(sprint)
+                                                }
                                             >
                                                 <Pencil />
                                             </Button>
                                             <Button
                                                 size="sm"
                                                 className="ml-auto"
+                                                onClick={() =>
+                                                    handleChangeStatus(
+                                                        sprint.id,
+                                                        "completed",
+                                                    )
+                                                }
                                             >
                                                 <Check />
                                                 Selesaikan
@@ -311,7 +343,13 @@ export default function ProjectDetailSprint({
                                         </CardContent>
 
                                         <CardFooter className="gap-2">
-                                            <Button variant="outline" size="sm">
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={() =>
+                                                    openKanban(sprint.id)
+                                                }
+                                            >
                                                 <SquareKanban />
                                                 Buka Kanban
                                             </Button>

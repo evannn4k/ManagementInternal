@@ -32,6 +32,24 @@ class ChangeStatusSprintController extends Controller
                     );
             }
 
+            if (
+                $sprint->status == "planned" &&
+                $credentials["status"] == "completed"
+            ) {
+                return redirect()->back()->with("error", "Status tidak valid.");
+            }
+
+            if (
+                $sprint->status == "planned" &&
+                Sprint::where("project_id", $project->id)
+                    ->where("status", "active")
+                    ->exists()
+            ) {
+                return redirect()
+                    ->back()
+                    ->with("error", "Sudah terdapat sprint aktif.");
+            }
+
             DB::transaction(function () use ($request, $credentials, $sprint) {
                 $sprint->status = $credentials["status"];
                 $sprint->save();

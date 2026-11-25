@@ -19,10 +19,12 @@ export function TaskKanban({
     statuses: initialStatus,
     taskModal,
     projectStatusModal,
+    sprintModal,
 }: {
     statuses: ProjectStatusType[];
     taskModal: UseModalReturn;
     projectStatusModal: UseModalReturn;
+    sprintModal: UseModalReturn;
 }) {
     const [statuses, setStatuses] = useState(initialStatus);
 
@@ -109,6 +111,7 @@ export function TaskKanban({
                             status={status}
                             taskModal={taskModal}
                             projectStatusModal={projectStatusModal}
+                            sprintModal={sprintModal}
                         />
                     ))}
                 </CardContent>

@@ -19,15 +19,23 @@ import { TaskType } from "@/types/data/task";
 import { UseModalReturn } from "@/types/modal";
 import { useDraggable } from "@dnd-kit/react";
 import { Link, router } from "@inertiajs/react";
-import { FileText, MoreVertical, SquarePen, Trash2 } from "lucide-react";
+import {
+    FileText,
+    MoreVertical,
+    ChevronRight,
+    SquarePen,
+    Trash2,
+} from "lucide-react";
 import { detail as taskDetail } from "@/actions/App/Http/Controllers/Task/ViewTaskController";
 
 export function TaskCard({
     task,
     modal,
+    sprintModal,
 }: {
     task: TaskType;
     modal: UseModalReturn;
+    sprintModal: UseModalReturn;
 }) {
     const { ref } = useDraggable({
         id: task.id,
@@ -66,7 +74,10 @@ export function TaskCard({
                                 <span className="sr-only">Open menu</span>
                             </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
+                        <DropdownMenuContent
+                            align="end"
+                            className="min-w-[200px]"
+                        >
                             <DropdownMenuItem
                                 onClick={(e) => {
                                     e.preventDefault();
@@ -82,6 +93,18 @@ export function TaskCard({
                                     <FileText />
                                     Detail
                                 </Link>
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    sprintModal.openEdit(task);
+                                }}
+                                className="flex justify-between items-center gap-2"
+                            >
+                                <span>Masukan ke Sprint</span>
+                                <ChevronRight />
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem
